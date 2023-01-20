@@ -10,6 +10,7 @@ export async function main(ns) {
     /* make this script more dynamic, it only runs on n00dles!? */
 
     //\\ SCRIPT SETTINGS
+    ns.toast("netStumbler online", "success", 2000)
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
@@ -17,6 +18,7 @@ export async function main(ns) {
     //\\ GENERAL DATA
     let scriptPath = getScriptsPath(ns)
     let speed = getSleepTime(ns)
+    let target = "n00dles"
     
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function calculateThreads(server) {
@@ -47,10 +49,10 @@ export async function main(ns) {
             } else {
                 
                 //execute hacking
-                if (!ns.isRunning(scriptPath.serverExploid, server, "n00dles")) {
+                if (!ns.isRunning(scriptPath.serverExploid, server, target)) {
 
                     let threads = calculateThreads(server)
-                    ns.exec(scriptPath.serverExploid, server, threads, "n00dles")
+                    ns.exec(scriptPath.serverExploid, server, threads, target)
 
                 }
             }

@@ -7,9 +7,9 @@ import { getSleepTime } from "./conf.js"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
+	ns.toast("Hacknet online", "success", 2000)
 	ns.disableLog("ALL")
 	ns.clearLog()
-	ns.tail()
 
 	//\\ GENERAL DATA
 	let speed = getSleepTime(ns)

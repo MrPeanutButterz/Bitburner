@@ -58,7 +58,7 @@ export function getServersWithRam(ns) {
 /** @param {NS} ns */
 export function getRootAccess(ns, server) {
 
-	//cracks as many ports as possible to gain access
+	//cracks ports to gain access
 
 	let openPorts = 0
 	if (ns.hasRootAccess(server) == false) {
@@ -83,7 +83,6 @@ export function copyScripts(ns, server) {
 	let scriptsOnServer = ns.ls(server)
 
 	for (let i = 0; i < scriptsOnServer.length; i++) {
-
 		if (scriptsOnServer[i] === "/Genesis/serverHack.js") {
 			scriptExists = true
 		}
@@ -91,6 +90,38 @@ export function copyScripts(ns, server) {
 
 	if (!scriptExists) {
 		ns.scp(files, server, "home")
-		ns.print("SUCCES: Files copied to " + server)
+		ns.tprint("SUCCES: Files copied to " + server)
 	}
+}
+
+/** @param {NS} ns */
+export function getTotalNetRam(ns) {
+
+	//returns the total ram in the network
+
+	var ram = 0
+	var servers = getServersWithRam(ns)
+
+	for (var i = 0; i < servers.length; i++) {
+		if (ns.hasRootAccess(servers[i]) == true) {
+			var ram = ram + ns.getServerMaxRam(servers[i])
+		}
+	} 
+	return Math.floor(ram)
+}
+
+/** @param {NS} ns */
+export function getUsableNetRam(ns) {
+
+	//returns the usable ram in the network
+
+	var ram = 0
+	var servers = getServersWithRam(ns)
+
+	for (var i = 0; i < servers.length; i++) {
+		if (ns.hasRootAccess(servers[i]) == true) {
+			var ram = ram + ns.getServerMaxRam(servers[i]) - ns.getServerUsedRam(servers[i])
+		}
+	} 
+	return Math.floor(ram)
 }

@@ -25,10 +25,6 @@ export function getScriptsPath(ns) {
 
     const path = {
 
-        //GLOBAL
-        library: "./library",
-        conf: "./conf.js",
-
         //GENESIS
         serverExploid: "/Genesis/serverExploid.js",
         serverWeak: "/Genesis/ServerWeak.js",
