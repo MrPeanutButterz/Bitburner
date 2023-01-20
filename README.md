@@ -48,22 +48,3 @@ Run script with arguments! This script runs on autopilot until all the condition
 4. specify how many cores you want to buy
 
 **Example:** run buyHacknet.js 4 25 4 1
-
-
-## SINGULARITY
-
-
-`buyCore.js` 
-
-Buys core for "Home" when there's money avaliable 
-
-`buyRam.js` 
-
-Buys ram for "Home" when there's money avaliable 
-
-`buyPrograms.js` 
-
-Buys the necessary programs for hacking servers, in this script thare are 2 list:
-* essential
-* non essential
-Not all programs are needed to complete the Bitnode. 
