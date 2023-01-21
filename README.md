@@ -17,16 +17,10 @@ The library where all shared functions are stored.
 ## GENESIS
 
 
-`serverWeak.js` 
+`serverWeak.js` - `serverGrow.js` - `serverHack.js` 
 
 Weakens the security of a server, use arg to define target server with a delay.
-
-`serverGrow.js` 
-
 Grows the money of a server, use arg to define target server with a delay.
-
-`serverHack.js` 
-
 Hacks the money available of a server, use arg to define target server with a delay.
 
 `serverExploid.js` 
@@ -35,7 +29,9 @@ Weakens the security, grows the balance, hacks the money avaliable, grows server
 
 `netStumbler.js`
 
-This is a basic hack script, the purpose of which is to kickstart your game... it will install serverExploid.js on every server it has access to. Start hacking any server with te provided server name as an argument.
+This is a basic hack script, the purpose of which is to kickstart your game... 
+it will install serverExploid.js on every server it has access to. 
+Start hacking any server with te provided argument.
 
 ***Arguments - optional***
 1. specify the server to start hacking it

@@ -3,12 +3,10 @@ Proces: functions used across all scripts */
 
 import { getScriptsPath } from "./conf.js"
 
-/* HACKING */
-
 /** @param {NS} ns */
 export function networkScanner(ns) {
 
-	//returns a list of all servers names in the network
+	//returns (string array) a list of all servers names in the network
 
 	let servers = []
 	let serversToScan = ns.scan("home")
@@ -26,12 +24,12 @@ export function networkScanner(ns) {
 /** @param {NS} ns */
 export function getServersWithMoney(ns) {
 
-	//returns a list of servers names with money
+	//returns (string array) a list of servers names with money
 
-	var servers = networkScanner(ns)
-	var list = []
+	let servers = networkScanner(ns)
+	let list = []
 
-	for (var i = 0; i < servers.length; i++) {
+	for (let i = 0; i < servers.length; i++) {
 		if (ns.getServerMaxMoney(servers[i]) > 0) {
 			list.push(servers[i])
 		}
@@ -42,12 +40,12 @@ export function getServersWithMoney(ns) {
 /** @param {NS} ns */
 export function getServersWithRam(ns) {
 
-	//returns a list of servers names with ram
+	//returns (string array) a list of servers names with ram
 
-	var servers = networkScanner(ns)
-	var list = []
+	let servers = networkScanner(ns)
+	let list = []
 
-	for (var i = 0; i < servers.length; i++) {
+	for (let i = 0; i < servers.length; i++) {
 		if (ns.getServerMaxRam(servers[i]) > 0) {
 			list.push(servers[i])
 		}
@@ -88,14 +86,14 @@ export function copyHackScripts(ns, server) {
 /** @param {NS} ns */
 export function getTotalNetRam(ns) {
 
-	//returns the total ram in the network
+	//returns (number) the total ram in the network
 
-	var ram = 0
-	var servers = getServersWithRam(ns)
+	let ram = 0
+	let servers = getServersWithRam(ns)
 
-	for (var i = 0; i < servers.length; i++) {
+	for (let i = 0; i < servers.length; i++) {
 		if (ns.hasRootAccess(servers[i]) == true) {
-			var ram = ram + ns.getServerMaxRam(servers[i])
+			let ram = ram + ns.getServerMaxRam(servers[i])
 		}
 	} 
 	return Math.floor(ram)
@@ -104,14 +102,14 @@ export function getTotalNetRam(ns) {
 /** @param {NS} ns */
 export function getUsableNetRam(ns) {
 
-	//returns the usable ram in the network
+	//returns (number) the usable ram in the network
 
-	var ram = 0
-	var servers = getServersWithRam(ns)
+	let ram = 0
+	let servers = getServersWithRam(ns)
 
-	for (var i = 0; i < servers.length; i++) {
+	for (let i = 0; i < servers.length; i++) {
 		if (ns.hasRootAccess(servers[i]) == true) {
-			var ram = ram + ns.getServerMaxRam(servers[i]) - ns.getServerUsedRam(servers[i])
+			let ram = ram + ns.getServerMaxRam(servers[i]) - ns.getServerUsedRam(servers[i])
 		}
 	} 
 	return Math.floor(ram)
@@ -119,10 +117,25 @@ export function getUsableNetRam(ns) {
 
 /** @param {NS} ns */
 export function getUniqueID(ns) {
-	var s4 = () => {
+	let s4 = () => {
 		return Math.floor((1 + Math.random()) * 0x10000)
 			.toString(16)
 			.substring(1)
 	}
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+}
+
+/** @param {NS} ns */
+export function checkStockAccounts(ns) { 
+	
+	//checks if we have all accounts (boolean)
+	
+	if (ns.stock.purchaseWseAccount() == true
+		&& ns.stock.purchase4SMarketData() == true
+		&& ns.stock.purchaseTixApi() == true
+		&& ns.stock.purchase4SMarketDataTixApi() == true) {
+		return true
+	} else { 
+		return false 
+	}
 }

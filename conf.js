@@ -5,7 +5,7 @@ Proces: configurations */
 export function getSleepTime(ns) {
     const scriptSpeed = {
 
-        //returns different script speeds
+        //returns (number) different script speeds
 
         superFast: 50,
         fast: 200,
@@ -21,7 +21,7 @@ export function getSleepTime(ns) {
 /** @param {NS} ns */
 export function getScriptsPath(ns) {
 
-    //returns path to any script used in operation
+    //returns (string array) path to any script used in operation
 
     const path = {
 
@@ -53,3 +53,44 @@ export function getScriptsPath(ns) {
     return path
 }
 
+/** @param {NS} ns */
+export function getTickerServer(ns, ticker) {
+
+    //returns (string) the corresponding server for a ticker
+
+	switch(ticker) {
+		case "ECP": { return "ecorp" }
+		case "MGCP": { return "megacorp" }
+		case "BLD": { return "blade" }
+		case "CLRK": { return "clarkinc" }
+		case "OMTK": { return "omnitek" }
+		case "FSIG": { return "4sigma" }
+		case "KGI": { return "kuai-gong" }
+		case "FLCM": { return "fulcrumtech" }
+		case "STM": { return "stormtech" }
+		case "DCOMM": { return "defcomm" }
+		case "HLS": { return "helios" }
+		case "VITA": { return "vitalife" }
+		case "ICRS": { return "icarus" }
+		case "UNV": { return "univ-energy" }
+		case "AERO": { return "aerocorp" }
+		case "OMN": { return "omnia" }
+		case "SLRS": { return "solaris" }
+		case "GPH": { return "global-pharm" }
+		case "NVMD": { return "nova-med" }
+		case "WDS": { return "." }
+		case "LXO": { return "lexo-corp" }
+		case "RHOC": { return "rho-construction" }
+		case "APHE": { return "alpha-ent" }
+		case "SYSC": { return "syscore" }
+		case "CTK": { return "computek" }
+		case "NTLK": { return "netlink" }
+		case "OMGA": { return "omega-net" }
+		case "FNS": { return "foodnstuff" }
+		case "JGN": { return "joesguns" }
+		case "SGC": { return "sigma-cosmetics" }
+		case "CTYS": { return "catalyst" }
+		case "MDYN": { return "microdyne" }
+		case "TITN": { return "titan-labs" }
+	}
+}

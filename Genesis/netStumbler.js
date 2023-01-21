@@ -51,7 +51,7 @@ export async function main(ns) {
                 
                 //execute hacking
                 if (!ns.isRunning(scriptPath.serverExploid, server, target)) {
-                    
+
                     ns.killall(server)
                     let threads = calculateThreads(server)
                     ns.exec(scriptPath.serverExploid, server, threads, target)

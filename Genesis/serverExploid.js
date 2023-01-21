@@ -6,10 +6,12 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     let target = ns.args[0]
+    
+    if (target == null) { target = "n00dles" }
 
     //\\ MAIN LOGICA
     while (true) {
-        for (var i = 15; i < 99;) {
+        for (let i = 20; i < 99;) {
 
             if (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + 5) {
                 await ns.weaken(target)
