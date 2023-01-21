@@ -13,7 +13,6 @@ export async function main(ns) {
     ns.toast("netStumbler online", "success", 2000)
     ns.disableLog("ALL")
     ns.clearLog()
-    ns.tail()
     
     //\\ GENERAL DATA
     let scriptPath = getScriptsPath(ns)

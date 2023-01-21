@@ -48,3 +48,13 @@ Run script with arguments! This script runs on autopilot until all the condition
 4. specify how many cores you want to buy
 
 **Example:** run buyHacknet.js 4 25 4 1
+
+`buyServer.js` 
+
+Run script with arguments! This script runs on autopilot until all the conditions are met.
+
+***Arguments***
+1. specify the amount of ram you want to start buying
+2. specify the amount of ram you want to stop buying
+
+**Example:** run buyServers.js 2 8

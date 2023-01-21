@@ -79,16 +79,7 @@ export function copyScripts(ns, server) {
 	let script = getScriptsPath(ns)
 	const files = [script.serverExploid, script.serverWeak, script.serverGrow, script.serverHack]
 
-	let scriptExists = false
-	let scriptsOnServer = ns.ls(server)
-
-	for (let i = 0; i < scriptsOnServer.length; i++) {
-		if (scriptsOnServer[i] === "/Genesis/serverHack.js") {
-			scriptExists = true
-		}
-	}
-
-	if (!scriptExists) {
+	if (ns.fileExists("/Genesis/serverHack.js", server) == false) {
 		ns.scp(files, server, "home")
 		ns.tprint("SUCCES: Files copied to " + server)
 	}
@@ -124,4 +115,14 @@ export function getUsableNetRam(ns) {
 		}
 	} 
 	return Math.floor(ram)
+}
+
+/** @param {NS} ns */
+export function getUniqueID(ns) {
+	var s4 = () => {
+		return Math.floor((1 + Math.random()) * 0x10000)
+			.toString(16)
+			.substring(1)
+	}
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
