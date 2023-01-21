@@ -7,9 +7,9 @@ import { getSleepTime } from "./conf.js"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
+	ns.toast("buyServers online", "success", 2000)
 	ns.disableLog("ALL")
 	ns.clearLog()
-	ns.tail()
 
 	//\\ GENERAL DATA
 	let baseRam = ns.args[0]
@@ -58,30 +58,10 @@ export async function main(ns) {
 					await ns.sleep(speed.medium)
 				}
 					
-			} else {
-				ns.print("server-node-" + i + " : " + baseRam)
 			}
 		}
-
 		baseRam = baseRam + baseRam
 	}
+	await ns.sleep(speed.superSlow)
+	ns.closeTail()
 }
-
-
-/* 
-getPurchasedServerLimit()								Returns the maximum number of servers you can purchase.
-getPurchasedServers()									Returns an array with the hostnames of all of the servers you have purchased.
-
-NEW
-getPurchasedServerCost(ram)								Get cost of purchasing a server.
-purchaseServer(hostname, ram)							Purchase a server.
-
-REPLACE
-getPurchasedServerUpgradeCost(hostname, ram)			Get cost of upgrading a purchased server to the given ram.
-upgradePurchasedServer(hostname, ram)					Upgrade a purchased server's RAM.
-
-getPurchasedServerMaxRam()								Returns the maximum RAM that a purchased server can have.
-
-renamePurchasedServer(hostname, newName)				Rename a purchased server.
-deleteServer(host)										Delete a purchased server.
-*/

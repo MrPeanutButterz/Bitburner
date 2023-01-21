@@ -8,7 +8,7 @@ import { getScriptsPath } from "./conf.js"
 /** @param {NS} ns */
 export function networkScanner(ns) {
 
-	//returns a list of all servers on the network
+	//returns a list of all servers names in the network
 
 	let servers = []
 	let serversToScan = ns.scan("home")
@@ -26,7 +26,7 @@ export function networkScanner(ns) {
 /** @param {NS} ns */
 export function getServersWithMoney(ns) {
 
-	//returns a list of servers with money
+	//returns a list of servers names with money
 
 	var servers = networkScanner(ns)
 	var list = []
@@ -42,7 +42,7 @@ export function getServersWithMoney(ns) {
 /** @param {NS} ns */
 export function getServersWithRam(ns) {
 
-	//returns a list of servers with ram
+	//returns a list of servers names with ram
 
 	var servers = networkScanner(ns)
 	var list = []
@@ -72,7 +72,7 @@ export function getRootAccess(ns, server) {
 }
 
 /** @param {NS} ns */
-export function copyScripts(ns, server) {
+export function copyHackScripts(ns, server) {
 
 	//copy the scripts to the destination server
 

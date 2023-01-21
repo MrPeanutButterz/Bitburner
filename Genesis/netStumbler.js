@@ -2,7 +2,7 @@
 Proces: basic hacking script */
 
 import { getScriptsPath, getSleepTime } from "./conf.js"
-import { getServersWithRam, getRootAccess, copyScripts } from "./lib.js"
+import { getServersWithRam, getRootAccess, copyHackScripts } from "./lib.js"
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -43,7 +43,7 @@ export async function main(ns) {
             if (!ns.hasRootAccess(server)) {
 
                 getRootAccess(ns, server)
-                copyScripts(ns, server)
+                copyHackScripts(ns, server)
                 
             } else {
                 
