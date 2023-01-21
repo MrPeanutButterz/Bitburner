@@ -17,7 +17,9 @@ export async function main(ns) {
     //\\ GENERAL DATA
     let scriptPath = getScriptsPath(ns)
     let speed = getSleepTime(ns)
-    let target = "n00dles"
+    let target = ns.args[0]
+
+    if (target == null) { target = "n00dles" }
     
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function calculateThreads(server) {
@@ -49,10 +51,10 @@ export async function main(ns) {
                 
                 //execute hacking
                 if (!ns.isRunning(scriptPath.serverExploid, server, target)) {
-
+                    
+                    ns.killall(server)
                     let threads = calculateThreads(server)
                     ns.exec(scriptPath.serverExploid, server, threads, target)
-
                 }
             }
         }

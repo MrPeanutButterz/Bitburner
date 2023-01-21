@@ -35,13 +35,18 @@ Weakens the security, grows the balance, hacks the money avaliable, grows server
 
 `netStumbler.js`
 
-This is a basic hack script, the purpose of which is to kickstart your game... it will install serverExploid.js on every server it has access to.
+This is a basic hack script, the purpose of which is to kickstart your game... it will install serverExploid.js on every server it has access to. Start hacking any server with te provided server name as an argument.
+
+***Arguments - optional***
+1. specify the server to start hacking it
+
+**Example:** run netStumbler.js n00dles
 
 `buyHacknet.js` 
 
-Run script with arguments! This script runs on autopilot until all the conditions are met.
+This script runs on autopilot until all the conditions are met.
 
-***Arguments***
+***Arguments - required***
 1. specify how many nodes you want to buy
 2. specify how many levels you want to buy
 3. specify how many ram you want to buy
@@ -51,9 +56,9 @@ Run script with arguments! This script runs on autopilot until all the condition
 
 `buyServer.js` 
 
-Run script with arguments! This script runs on autopilot until all the conditions are met.
+This script runs on autopilot until all the conditions are met.
 
-***Arguments***
+***Arguments - required***
 1. specify the amount of ram you want to start buying
 2. specify the amount of ram you want to stop buying
 
