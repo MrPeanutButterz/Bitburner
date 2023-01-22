@@ -22,10 +22,10 @@ export async function main(ns) {
     if (target == null) { target = "n00dles" }
     
     //\\ SCRIPT SPECIFIC FUNCTIONS
-    function calculateThreads(server) {
+    function calculateThreads(thisServer) {
         
         //calculate threads
-        let maxThreads = ns.getServerMaxRam(server)
+        let maxThreads = ns.getServerMaxRam(thisServer)
         let threads = Math.floor(maxThreads / ns.getScriptRam(scriptPath.serverExploid))
         return threads
     }
@@ -36,25 +36,21 @@ export async function main(ns) {
         
         //list all servers
         let servers = getServersWithRam(ns)
-
         for (var i = 0; i < servers.length; i++) {
 
-            //get access en copy scripts
-            var server = servers[i]
-            
-            if (!ns.hasRootAccess(server)) {
+            //get access en copy scripts           
+            if (!ns.hasRootAccess(servers[i])) {
 
-                getRootAccess(ns, server)
-                copyHackScripts(ns, server)
+                getRootAccess(ns, servers[i])
+                copyHackScripts(ns, servers[i])
                 
             } else {
                 
                 //execute hacking
-                if (!ns.isRunning(scriptPath.serverExploid, server, target)) {
+                if (!ns.isRunning(scriptPath.serverExploid, servers[i], target)) {
 
-                    ns.killall(server)
-                    let threads = calculateThreads(server)
-                    ns.exec(scriptPath.serverExploid, server, threads, target)
+                    ns.killall(servers[i])
+                    ns.exec(scriptPath.serverExploid, servers[i], calculateThreads(servers[i]), target)
                 }
             }
         }
