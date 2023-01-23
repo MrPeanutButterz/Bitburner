@@ -13,45 +13,45 @@ export async function main(ns) {
     ns.toast("netStumbler online", "success", 2000)
     ns.disableLog("ALL")
     ns.clearLog()
-    
+
     //\\ GENERAL DATA
-    let scriptPath = getScriptsPath(ns)
+    let script = getScriptsPath(ns)
     let speed = getSleepTime(ns)
     let target = ns.args[0]
 
     if (target == null) { target = "n00dles" }
-    
+
     //\\ SCRIPT SPECIFIC FUNCTIONS
-    function calculateThreads(thisServer) {
-        
+    function execScript(thisServer) {
+
         //calculate threads
-        let maxThreads = ns.getServerMaxRam(thisServer)
-        let threads = Math.floor(maxThreads / ns.getScriptRam(scriptPath.serverExploid))
-        return threads
+        let threads = Math.floor(ns.getServerMaxRam(thisServer) / ns.getScriptRam(script.serverExploid))
+
+        if (threads >= 1) {
+
+            ns.killall(thisServer)
+            ns.exec(script.serverExploid, thisServer, threads, target)
+        }
     }
-    
+
     //\\ MAIN LOGICA
     while (true) {
         await ns.sleep(speed.medium)
-        
+
         //list all servers
         let servers = getServersWithRam(ns)
-        for (var i = 0; i < servers.length; i++) {
+        for (let server of servers) {
 
-            //get access en copy scripts           
-            if (!ns.hasRootAccess(servers[i])) {
+            //get access en copy scripts en start hacking
+            if (!ns.hasRootAccess(server)) {
 
-                getRootAccess(ns, servers[i])
-                copyHackScripts(ns, servers[i])
-                
-            } else {
-                
-                //execute hacking
-                if (!ns.isRunning(scriptPath.serverExploid, servers[i], target)) {
+                getRootAccess(ns, server)
 
-                    ns.killall(servers[i])
-                    ns.exec(scriptPath.serverExploid, servers[i], calculateThreads(servers[i]), target)
-                }
+            } else if (!ns.isRunning(script.serverExploid, server, target)) {
+
+                copyHackScripts(ns, server)
+                execScript(server)
+
             }
         }
     }

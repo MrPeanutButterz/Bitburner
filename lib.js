@@ -43,7 +43,7 @@ export function getServersWithRam(ns) {
 	//returns (string array) a list of servers names with ram
 
 	let servers = networkScanner(ns)
-	let list = [].concat(ns.getPurchasedServers())
+	let list = []
 
 	for (let server of servers) {
 		if (ns.getServerMaxRam(server) > 0) {
@@ -58,26 +58,26 @@ export function getRootAccess(ns, server) {
 
 	//cracks ports to gain access
 
-	let openPorts = 0
+	let portsOpen = 0
 	if (ns.hasRootAccess(server) == false) {
-		if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(server); openPorts++ }
-		if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(server); openPorts++ }
-		if (ns.fileExists("RelaySMTP.exe", "home")) { ns.relaysmtp(server); openPorts++ }
-		if (ns.fileExists("HTTPWorm.exe", "home")) { ns.httpworm(server); openPorts++ }
-		if (ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(server); openPorts++ }
-		if (ns.getServerNumPortsRequired(server) <= openPorts) { ns.nuke(server) }
+		if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(server); portsOpen++ }
+		if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(server); portsOpen++ }
+		if (ns.fileExists("RelaySMTP.exe", "home")) { ns.relaysmtp(server); portsOpen++ }
+		if (ns.fileExists("HTTPWorm.exe", "home")) { ns.httpworm(server); portsOpen++ }
+		if (ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(server); portsOpen++ }
+		if (ns.getServerNumPortsRequired(server) <= portsOpen) { ns.nuke(server) }
 	}
 }
 
 /** @param {NS} ns */
-export function numOfPrograms(ns) {
-	var numberOfPrograms = 0
-	if (ns.fileExists("BruteSSH.exe", "home") == true) { numberOfPrograms++ }
-	if (ns.fileExists("FTPCrack.exe", "home") == true) { numberOfPrograms++ }
-	if (ns.fileExists("RelaySMTP.exe", "home") == true) { numberOfPrograms++ }
-	if (ns.fileExists("HTTPWorm.exe", "home") == true) { numberOfPrograms++ }
-	if (ns.fileExists("SQLInject.exe", "home") == true) { numberOfPrograms++ }
-	return numberOfPrograms
+export function getProgramCount(ns) {
+	var programs = 0
+	if (ns.fileExists("BruteSSH.exe", "home") == true) { programs++ }
+	if (ns.fileExists("FTPCrack.exe", "home") == true) { programs++ }
+	if (ns.fileExists("RelaySMTP.exe", "home") == true) { programs++ }
+	if (ns.fileExists("HTTPWorm.exe", "home") == true) { programs++ }
+	if (ns.fileExists("SQLInject.exe", "home") == true) { programs++ }
+	return programs
 }
 
 /** @param {NS} ns */
@@ -90,7 +90,7 @@ export function copyHackScripts(ns, server) {
 
 	if (ns.fileExists("/Genesis/serverHack.js", server) == false) {
 		ns.scp(files, server, "home")
-		ns.tprint("SUCCES: Files copied to " + server)
+		ns.tprint("Files copied to " + server)
 	}
 }
 

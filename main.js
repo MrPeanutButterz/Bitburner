@@ -2,6 +2,7 @@
 Proces: this script controls all scripts based on what is needed for next goal */
 
 import { getScriptsPath, getSleepTime } from "./conf.js"
+import { getProgramCount } from "./lib.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -29,14 +30,12 @@ export async function main(ns) {
 		}
 	}
 
-	function basicPrograms() {
-		var numberOfPrograms = 0
-		if (ns.fileExists("BruteSSH.exe", "home") == true) { numberOfPrograms++ }
-		if (ns.fileExists("FTPCrack.exe", "home") == true) { numberOfPrograms++ }
-		if (ns.fileExists("RelaySMTP.exe", "home") == true) { numberOfPrograms++ }
-		if (ns.fileExists("HTTPWorm.exe", "home") == true) { numberOfPrograms++ }
-		if (ns.fileExists("SQLInject.exe", "home") == true) { numberOfPrograms++ }
-		return numberOfPrograms
+	function basicPrograms(thisScript) {
+
+		//checks if the basic programs are available
+
+		let program = getProgramCount(ns)
+		if (program < 5) { runScript(thisScript) }
 	}
 
 	//\\ MAIN LOGICA
@@ -47,16 +46,14 @@ export async function main(ns) {
 			//hacking, programs, ram - 30GB
 			runScript(script.buyRam)
 			runScript(script.netStumbler)
-
-			if (basicPrograms < 5) { runScript(script.buyPrograms) }
+			basicPrograms(script.buyPrograms)
 
 		} else {
 
 			//hacking, programs, ram, faction 
 			runScript(script.buyRam)
 			runScript(script.netStumbler)
-
-			if (basicPrograms < 5) { runScript(script.buyPrograms) }
+			basicPrograms(script.buyPrograms)
 			//faction.js
 
 		}

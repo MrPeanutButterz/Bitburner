@@ -19,9 +19,9 @@ The library where all shared functions are stored.
 
 `serverWeak.js` - `serverGrow.js` - `serverHack.js` 
 
-Weakens the security of a server, use arg to define target server with a delay.
-Grows the money of a server, use arg to define target server with a delay.
-Hacks the money available of a server, use arg to define target server with a delay.
+* Weakens the security of a server, use arg to define target server with a delay.
+* Grows the money of a server, use arg to define target server with a delay.
+* Hacks the money available of a server, use arg to define target server with a delay.
 
 `serverExploid.js` 
 
