@@ -17,9 +17,23 @@ export async function main(ns) {
 	let speed = getSleepTime(ns)
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
+	function serverNodeRam() {
+
+		//returns total server
+
+		let totalRam = 0
+		let servers = ns.getPurchasedServers()
+
+		for (let server of servers) {
+
+			let ram = ns.getServerMaxRam(server)
+			totalRam = totalRam + ram
+		}
+		return totalRam
+	}
 
 	//\\ MAIN LOGICA
-	while (ns.getServerMaxRam("server-node-24") < maxRam) {
+	while (serverNodeRam() < maxRam * 24) {
 		await ns.sleep(speed.medium)
 		ns.clearLog()
 
@@ -27,7 +41,7 @@ export async function main(ns) {
 			await ns.sleep(speed.medium)
 
 			let server = "server-node-" + i
-			
+
 			//buy or replace servers
 			if (ns.serverExists(server) == false) {
 
@@ -40,14 +54,14 @@ export async function main(ns) {
 					ns.print("insufficient funds\n" + server + " is being installed " + baseRam + "GB")
 					await ns.sleep(speed.medium)
 				}
-				
+
 			} else if (ns.getServerMaxRam(server) >= baseRam) {
 
 				i++
 				ns.print(server + " is already has at least " + baseRam + "GB")
 
 			} else if (ns.getServerMaxRam(server) < maxRam) {
-				
+
 				if (ns.getPlayer().money > ns.getPurchasedServerUpgradeCost(server, baseRam)) {
 					ns.upgradePurchasedServer(server, baseRam)
 					ns.print(server + " is upgraded to " + baseRam + "GB")
@@ -57,11 +71,10 @@ export async function main(ns) {
 					ns.print("insufficient funds\n" + server + " is awaiting upgrade " + baseRam + "GB")
 					await ns.sleep(speed.medium)
 				}
-					
+
 			}
 		}
 		baseRam = baseRam + baseRam
 	}
-	await ns.sleep(speed.superSlow)
 	ns.closeTail()
 }
