@@ -29,9 +29,9 @@ export function getServersWithMoney(ns) {
 	let servers = networkScanner(ns)
 	let list = []
 
-	for (let i = 0; i < servers.length; i++) {
-		if (ns.getServerMaxMoney(servers[i]) > 0) {
-			list.push(servers[i])
+	for (let server of servers) {
+		if (ns.getServerMaxMoney(server) > 0) {
+			list.push(server)
 		}
 	}
 	return list
@@ -43,11 +43,11 @@ export function getServersWithRam(ns) {
 	//returns (string array) a list of servers names with ram
 
 	let servers = networkScanner(ns)
-	let list = []
+	let list = [].concat(ns.getPurchasedServers())
 
-	for (let i = 0; i < servers.length; i++) {
-		if (ns.getServerMaxRam(servers[i]) > 0) {
-			list.push(servers[i])
+	for (let server of servers) {
+		if (ns.getServerMaxRam(server) > 0) {
+			list.push(server)
 		}
 	}
 	return list
@@ -67,6 +67,17 @@ export function getRootAccess(ns, server) {
 		if (ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(server); openPorts++ }
 		if (ns.getServerNumPortsRequired(server) <= openPorts) { ns.nuke(server) }
 	}
+}
+
+/** @param {NS} ns */
+export function numOfPrograms(ns) {
+	var numberOfPrograms = 0
+	if (ns.fileExists("BruteSSH.exe", "home") == true) { numberOfPrograms++ }
+	if (ns.fileExists("FTPCrack.exe", "home") == true) { numberOfPrograms++ }
+	if (ns.fileExists("RelaySMTP.exe", "home") == true) { numberOfPrograms++ }
+	if (ns.fileExists("HTTPWorm.exe", "home") == true) { numberOfPrograms++ }
+	if (ns.fileExists("SQLInject.exe", "home") == true) { numberOfPrograms++ }
+	return numberOfPrograms
 }
 
 /** @param {NS} ns */
@@ -91,12 +102,12 @@ export function getTotalNetRam(ns) {
 	let ram = 0
 	let servers = getServersWithRam(ns)
 
-	for (let i = 0; i < servers.length; i++) {
-		if (ns.hasRootAccess(servers[i]) == true) {
-			let ram = ram + ns.getServerMaxRam(servers[i])
+	for (let server of servers) {
+		if (ns.hasRootAccess(server)) {
+			ram = ram + ns.getServerMaxRam(server)
 		}
-	} 
-	return Math.floor(ram)
+	}
+	return ram
 }
 
 /** @param {NS} ns */
@@ -107,11 +118,11 @@ export function getUsableNetRam(ns) {
 	let ram = 0
 	let servers = getServersWithRam(ns)
 
-	for (let i = 0; i < servers.length; i++) {
-		if (ns.hasRootAccess(servers[i]) == true) {
-			let ram = ram + ns.getServerMaxRam(servers[i]) - ns.getServerUsedRam(servers[i])
+	for (let server of servers) {
+		if (ns.hasRootAccess(server)) {
+			ram = ram + ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
 		}
-	} 
+	}
 	return Math.floor(ram)
 }
 
@@ -126,16 +137,16 @@ export function getUniqueID(ns) {
 }
 
 /** @param {NS} ns */
-export function checkStockAccounts(ns) { 
-	
+export function checkStockAccounts(ns) {
+
 	//checks if we have all accounts (boolean)
-	
+
 	if (ns.stock.purchaseWseAccount() == true
 		&& ns.stock.purchase4SMarketData() == true
 		&& ns.stock.purchaseTixApi() == true
 		&& ns.stock.purchase4SMarketDataTixApi() == true) {
 		return true
-	} else { 
-		return false 
+	} else {
+		return false
 	}
 }

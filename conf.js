@@ -27,13 +27,13 @@ export function getScriptsPath(ns) {
 
         //GENESIS
         serverExploid: "/Genesis/serverExploid.js",
-        serverWeak: "/Genesis/ServerWeak.js",
-        serverGrow: "/Genesis/ServerGrow.js",
-        serverHack: "/Genesis/ServerHack.js",
+        serverWeak: "/Genesis/serverWeak.js",
+        serverGrow: "/Genesis/serverGrow.js",
+        serverHack: "/Genesis/serverHack.js",
         netStumbler: "/Genesis/netStumbler.js",
         netSparker: "/Genesis/netSparker.js",
         metaSploit: "/Genesis/metaSploit.js",
-        stockmarket: "/Genesis/StockMarket.js",
+        stockmarket: "/Genesis/stockMarket.js",
 
         //SINGULARITY
         buyCore: "/Singularity/buyCore.js",
@@ -58,39 +58,39 @@ export function getTickerServer(ns, ticker) {
 
     //returns (string) the corresponding server for a ticker
 
-	switch(ticker) {
-		case "ECP": { return "ecorp" }
-		case "MGCP": { return "megacorp" }
-		case "BLD": { return "blade" }
-		case "CLRK": { return "clarkinc" }
-		case "OMTK": { return "omnitek" }
-		case "FSIG": { return "4sigma" }
-		case "KGI": { return "kuai-gong" }
-		case "FLCM": { return "fulcrumtech" }
-		case "STM": { return "stormtech" }
-		case "DCOMM": { return "defcomm" }
-		case "HLS": { return "helios" }
-		case "VITA": { return "vitalife" }
-		case "ICRS": { return "icarus" }
-		case "UNV": { return "univ-energy" }
-		case "AERO": { return "aerocorp" }
-		case "OMN": { return "omnia" }
-		case "SLRS": { return "solaris" }
-		case "GPH": { return "global-pharm" }
-		case "NVMD": { return "nova-med" }
-		case "WDS": { return "." }
-		case "LXO": { return "lexo-corp" }
-		case "RHOC": { return "rho-construction" }
-		case "APHE": { return "alpha-ent" }
-		case "SYSC": { return "syscore" }
-		case "CTK": { return "computek" }
-		case "NTLK": { return "netlink" }
-		case "OMGA": { return "omega-net" }
-		case "FNS": { return "foodnstuff" }
-		case "JGN": { return "joesguns" }
-		case "SGC": { return "sigma-cosmetics" }
-		case "CTYS": { return "catalyst" }
-		case "MDYN": { return "microdyne" }
-		case "TITN": { return "titan-labs" }
-	}
+    switch (ticker) {
+        case "ECP": { return "ecorp" }
+        case "MGCP": { return "megacorp" }
+        case "BLD": { return "blade" }
+        case "CLRK": { return "clarkinc" }
+        case "OMTK": { return "omnitek" }
+        case "FSIG": { return "4sigma" }
+        case "KGI": { return "kuai-gong" }
+        case "FLCM": { return "fulcrumtech" }
+        case "STM": { return "stormtech" }
+        case "DCOMM": { return "defcomm" }
+        case "HLS": { return "helios" }
+        case "VITA": { return "vitalife" }
+        case "ICRS": { return "icarus" }
+        case "UNV": { return "univ-energy" }
+        case "AERO": { return "aerocorp" }
+        case "OMN": { return "omnia" }
+        case "SLRS": { return "solaris" }
+        case "GPH": { return "global-pharm" }
+        case "NVMD": { return "nova-med" }
+        case "WDS": { return "." }
+        case "LXO": { return "lexo-corp" }
+        case "RHOC": { return "rho-construction" }
+        case "APHE": { return "alpha-ent" }
+        case "SYSC": { return "syscore" }
+        case "CTK": { return "computek" }
+        case "NTLK": { return "netlink" }
+        case "OMGA": { return "omega-net" }
+        case "FNS": { return "foodnstuff" }
+        case "JGN": { return "joesguns" }
+        case "SGC": { return "sigma-cosmetics" }
+        case "CTYS": { return "catalyst" }
+        case "MDYN": { return "microdyne" }
+        case "TITN": { return "titan-labs" }
+    }
 }
