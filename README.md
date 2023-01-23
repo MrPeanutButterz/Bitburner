@@ -59,3 +59,19 @@ This script runs on autopilot until all the conditions are met.
 2. specify the amount of ram you want to stop buying
 
 **Example:** run buyServers.js 2 8
+
+
+## SINGULARITY
+
+
+`buyCore.js` - `buyRam.js`
+
+* Keeps buying untill your money runs out.
+
+`buyPrograms.js` 
+
+This script buys all .exe programs needed to run the hack scripts. There are 2 lists:
+
+* essential
+* non essential
+
