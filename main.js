@@ -13,9 +13,9 @@ export async function main(ns) {
 	//\\ GENERAL DATA
 	let speed = getSleepTime(ns)
 	let script = getScriptsPath(ns)
-	
-    //\\ SCRIPT SPECIFIC FUNCTIONS
-	function basicScripts(thisScript) {
+
+	//\\ SCRIPT SPECIFIC FUNCTIONS
+	function runScript(thisScript) {
 
 		//awaits free ram, then runs script
 
@@ -24,31 +24,43 @@ export async function main(ns) {
 
 		if (!ns.scriptRunning(thisScript, "home") && freeRam > scriptRam) {
 
-			ns.tprint("Booting: " + thisScript)
+			ns.tprint("Run: " + thisScript)
 			ns.run(thisScript, 1)
 		}
 	}
-	
-    //\\ MAIN LOGICA
-	while(true) {
-		
+
+	function basicPrograms() {
+		var numberOfPrograms = 0
+		if (ns.fileExists("BruteSSH.exe", "home") == true) { numberOfPrograms++ }
+		if (ns.fileExists("FTPCrack.exe", "home") == true) { numberOfPrograms++ }
+		if (ns.fileExists("RelaySMTP.exe", "home") == true) { numberOfPrograms++ }
+		if (ns.fileExists("HTTPWorm.exe", "home") == true) { numberOfPrograms++ }
+		if (ns.fileExists("SQLInject.exe", "home") == true) { numberOfPrograms++ }
+		return numberOfPrograms
+	}
+
+	//\\ MAIN LOGICA
+	while (true) {
+
 		if (ns.getServerMaxRam("home") < 128) {
-			
+
 			//hacking, programs, ram - 30GB
-			basicScripts(script.netStumbler)
-			basicScripts(script.buyPrograms)
-			basicScripts(script.buyRam)
-			
+			runScript(script.buyRam)
+			runScript(script.netStumbler)
+
+			if (basicPrograms < 5) { runScript(script.buyPrograms) }
+
 		} else {
-			
+
 			//hacking, programs, ram, faction 
-			basicScripts(script.netStumbler)
-			basicScripts(script.buyPrograms)
-			basicScripts(script.buyRam)
+			runScript(script.buyRam)
+			runScript(script.netStumbler)
+
+			if (basicPrograms < 5) { runScript(script.buyPrograms) }
 			//faction.js
-			
+
 		}
-		
+
 		await ns.sleep(speed.superSlow)
 	}
 
