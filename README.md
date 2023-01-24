@@ -66,7 +66,7 @@ This script runs on autopilot until all the conditions are met.
 
 `buyCore.js` - `buyRam.js`
 
-* Keeps buying untill your money runs out.
+Keeps buying untill your money runs out.
 
 `buyPrograms.js` 
 

@@ -26,6 +26,7 @@ export function getScriptsPath(ns) {
     const path = {
 
         //GENESIS
+        buyHacknet: "/Genesis/buyHacknet.js",
         serverExploid: "/Genesis/serverExploid.js",
         serverWeak: "/Genesis/serverWeak.js",
         serverGrow: "/Genesis/serverGrow.js",
@@ -40,8 +41,8 @@ export function getScriptsPath(ns) {
         buyPrograms: "/Singularity/buyPrograms.js",
         buyRam: "/Singularity/buyRam.js",
 
-        faction: "/Singularity/faction.js",
-        requirements: "/Singularity/requirement.js",
+        findFaction: "/Singularity/findFaction.js",
+        requirements: "/Singularity/requirements.js",
         reputation: "/Singularity/reputation.js",
         installation: "/Singularity/installation.js",
         killBitnode: "/Singularity/killBitnode.js",
