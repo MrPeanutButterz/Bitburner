@@ -2,12 +2,15 @@
 Proces: basic hacking script */
 
 import { getScriptsPath, getSleepTime } from "./conf.js"
-import { getServersWithRam, getRootAccess, copyHackScripts } from "./lib.js"
+import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts } from "./lib.js"
 
 /** @param {NS} ns **/
 export async function main(ns) {
 
-    /* make this script more dynamic, it only runs on n00dles!? */
+    /* 
+    -- make this script more dynamic, it only runs on n00dles!? 
+    bug: if servers are updated to more ram netstumbler wont install more threads 
+    */
 
     //\\ SCRIPT SETTINGS
     ns.toast("netStumbler online", "success", 2000)
@@ -18,8 +21,6 @@ export async function main(ns) {
     let script = getScriptsPath(ns)
     let speed = getSleepTime(ns)
     let target = ns.args[0]
-
-    if (target == null) { target = "n00dles" }
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function execScript(thisServer) {
@@ -34,7 +35,28 @@ export async function main(ns) {
         }
     }
 
+    function hackThisServer() {
+
+        let list = []
+        let servers = getServersWithMoney(ns)
+
+        for (let server of servers) {
+
+            if (ns.hackAnalyzeChance(server) * 100 > 99) {
+                list.push(server)
+            }
+        }
+
+        if (list.length === 0) {
+            return "n00dles"
+        } else {
+            return list[list.length - 1]
+        }
+    }
+
     //\\ MAIN LOGICA
+    if (target == null) { target = hackThisServer() }
+
     while (true) {
         await ns.sleep(speed.medium)
 
