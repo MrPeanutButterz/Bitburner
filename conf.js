@@ -95,7 +95,7 @@ export function getTickerServer(ns, ticker) {
 }
 
 /** @param {NS} ns */
-export function getfactions(ns) {
+export function getFactionNames(ns) {
 
     //returns (string array) a list of all factions
 
