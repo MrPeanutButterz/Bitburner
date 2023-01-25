@@ -47,7 +47,7 @@ export async function main(ns) {
 
 				if (ns.getPlayer().money > ns.getPurchasedServerCost(baseRam)) {
 					ns.purchaseServer(server, baseRam)
-					ns.print("PURCHASED " + server + " " + baseRam)
+					ns.print("PURCHASED " + server + " " + baseRam + "GB")
 					i++
 				} else {
 					ns.clearLog()
