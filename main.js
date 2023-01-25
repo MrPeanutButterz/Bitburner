@@ -15,6 +15,8 @@ export async function main(ns) {
 	let speed = getSleepTime(ns)
 	let script = getScriptsPath(ns)
 
+	let factionScript = true
+
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function runScript(thisScript) {
 
@@ -25,17 +27,33 @@ export async function main(ns) {
 
 		if (!ns.scriptRunning(thisScript, "home") && freeRam > scriptRam) {
 
-			ns.tprint("Run: " + thisScript)
 			ns.run(thisScript, 1)
 		}
 	}
 
-	function basicPrograms(thisScript) {
+	function basicPrograms() {
 
 		//checks if the basic programs are available
 
 		let program = getProgramCount(ns)
-		if (program < 5) { runScript(thisScript) }
+		if (program < 5) { runScript(script.buyPrograms) }
+	}
+
+	function singularity() {
+
+		//awaits free ram, then runs script
+
+		let freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+		let scriptRam = ns.getScriptRam(script.findFaction, "home")
+
+		if (freeRam > scriptRam && factionScript) {
+
+			if (!ns.scriptRunning(script.findFaction, "home") || !ns.scriptRunning(script.requirements, "home") || !ns.scriptRunning(script.reputation, "home") || !ns.scriptRunning(script.installation, "home")) {
+
+				ns.run(script.findFaction, 1)
+				factionScript = false
+			}
+		}
 	}
 
 	//\\ MAIN LOGICA
@@ -46,15 +64,15 @@ export async function main(ns) {
 			//hacking, programs, ram - 30GB
 			runScript(script.buyRam)
 			runScript(script.netStumbler)
-			basicPrograms(script.buyPrograms)
+			basicPrograms()
 
 		} else {
 
 			//hacking, programs, ram, faction 
 			runScript(script.buyRam)
 			runScript(script.netStumbler)
-			basicPrograms(script.buyPrograms)
-			//faction.js
+			basicPrograms()
+			singularity()
 
 		}
 

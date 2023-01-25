@@ -7,10 +7,7 @@ import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts 
 /** @param {NS} ns **/
 export async function main(ns) {
 
-    /* 
-    -- make this script more dynamic, it only runs on n00dles!? 
-    bug: if servers are updated to more ram netstumbler wont install more threads 
-    */
+    //bug: if servers are updated to more ram netstumbler wont install more threads 
 
     //\\ SCRIPT SETTINGS
     ns.toast("netStumbler online", "success", 2000)
