@@ -19,7 +19,12 @@ export async function main(ns) {
 	let maxRam = ns.args[2]
 	let maxCore = ns.args[3]
 
-    //\\ MAIN LOGICA
+	if (maxNode === null) { maxNode = 4 }
+	if (maxLevel === null) { maxLevel = 25 }
+	if (maxRam === null) { maxRam = 2 }
+	if (maxCore === null) { maxCore = 1 }
+
+	//\\ MAIN LOGICA
 	while (true) {
 		await ns.sleep(speed.medium)
 
@@ -55,11 +60,11 @@ export async function main(ns) {
 
 			//shutdown script
 			if (ns.hacknet.numNodes() === maxNode) {
-				if (ns.hacknet.getNodeStats(maxNode - 1).level === maxLevel 
-				&& ns.hacknet.getNodeStats(maxNode - 1).ram === maxRam
-				&& ns.hacknet.getNodeStats(maxNode - 1).cores === maxCore) {
+				if (ns.hacknet.getNodeStats(maxNode - 1).level === maxLevel
+					&& ns.hacknet.getNodeStats(maxNode - 1).ram === maxRam
+					&& ns.hacknet.getNodeStats(maxNode - 1).cores === maxCore) {
 					ns.exit()
-				}	
+				}
 			}
 		}
 	}
