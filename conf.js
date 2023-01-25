@@ -13,7 +13,6 @@ export function getSleepTime(ns) {
         medium: 1000,
         slow: 2000,
         superSlow: 5000,
-
     }
     return scriptSpeed
 }
@@ -45,7 +44,6 @@ export function getScriptsPath(ns) {
         requirements: "/Singularity/requirements.js",
         reputation: "/Singularity/reputation.js",
         installation: "/Singularity/installation.js",
-        killBitnode: "/Singularity/killBitnode.js",
 
         //CORPORATOCTACY
         runCorporation: "/Corporatocracy/Corporation.js",
@@ -97,33 +95,34 @@ export function getTickerServer(ns, ticker) {
 }
 
 /** @param {NS} ns */
-export function getFactionNames(ns) {
+export function getfactions(ns) {
 
     //returns (string array) a list of all factions
 
     const list = [
-        "CyberSec", 					//Install a backdoor on the CSEC server
-        "Tian Di Hui",					//$1m & Hacking Level 50 & Be in Chongqing, New Tokyo, or Ishima
+
         "Netburners",					//Hacking Level 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
+        "Tian Di Hui",					//$1m & Hacking Level 50 & Be in Chongqing, New Tokyo, or Ishima
         "Sector-12",					//Be in Sector-12 & $15m
         "Chongqing",					//Be in Chongqing & $20m
         "New Tokyo",					//Be in New Tokyo & $20m
         "Ishima",						//Be in Ishima & $30m
         "Aevum",						//Be in Aevum & $40m
         "Volhaven",						//Be in Volhaven & $50m
+        "CyberSec", 					//Install a backdoor on the CSEC server
         "NiteSec",						//Install a backdoor on the avmnite-02h server
         "The Black Hand",				//Install a backdoor on the I.I.I.I server
         "BitRunners",					//Install a backdoor on the run4theh111z server
-        "ECorp",						//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "MegaCorp",						//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "KuaiGong International",		//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "Four Sigma",					//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "NWO",							//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "Blade Industries",				//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "OmniTek Incorporated",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "Bachman & Associates",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "Clarke Incorporated",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k.
-        "Fulcrum Secret Technologies", 	//Have 500K reputation, Backdooring company server reduces faction requirement to 400K.
+        "ECorp",						//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "MegaCorp",						//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "KuaiGong International",		//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "Four Sigma",					//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "NWO",							//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "Blade Industries",				//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "OmniTek Incorporated",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "Bachman & Associates",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "Clarke Incorporated",			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
+        "Fulcrum Secret Technologies", 	//Have 500K reputation, Backdooring company server reduces faction requirement to 400K
         "Slum Snakes",					//All Combat Stats of 30, -9 Karma, $1m
         "Tetrads",						//Be in Chongqing, New Tokyo, or Ishima, All Combat Stats of 75, -18 Karma
         "Silhouette",					//CTO, CFO, or CEO of a company, $15m, -22 Karma
@@ -138,11 +137,11 @@ export function getFactionNames(ns) {
 }
 
 /** @param {NS} ns */
-export function getFactionServer(ns, factionName) {
+export function getFactionServer(ns, faction) {
 
-    //returns (string) the corresponding server for a faction
+    //returns (string) the faction corresponding server
 
-    switch (factionName) {
+    switch (faction) {
         case "CyberSec": { return "CSEC" }
         case "NiteSec": { return "avmnite-02h" }
         case "The Black Hand": { return "I.I.I.I" }
