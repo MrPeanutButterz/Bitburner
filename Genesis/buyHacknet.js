@@ -28,7 +28,7 @@ export async function main(ns) {
 	while (true) {
 		await ns.sleep(speed.medium)
 
-		for (var i = 0; i < maxNode; i++) {
+		for (var i = 0; i < ns.hacknet.numNodes(); i++) {
 
 			//buy nodes
 			if (ns.hacknet.numNodes() < maxNode) {
