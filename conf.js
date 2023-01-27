@@ -24,6 +24,9 @@ export function getScriptsPath(ns) {
 
     const path = {
 
+        //ROOT
+        main: "/main.js",
+
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",
         serverExploid: "/Genesis/serverExploid.js",
@@ -31,9 +34,9 @@ export function getScriptsPath(ns) {
         serverGrow: "/Genesis/serverGrow.js",
         serverHack: "/Genesis/serverHack.js",
         netStumbler: "/Genesis/netStumbler.js",
-        netSparker: "/Genesis/netSparker.js",
-        metaSploit: "/Genesis/metaSploit.js",
-        stockmarket: "/Genesis/stockMarket.js",
+        //netSparker: "/Genesis/netSparker.js",
+        //metaSploit: "/Genesis/metaSploit.js",
+        //stockmarket: "/Genesis/stockMarket.js",
 
         //SINGULARITY
         buyCore: "/Singularity/buyCore.js",
@@ -46,7 +49,7 @@ export function getScriptsPath(ns) {
         installation: "/Singularity/installation.js",
 
         //CORPORATOCTACY
-        runCorporation: "/Corporatocracy/Corporation.js",
+        //runCorporation: "/Corporatocracy/Corporation.js",
 
     }
     return path
@@ -100,7 +103,6 @@ export function getFactionNames(ns) {
     //returns (string array) a list of all factions
 
     const list = [
-
         "Netburners",					//Hacking Level 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
         "Tian Di Hui",					//$1m & Hacking Level 50 & Be in Chongqing, New Tokyo, or Ishima
         "Sector-12",					//Be in Sector-12 & $15m
