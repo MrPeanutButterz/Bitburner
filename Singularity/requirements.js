@@ -30,9 +30,9 @@ export async function main(ns) {
         //display current faction, server, action
 
         ns.clearLog()
-        ns.print("Faction: " + faction)
-        ns.print("Server: " + server)
-        ns.print("Current action: " + action)
+        ns.print("Faction: \t" + faction)
+        ns.print("Server: \t" + server)
+        ns.print("Action: \t" + action)
     }
 
     function checkInvitations(faction) {
@@ -57,8 +57,7 @@ export async function main(ns) {
 
         if (ns.getPlayer().city !== gymLocation) {
 
-            displayStatus(faction, factionServer, "traveling to " + gymLocation)
-            if (ns.getPlayer().money > ticket) { ns.singularity.travelToCity(gymLocation) }
+            travelTo(gymLocation)
 
         } else {
 
@@ -94,50 +93,63 @@ export async function main(ns) {
         }
     }
 
+    function travelTo(somewhere) {
+
+        //travel to a place
+
+        if (ns.getPlayer().city !== somewhere) {
+
+            displayStatus(faction, factionServer, "traveling to " + somewhere)
+
+            if (ns.getPlayer().money > ticket) {
+                ns.singularity.travelToCity(somewhere)
+            }
+        }
+    }
+
+    function backdoorServer() {
+
+    }
+
     //\\ MAIN LOGICA
     if (faction === "Netburners") {
-
-        //Hacking Level 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
 
         while (true) {
             await ns.sleep(speed.medium)
 
             if (ns.hacknet.numNodes() < 4) {
-                if (!ns.scriptRunning(script.buyHacknet, "home")) {
-                    ns.run(script.buyHacknet, 1, 4, 25, 2, 1)
-                }
+
+                displayStatus(faction, factionServer, "buying hacknet nodes")
+                if (!ns.scriptRunning(script.buyHacknet, "home")) { ns.run(script.buyHacknet, 1, 4, 25, 2, 1) }
+
+            } else {
+
+                checkInvitations(faction)
+
             }
-
-            checkInvitations(faction)
-
         }
 
     } else if (faction == "CyberSec" || faction == "NiteSec" || faction == "The Black Hand" || faction == "BitRunners") {
-
-        //Install a backdoor on the CSEC server
-        //Install a backdoor on the avmnite-02h server
-        //Install a backdoor on the I.I.I.I server
-        //Install a backdoor on the run4theh111z server
 
         while (true) {
             await ns.sleep(speed.medium)
 
             if (ns.getPlayer().skills.hacking < ns.getServerRequiredHackingLevel(factionServer)) {
 
-                displayStatus(faction, factionServer, "Awaiting hack level")
+                displayStatus(faction, factionServer, "awaiting hack level")
 
             } else if (getProgramCount(ns) < ns.getServerNumPortsRequired(factionServer)) {
 
-                displayStatus(faction, factionServer, "Awaiting hack programs")
+                displayStatus(faction, factionServer, "awaiting .exe programs")
 
             } else if (!ns.hasRootAccess(factionServer)) {
 
-                displayStatus(faction, factionServer, "Getting root access")
+                displayStatus(faction, factionServer, "analyzing root access")
                 getRootAccess(ns, factionServer)
 
             } else if (!ns.getServer(factionServer).backdoorInstalled) {
 
-                displayStatus(faction, factionServer, "Installing backdoor")
+                displayStatus(faction, factionServer, "installing backdoor")
                 let serverPath = getServerPath(ns, factionServer)
                 for (let node of serverPath) { ns.singularity.connect(node) }
 
@@ -146,7 +158,6 @@ export async function main(ns) {
 
             } else {
 
-                displayStatus(faction, factionServer, "Awaiting invite")
                 checkInvitations(faction)
 
             }
@@ -154,13 +165,27 @@ export async function main(ns) {
 
     } else if (faction == "Tian Di Hui" || faction == "Sector-12" || faction == "Chongqing" || faction == "New Tokyo" || faction == "Ishima" || faction == "Aevum" || faction == "Volhaven") {
 
-        //$1m & Hacking Level 50 & Be in Chongqing, New Tokyo, or Ishima
-        //Be in Sector-12 & $15m
-        //Be in Chongqing & $20m
-        //Be in New Tokyo & $20m
-        //Be in Ishima & $30m
-        //Be in Aevum & $40m
-        //Be in Volhaven & $50m
+        while (true) {
+            await ns.sleep(speed.medium)
+
+            if (ns.getPlayer().city !== requirement.city) {
+
+                travelTo(requirement.city)
+
+            } else if (ns.getPlayer().skills.hacking < requirement.hacklvl) {
+
+                displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + requirement.hacklvl)
+
+            } else if (ns.getPlayer().money < requirement.money) {
+
+                displayStatus(faction, factionServer, "awaiting money " + Math.round(ns.getPlayer().money) + "/" + requirement.money)
+
+            } else {
+
+                checkInvitations(faction)
+
+            }
+        }
 
     } else if (faction == "ECorp" || faction == "MegaCorp" || faction == "KuaiGong International" || faction == "Four Sigma" || faction == "NWO" || faction == "Blade Industries" || faction == "OmniTek Incorporated" || faction == "Bachman & Associates" || faction == "Clarke Incorporated" || faction == "Fulcrum Secret Technologies") {
 
@@ -181,13 +206,6 @@ export async function main(ns) {
         //invite
 
     } else if (faction == "Slum Snakes" || faction == "Tetrads" || faction == "Silhouette" || faction == "Speakers for the Dead" || faction == "The Dark Army" || faction == "The Syndicate") {
-
-        //All Combat Stats of 30, -9 Karma, $1m
-        //Be in Chongqing, New Tokyo, or Ishima, All Combat Stats of 75, -18 Karma
-        //CTO, CFO, or CEO of a company, $15m, -22 Karma
-        //Hacking Level 100, All Combat Stats of 300, 30 People Killed, -45 Karma, Not working for CIA or NSA
-        //Hacking Level 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
-        ///Hacking Level 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
 
         while (true) {
             await ns.sleep(speed.medium)
@@ -219,11 +237,13 @@ export async function main(ns) {
 
             } else if (faction === "Silhouette") {
 
-                //siluette
-                //backdoor
-                //CEO
+                //if statment must also have !CEO argument
+                //make a work function that also works for mega corps 
 
-                //make a work function
+                //CTO, CFO, or CEO of a company, $15m, -22 Karma
+
+                //backdoor corp server
+                //work en become CEO
 
                 ns.tprint("update the requirements script!!! -> @Silhouette")
 
@@ -250,4 +270,5 @@ export async function main(ns) {
         ns.toast("Error: faction unknown", "error", 10000)
 
     }
+    ns.closeTail()
 }

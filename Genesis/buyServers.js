@@ -40,36 +40,44 @@ export async function main(ns) {
 		for (let i = 0; i <= ns.getPurchasedServerLimit();) {
 			await ns.sleep(speed.medium)
 
-			let server = "Index - " + i
+			let server = "Indexer-" + i
 
 			//buy or replace servers
-			if (ns.serverExists(server) == false) {
+			if (!ns.serverExists(server)) {
 
 				if (ns.getPlayer().money > ns.getPurchasedServerCost(baseRam)) {
+
 					ns.purchaseServer(server, baseRam)
 					ns.print("PURCHASED " + server + " " + baseRam + "GB")
 					i++
+
 				} else {
+
 					ns.clearLog()
-					ns.print("insufficient funds\n" + server + " is being installed " + baseRam + "GB")
+					ns.print("insufficient funds\n" + server + " is awaiting money " + baseRam + "GB")
 					await ns.sleep(speed.medium)
+
 				}
 
 			} else if (ns.getServerMaxRam(server) >= baseRam) {
 
-				i++
 				ns.print(server + " is already has at least " + baseRam + "GB")
+				i++
 
 			} else if (ns.getServerMaxRam(server) < maxRam) {
 
 				if (ns.getPlayer().money > ns.getPurchasedServerUpgradeCost(server, baseRam)) {
+
 					ns.upgradePurchasedServer(server, baseRam)
-					ns.print(server + " is upgraded to " + baseRam + "GB")
+					ns.print("UPGRADE " + server + " " + baseRam + "GB")
 					i++
+
 				} else {
+
 					ns.clearLog()
 					ns.print("insufficient funds\n" + server + " is awaiting upgrade " + baseRam + "GB")
 					await ns.sleep(speed.medium)
+
 				}
 
 			}

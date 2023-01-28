@@ -25,7 +25,7 @@ export function getScriptsPath(ns) {
     const path = {
 
         //ROOT
-        main: "/main.js",
+        main: "main.js",
 
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",
