@@ -160,7 +160,7 @@ export function getFactionShopList(ns, faction) {
 	//returns (array) an orderd list based on price from hi / low, with pre installs before the required augmentation
 
 	let f_augmentations = ns.singularity.getAugmentationsFromFaction(faction)
-	let p_augmentations = ns.singularity.getOwnedAugmentations(false)
+	let p_augmentations = ns.singularity.getOwnedAugmentations(true)
 
 	for (let i = 0; i < p_augmentations.length; i++) {
 
