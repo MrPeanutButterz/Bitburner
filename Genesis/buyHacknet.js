@@ -23,7 +23,12 @@ export async function main(ns) {
 	if (maxLevel === undefined) { maxLevel = 25 }
 	if (maxRam === undefined) { maxRam = 2 }
 	if (maxCore === undefined) { maxCore = 1 }
-	
+
+	if (maxNode > 30) { maxNode = ns.hacknet.maxNumNodes() }
+	if (maxLevel > 200) { maxLevel = 200 }
+	if (maxRam > 64) { maxRam = 64 }
+	if (maxCore > 16) { maxCore = 16 }
+
 	//\\ MAIN LOGICA
 	while (true) {
 		await ns.sleep(speed.superFast)
