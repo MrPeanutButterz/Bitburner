@@ -19,16 +19,22 @@ export async function main(ns) {
 	let maxRam = ns.args[2]
 	let maxCore = ns.args[3]
 
-	if (maxNode === null) { maxNode = 4 }
-	if (maxLevel === null) { maxLevel = 25 }
-	if (maxRam === null) { maxRam = 2 }
-	if (maxCore === null) { maxCore = 1 }
-
+	if (maxNode === undefined) { maxNode = 4 }
+	if (maxLevel === undefined) { maxLevel = 25 }
+	if (maxRam === undefined) { maxRam = 2 }
+	if (maxCore === undefined) { maxCore = 1 }
+	
 	//\\ MAIN LOGICA
 	while (true) {
-		await ns.sleep(speed.medium)
+		await ns.sleep(speed.superFast)
 
-		for (var i = 0; i < ns.hacknet.numNodes(); i++) {
+		if (ns.hacknet.numNodes() === 0) {
+			if (ns.getPlayer().money > ns.hacknet.getPurchaseNodeCost()) {
+				ns.hacknet.purchaseNode();
+			}
+		}
+
+		for (let i = 0; i < ns.hacknet.numNodes(); i++) {
 
 			//buy nodes
 			if (ns.hacknet.numNodes() < maxNode) {
