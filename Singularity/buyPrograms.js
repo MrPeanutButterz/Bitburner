@@ -31,7 +31,7 @@ export async function main(ns) {
 		} else {
 
 			ns.print("To create " + programs[i] + " hack level " + levels[i] + " is needed")
-			
+
 		}
 
 		//if the program does not exist

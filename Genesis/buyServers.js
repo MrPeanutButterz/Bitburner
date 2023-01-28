@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: buys en/or replace servers */
 
-import { getSleepTime } from "./conf.js"
+import { getSleepTime } from "./Default/config.js"
 
 /** @param {NS} ns */
 export async function main(ns) {

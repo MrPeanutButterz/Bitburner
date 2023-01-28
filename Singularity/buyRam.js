@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: keeps buying more home ram */
 
-import { getSleepTime } from "./conf.js"
+import { getSleepTime } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -26,7 +26,7 @@ export async function main(ns) {
 		} else {
 
 			ns.print(Math.round(ns.getPlayer().money / ns.singularity.getUpgradeHomeRamCost() * 100) + "% until ram upgrade")
-			
+
 		}
 	}
 }

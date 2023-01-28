@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: functions used across all scripts */
 
-import { getScriptsPath } from "./conf.js"
+import { getScriptsPath } from "./config.js"
 
 /** @param {NS} ns */
 export function networkScanner(ns) {
@@ -156,7 +156,7 @@ export function checkStockAccounts(ns) {
 
 /** @param {NS} ns */
 export function getFactionShopList(ns, faction) {
-    
+
 	//returns (array) an orderd list based on price from hi / low, with pre installs before the required augmentation
 
 	let f_augmentations = ns.singularity.getAugmentationsFromFaction(faction)
@@ -170,7 +170,7 @@ export function getFactionShopList(ns, faction) {
 	}
 
 	f_augmentations.sort(function (a, b) { return a.price - b.price })
-	
+
 	let buyList = []
 	for (let item of f_augmentations) {
 

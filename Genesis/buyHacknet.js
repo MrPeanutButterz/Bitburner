@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: This script runs with 4 arguments, 1:max nodes, 2:max levels, 3:max ram, 4: max cores. */
 
-import { getSleepTime } from "./conf.js"
+import { getSleepTime } from "./Default/config.js"
 
 /** @param {NS} ns */
 export async function main(ns) {

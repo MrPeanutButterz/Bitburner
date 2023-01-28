@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: keeps buying more home cores */
 
-import { getSleepTime } from "./conf.js"
+import { getSleepTime } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
