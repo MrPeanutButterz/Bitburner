@@ -37,7 +37,7 @@ export async function main(ns) {
 		await ns.sleep(speed.medium)
 		ns.clearLog()
 
-		for (let i = 0; i < ns.getPurchasedServerLimit();) {
+		for (let i = 0; i <= ns.getPurchasedServerLimit();) {
 			await ns.sleep(speed.medium)
 
 			let server = "server-node-" + i
