@@ -1,9 +1,9 @@
 # Bitburner
 
-These are the scripts I wrote for the Bitburner Game. Before I started this game I couldn't write in code. I found out that I really enjoy coding so I went to school to learn it even better.
+These are the scripts I wrote for the Bitburner Game. Before I started this game I couldn't write in code.
 
 
-## ROOT
+## Default
 
 `conf.js`
 

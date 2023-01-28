@@ -40,7 +40,7 @@ export async function main(ns) {
 		for (let i = 0; i <= ns.getPurchasedServerLimit();) {
 			await ns.sleep(speed.medium)
 
-			let server = "server-node-" + i
+			let server = "Index - " + i
 
 			//buy or replace servers
 			if (ns.serverExists(server) == false) {

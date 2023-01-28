@@ -158,6 +158,7 @@ export function getFactionServer(ns, faction) {
         case "Bachman & Associates": { return "b-and-a" }
         case "Clarke Incorporated": { return "clarkinc" }
         case "Fulcrum Secret Technologies": { return "fulcrumassets" }
+        default: { return "Unknown" }
     }
 }
 
@@ -167,21 +168,21 @@ export function getFactionStats(ns, faction) {
     //returns (array) with stats required
 
     switch (faction) {
-        case "Tian Di Hui": { return { money: 1000000, location: "Chongqing", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Sector-12": { return { money: 15000000, location: "Sector-12", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Chongqing": { return { money: 20000000, location: "Chongqing", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "New Tokyo": { return { money: 20000000, location: "New Tokyo", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Ishima": { return { money: 30000000, location: "Ishima", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Aevum": { return { money: 40000000, location: "Aevum", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Volhaven": { return { money: 50000000, location: "Volhaven", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
-        case "Slum Snakes": { return { money: 1000000, location: ns.getPlayer().city, hacklvl: 0, strength: 30, defense: 30, dexterity: 30, agility: 30, charisma: 0, karma: -9, kills: 0 } }
-        case "Tetrads": { return { money: 0, location: "Ishima", hacklvl: 0, strength: 75, defense: 75, dexterity: 75, agility: 75, charisma: 0, karma: -18, kills: 9 } }
-        case "Silhouette": { return { money: 15000000, location: ns.getPlayer().city, hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 300, karma: -22, kills: 0 } }
-        case "Speakers for the Dead": { return { money: 15000000, location: ns.getPlayer().city, hacklvl: 100, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 30 } }
-        case "The Dark Army": { return { money: 0, location: "Chongqing", hacklvl: 300, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 5 } }
-        case "The Syndicate": { return { money: 10000000, location: "Sector-12", hacklvl: 300, strength: 200, defense: 200, dexterity: 200, agility: 200, charisma: 0, karma: -90, kills: 5 } }
-        case "The Covenant": { return { money: 75000000, location: ns.getPlayer().city, hacklvl: 850, strength: 850, defense: 850, dexterity: 850, agility: 850, charisma: 0, karma: 0, kills: 0 } }
-        case "Daedalus": { return { money: 100000000, location: ns.getPlayer().city, hacklvl: 2500, strength: 1500, defense: 1500, dexterity: 1500, agility: 1500, charisma: 0, karma: 0, kills: 0 } }
-        case "Illuminati": { return { money: 1500000000, location: ns.getPlayer().city, hacklvl: 1500, strength: 1200, defense: 1200, dexterity: 1200, agility: 1200, charisma: 0, karma: 0, kills: 0 } }
+        case "Tian Di Hui": { return { money: 1000000, city: "Chongqing", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Sector-12": { return { money: 15000000, city: "Sector-12", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Chongqing": { return { money: 20000000, city: "Chongqing", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "New Tokyo": { return { money: 20000000, city: "New Tokyo", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Ishima": { return { money: 30000000, city: "Ishima", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Aevum": { return { money: 40000000, city: "Aevum", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Volhaven": { return { money: 50000000, city: "Volhaven", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
+        case "Slum Snakes": { return { money: 1000000, city: ns.getPlayer().city, hacklvl: 0, strength: 30, defense: 30, dexterity: 30, agility: 30, charisma: 0, karma: -9, kills: 0 } }
+        case "Tetrads": { return { money: 0, city: "Ishima", hacklvl: 0, strength: 75, defense: 75, dexterity: 75, agility: 75, charisma: 0, karma: -18, kills: 9 } }
+        case "Silhouette": { return { money: 15000000, city: ns.getPlayer().city, hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 300, karma: -22, kills: 0 } }
+        case "Speakers for the Dead": { return { money: 15000000, city: ns.getPlayer().city, hacklvl: 100, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 30 } }
+        case "The Dark Army": { return { money: 0, city: "Chongqing", hacklvl: 300, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 5 } }
+        case "The Syndicate": { return { money: 10000000, city: "Sector-12", hacklvl: 300, strength: 200, defense: 200, dexterity: 200, agility: 200, charisma: 0, karma: -90, kills: 5 } }
+        case "The Covenant": { return { money: 75000000, city: ns.getPlayer().city, hacklvl: 850, strength: 850, defense: 850, dexterity: 850, agility: 850, charisma: 0, karma: 0, kills: 0 } }
+        case "Daedalus": { return { money: 100000000, city: ns.getPlayer().city, hacklvl: 2500, strength: 1500, defense: 1500, dexterity: 1500, agility: 1500, charisma: 0, karma: 0, kills: 0 } }
+        case "Illuminati": { return { money: 1500000000, city: ns.getPlayer().city, hacklvl: 1500, strength: 1200, defense: 1200, dexterity: 1200, agility: 1200, charisma: 0, karma: 0, kills: 0 } }
     }
 }

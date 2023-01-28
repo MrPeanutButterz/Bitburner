@@ -74,7 +74,7 @@ export async function main(ns) {
         ns.clearLog()
         ns.print("Hacking contracts for: \t\t" + faction)
         ns.print("Reputation needed: \t\t" + Math.round(ns.singularity.getFactionRep(faction)) + "/" + reputation)
-        ns.print("Total time estimate: \t\t\t" + msToTime(timeToAugmentation * 1000))
+        ns.print("Total time estimate: \t\t" + msToTime(timeToAugmentation * 1000))
 
         let procentDone = ns.singularity.getFactionRep(faction) / reputation * 100
         ns.print("Completed: \t\t\t" + procentDone.toPrecision(4) + "%")
