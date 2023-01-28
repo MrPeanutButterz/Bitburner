@@ -94,10 +94,12 @@ When the selected faction has send an invitation it will be accepted en control 
 `reputation.js`
 
 When findFaction.js starts reputation.js it is run with an argument (faction name).
-First it will do a 10 second test run to get a time estemate to get an indication on the finish time.
+First it will do a 10 second test run to get a time estemate for an indication on the finish time.
 If the required reputation is reached the script will go back to findFaction.js.
 
 `installation.js`
 
 The last part will be the installation, it will get all augmentations from the faction en list them from price high / low.
 If an augmentation needs a pre install it will be listed before the actual augmentation. 
+When all augmentations are bought, money left will be spend on Neuroflux. 
+All will be installed en the main.js script will be run te reboot the procces.
