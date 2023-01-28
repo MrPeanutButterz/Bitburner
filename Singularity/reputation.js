@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz
 Proces: start working on reputation */
 
-import { getScriptsPath, getSleepTime } from "./conf.js"
+import { getScriptsPath, getSleepTime } from "./Default/config.js"
 
 export async function main(ns) {
 
@@ -17,14 +17,14 @@ export async function main(ns) {
 
     let faction = ns.args[0]
     let reputation = ns.args[1]
-    
+
     let testRunTime = 10
     let task = "Hacking contracts"
     if (faction === "Silhouette" || faction === "Slum Snakes") { task = "Field work" }
-    
+
     //get initial reputation
     let initialReputation = ns.singularity.getFactionRep(faction)
-    
+
     //start run
     ns.singularity.stopAction()
     ns.print("Test run duration: \t" + testRunTime + " sec")

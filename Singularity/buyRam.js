@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: keeps buying more home ram */
 
-import { getSleepTime } from "./Default/library.js"
+import { getSleepTime } from "./Default/config.js"
 
 /** @param {NS} ns */
 export async function main(ns) {

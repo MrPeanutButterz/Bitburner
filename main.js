@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: this script controls all scripts based on what is needed for next goal */
 
-import { getScriptsPath, getSleepTime } from "./Default/config.js"
+import { getSleepTime, getScriptsPath } from "./Default/config.js"
 import { getProgramCount } from "./Default/library.js"
 
 /** @param {NS} ns */

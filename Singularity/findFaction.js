@@ -1,8 +1,8 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Analasys: finds the best faction to work for by sorting on the highest augmentation reputation */
 
-import { getScriptsPath, getFactionNames } from "./conf.js"
-import { getFactionShopList } from "./lib.js"
+import { getScriptsPath, getFactionNames } from "./Default/config.js"
+import { getFactionShopList } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -80,23 +80,23 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
     let faction = bestFaction()
-    
+
     if (faction.name != undefined) {
-        
+
         if (!accepted(faction.name)) {
-            
+
             //run requirements
             ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run requirements")
             ns.run(script.requirements, 1, faction.name)
-            
+
         } else if (Math.floor(ns.singularity.getFactionRep(faction.name)) < faction.reputation) {
-            
+
             //run reputation 
             ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run reputation")
             ns.run(script.reputation, 1, faction.name, faction.reputation)
-            
+
         } else {
-            
+
             //run install
             ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run installation")
             ns.run(script.installation, 1, faction.name)

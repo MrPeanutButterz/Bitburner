@@ -1,8 +1,8 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz
 Proces: completes requirements for any faction */
 
-import { getSleepTime, getScriptsPath, getFactionServer, getFactionStats } from "./conf.js"
-import { getProgramCount, getRootAccess, getServerPath } from "./lib.js"
+import { getSleepTime, getScriptsPath, getFactionServer, getFactionStats } from "./Default/config.js"
+import { getProgramCount, getRootAccess, getServerPath } from "./Default/library.js"
 
 export async function main(ns) {
 
@@ -118,6 +118,7 @@ export async function main(ns) {
 
         //pump stats
         ns.print(factionStats)
+        ns.print(factionServer)
         //invite
 
     } else if (faction == "The Covenant" || faction == "Daedalus" || faction == "Illuminati") {

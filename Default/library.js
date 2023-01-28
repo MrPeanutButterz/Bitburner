@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: functions used across all scripts */
 
-import { getScriptsPath } from "./config.js"
+import { getScriptsPath } from "./Default/config.js"
 
 /** @param {NS} ns */
 export function networkScanner(ns) {

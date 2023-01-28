@@ -1,8 +1,8 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz
 Proces: buys the augmentation for a faction en spends money left on Neuroflux, installs en start main.js */
 
-import { getSleepTime, getScriptsPath } from "./conf.js"
-import { getFactionShopList } from "./lib.js"
+import { getSleepTime, getScriptsPath } from "./Default/config.js"
+import { getFactionShopList } from "./Default/library.js"
 
 export async function main(ns) {
 
