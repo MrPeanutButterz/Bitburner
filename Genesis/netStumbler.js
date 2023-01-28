@@ -7,8 +7,6 @@ import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts 
 /** @param {NS} ns **/
 export async function main(ns) {
 
-    //bug: if servers are updated to more ram netstumbler wont install more threads 
-
     //\\ SCRIPT SETTINGS
     ns.toast("netStumbler online", "success", 2000)
     ns.disableLog("ALL")
@@ -17,7 +15,7 @@ export async function main(ns) {
     //\\ GENERAL DATA
     let script = getScriptsPath(ns)
     let speed = getSleepTime(ns)
-    let target = ns.args[0]
+    let target = "n00dles"
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function execScript(thisServer) {
@@ -52,26 +50,28 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
-    if (target == null) { target = hackThisServer() }
-
+    
     while (true) {
         await ns.sleep(speed.medium)
-
-        //list all servers
+        
         let servers = getServersWithRam(ns)
         for (let server of servers) {
+            
+            if (target !== hackThisServer()) {
 
-            //get access en copy scripts en start hacking
-            if (!ns.hasRootAccess(server)) {
-
+                ns.killall(server)
+                
+            } else if (!ns.hasRootAccess(server)) {
+                
                 getRootAccess(ns, server)
-
+                
             } else if (!ns.isRunning(script.serverExploid, server, target)) {
-
+                
                 copyHackScripts(ns, server)
                 execScript(server)
-
+                
             }
         }
+        target = hackThisServer()
     }
 }
