@@ -21,11 +21,11 @@ export async function main(ns) {
     function execScript(thisServer) {
 
         //calculate threads
-        let threads = Math.floor(ns.getServerMaxRam(thisServer) / ns.getScriptRam(script.serverExploid))
+        let threads = Math.floor((ns.getServerMaxRam(thisServer) - ns.getServerUsedRam(thisServer)) / ns.getScriptRam(script.serverExploid))
 
         if (threads >= 1) {
 
-            ns.killall(thisServer)
+            //ns.killall(thisServer)
             ns.exec(script.serverExploid, thisServer, threads, target)
         }
     }
@@ -50,14 +50,16 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
-
     while (true) {
         await ns.sleep(speed.medium)
 
         let servers = getServersWithRam(ns)
+
         for (let server of servers) {
 
-            if (target !== hackThisServer()) {
+            copyHackScripts(ns, server)
+
+            if (ns.getRunningScript(script.serverExploid, serv, hackThisServer()).args[0] !== target) {
 
                 ns.killall(server)
 
@@ -65,9 +67,8 @@ export async function main(ns) {
 
                 getRootAccess(ns, server)
 
-            } else if (!ns.isRunning(script.serverExploid, server, target)) {
+            } else {
 
-                copyHackScripts(ns, server)
                 execScript(server)
 
             }
