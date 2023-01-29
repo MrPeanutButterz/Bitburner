@@ -18,8 +18,8 @@ export async function main(ns) {
 	let speed = getSleepTime(ns)
 	let purchaseLimit = ns.getPurchasedServerLimit()
 
-	if (baseRam === undefined) { baseRam = 4}
-	if (maxRam === undefined) { maxRam = ns.getPurchasedServerMaxRam()}
+	if (baseRam === undefined) { baseRam = 4 }
+	if (maxRam === undefined) { maxRam = ns.getPurchasedServerMaxRam() }
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function serverPoolSize() {
@@ -38,7 +38,7 @@ export async function main(ns) {
 	}
 
 	function displayStatus(s, r, action) {
-		ns.print(s + " " + r + "GB \t" + action)
+		ns.print(s + " " + r + "GB " + action)
 	}
 
 	//\\ MAIN LOGICA

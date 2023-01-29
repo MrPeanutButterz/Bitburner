@@ -172,7 +172,7 @@ export function getFactionStats(ns, faction) {
         case "Aevum": { return { money: 40000000, city: "Aevum", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
         case "Volhaven": { return { money: 50000000, city: "Volhaven", hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 0, karma: 0, kills: 0 } }
         case "Slum Snakes": { return { money: 1000000, city: ns.getPlayer().city, hacklvl: 0, strength: 30, defense: 30, dexterity: 30, agility: 30, charisma: 0, karma: -9, kills: 0 } }
-        case "Tetrads": { return { money: 0, city: "Ishima", hacklvl: 0, strength: 75, defense: 75, dexterity: 75, agility: 75, charisma: 0, karma: -18, kills: 9 } }
+        case "Tetrads": { return { money: 0, city: "Ishima", hacklvl: 0, strength: 75, defense: 75, dexterity: 75, agility: 75, charisma: 75, karma: -18, kills: 9 } }
         case "Silhouette": { return { money: 15000000, city: ns.getPlayer().city, hacklvl: 0, strength: 0, defense: 0, dexterity: 0, agility: 0, charisma: 300, karma: -22, kills: 0 } }
         case "Speakers for the Dead": { return { money: 15000000, city: ns.getPlayer().city, hacklvl: 100, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 30 } }
         case "The Dark Army": { return { money: 0, city: "Chongqing", hacklvl: 300, strength: 300, defense: 300, dexterity: 300, agility: 300, charisma: 0, karma: -45, kills: 5 } }

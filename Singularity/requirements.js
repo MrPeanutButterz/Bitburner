@@ -2,7 +2,7 @@
 Proces: completes requirements for any faction */
 
 import { getSleepTime, getScriptsPath, getFactionServer, getFactionStats } from "./Default/config.js"
-import { getProgramCount, getRootAccess, getServerPath, getProgramCount } from "./Default/library.js"
+import { getProgramCount, getRootAccess, getServerPath } from "./Default/library.js"
 
 export async function main(ns) {
 
@@ -40,6 +40,8 @@ export async function main(ns) {
     function checkInvitations(faction) {
 
         //returns (boolean) if the best faction has sent an invite 
+
+        ns.singularity.stopAction()
 
         let list = ns.singularity.checkFactionInvitations()
         let found = list.find(element => element == faction)
@@ -85,8 +87,8 @@ export async function main(ns) {
 
             } else if (ns.getPlayer().skills.charisma < requirement.charisma) {
 
-                displayStatus(faction, factionServer, "working on charisma" + ns.getPlayer().skills.charisma + "/" + requirement.charisma)
-                ns.singularity.gymWorkout(gym, "charisma", false)
+                displayStatus(faction, factionServer, "working on charisma " + ns.getPlayer().skills.charisma + "/" + requirement.charisma)
+                studyAtSchool(requirement.charisma)
 
             } else {
 
@@ -109,7 +111,7 @@ export async function main(ns) {
         }
     }
 
-    function studyAtSchool() {
+    function studyAtSchool(maxCharisma) {
 
         //go to school to study en pump charisma
 
@@ -117,7 +119,7 @@ export async function main(ns) {
 
             travelTo(gymLocation)
 
-        } else if (ns.getPlayer().skills.charisma < 300) {
+        } else if (ns.getPlayer().skills.charisma < maxCharisma) {
 
             displayStatus(faction, factionServer, "leadership course at Rothman University")
             ns.singularity.universityCourse("Rothman University", "Leadership", false)
@@ -206,17 +208,8 @@ export async function main(ns) {
         //Have 400K reputation at all mega corporations, Backdooring company server reduces faction requirement to 300k
         //Have 500K reputation at Fulcrum Secret Technologies, Backdooring company server reduces faction requirement to 400K
 
-        //hack levelx
-        //number programsx
-        //get root accessx
-        //install backdoorx
-
-        //study leadership in sector 12
-
         //apply for job
         //work until CEO
-
-        //invite
 
         while (true) {
 
@@ -244,11 +237,13 @@ export async function main(ns) {
 
             } else if (ns.getPlayer().skills.charisma < 300) {
 
-                studyAtSchool()
+                studyAtSchool(300)
 
-            } else if () {
+            } else if (1 == 2) {
 
-                //work
+                //apply for job
+                //work until CEO
+                ns.tprint("update the requirements script!!! -> @Mega Corp")
 
             } else {
 
@@ -286,6 +281,10 @@ export async function main(ns) {
                     await ns.sleep(ns.singularity.getCrimeStats("Homicide").time + 1000)
 
                 }
+
+            } else if (ns.getPlayer().city !== requirement.city) {
+
+                travelTo(requirement.city)
 
             } else if (faction === "Silhouette") {
 

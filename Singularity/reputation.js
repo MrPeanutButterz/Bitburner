@@ -22,7 +22,7 @@ export async function main(ns) {
 
     let testRunTime = 10
     let task = "Hacking contracts"
-    if (faction === "Silhouette" || faction === "Slum Snakes") { task = "Field work" }
+    if (faction === "Silhouette" || faction === "Slum Snakes" || faction === "Tetrads") { task = "Field work" }
 
     //get initial reputation
     let initialReputation = ns.singularity.getFactionRep(faction)
