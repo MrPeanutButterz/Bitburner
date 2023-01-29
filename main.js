@@ -35,8 +35,10 @@ export async function main(ns) {
 
 		//checks if the basic programs are available
 
-		let program = getProgramCount(ns)
-		if (program < 5) { runScript(script.buyPrograms) }
+		if (getProgramCount(ns) < 5) { 
+
+			runScript(script.buyPrograms) 
+		}
 	}
 
 	function singularity() {

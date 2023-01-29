@@ -9,7 +9,7 @@ export function getSleepTime(ns) {
 
         superFast: 50,
         fast: 200,
-        average: 400,
+        average: 600,
         medium: 1000,
         slow: 2000,
         superSlow: 5000,
@@ -34,6 +34,7 @@ export function getScriptsPath(ns) {
         serverWeak: "/Genesis/serverWeak.js",
         serverGrow: "/Genesis/serverGrow.js",
         serverHack: "/Genesis/serverHack.js",
+
         netStumbler: "/Genesis/netStumbler.js",
 
         //SINGULARITY

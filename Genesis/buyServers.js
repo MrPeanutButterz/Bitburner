@@ -18,6 +18,9 @@ export async function main(ns) {
 	let speed = getSleepTime(ns)
 	let purchaseLimit = ns.getPurchasedServerLimit()
 
+	if (baseRam === undefined) { baseRam = 4}
+	if (maxRam === undefined) { maxRam = ns.getPurchasedServerMaxRam()}
+
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function serverPoolSize() {
 
@@ -40,12 +43,12 @@ export async function main(ns) {
 
 	//\\ MAIN LOGICA
 	while (serverPoolSize() < maxRam * 24) {
-		await ns.sleep(speed.medium)
+		await ns.sleep(speed.average)
 		ns.clearLog()
 
-		for (let i = 0; i <= purchaseLimit;) {
+		for (let i = 1; i <= purchaseLimit;) {
 
-			let server = "Index-" + i
+			let server = "Heavy-indexer-" + i
 
 			//buy or replace servers
 			if (!ns.serverExists(server)) {
@@ -60,7 +63,7 @@ export async function main(ns) {
 
 					ns.clearLog()
 					displayStatus(server, baseRam, "insufficient funds for purchase")
-					await ns.sleep(speed.medium)
+					await ns.sleep(speed.average)
 
 				}
 
@@ -81,7 +84,7 @@ export async function main(ns) {
 
 					ns.clearLog()
 					displayStatus(server, baseRam, "insufficient funds for upgrade")
-					await ns.sleep(speed.medium)
+					await ns.sleep(speed.average)
 
 				}
 

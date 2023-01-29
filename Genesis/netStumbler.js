@@ -15,7 +15,6 @@ export async function main(ns) {
     //\\ GENERAL DATA
     let script = getScriptsPath(ns)
     let speed = getSleepTime(ns)
-    let target = "n00dles"
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function hackThisServer() {
@@ -64,7 +63,7 @@ export async function main(ns) {
 
             getRootAccess(ns, server)
             copyHackScripts(ns, server)
-            serverCheck(server, thisHack)
+            if (ns.hasRootAccess(server)) { serverCheck(server, thisHack) }
 
         }
     }
