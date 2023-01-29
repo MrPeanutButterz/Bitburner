@@ -1,5 +1,5 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
-Proces: This script finds servers with money, creates a timed package to hack, and installs it on servers that have netRam. */
+Proces: finds servers with money, creates a timed package to hack, and installs it on servers that have ram. */
 
 import { getScriptsPath, getSleepTime } from "./Default/config.js"
 import { getRootAccess, copyHackScripts, getServersWithMoney, getServersWithRam, getTotalNetRam, getUsableNetRam, getUniqueID } from "./Default/library.js"
@@ -12,7 +12,6 @@ export async function main(ns) {
 	ns.toast("netSparker online", "success", 2000)
 	ns.disableLog("ALL")
 	ns.clearLog()
-	ns.tail()
 
 	//\\ GENERAL DATA
 	let speed = getSleepTime(ns)
@@ -51,7 +50,7 @@ export async function main(ns) {
 			return { growth: 1.195, steal: 0.081, defence: 4, chance: 0.6, version: "Advanced", }
 
 		} else {
-			return { growth: 1.327, steal: 0.145, defence: 2, chance: 0.3, version: "Expert", }
+			return { growth: 1.327, steal: 0.145, defence: 2, chance: 0.1, version: "Expert", }
 
 		}
 	}
@@ -116,19 +115,19 @@ export async function main(ns) {
 
 					var dynamic = getDynamicNetwork()
 
-					var fase1 = { // pre security
+					var fase1 = {
 						threads: Math.ceil((ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server) + dynamic.defence) / ns.weakenAnalyze(1)),
 						time: Math.ceil(ns.getWeakenTime(server)),
 					}
-					var fase2 = { // growth
+					var fase2 = {
 						threads: Math.ceil(ns.growthAnalyze(server, dynamic.growth, 1)),
 						time: Math.ceil(ns.getGrowTime(server)),
 					}
-					var fase3 = { // security
+					var fase3 = {
 						threads: Math.ceil(ns.growthAnalyzeSecurity(fase2.threads, server, 1) / ns.weakenAnalyze(1)),
 						time: Math.ceil(ns.getWeakenTime(server)),
 					}
-					var fase4 = { // hacking
+					var fase4 = {
 						threads: Math.ceil(ns.hackAnalyzeThreads(server, (ns.getServerMoneyAvailable(server) * dynamic.steal))),
 						time: Math.ceil(ns.getHackTime(server)),
 					}
@@ -152,12 +151,11 @@ export async function main(ns) {
 					var ramGrow = ns.getScriptRam(script.serverGrow)
 					var ramHack = ns.getScriptRam(script.serverHack)
 
-					//total package ram
 					var fullPackageRam = (fase1.threads * ramWeak) + (fase2.threads * ramGrow) + (fase3.threads * ramWeak) + (fase4.threads * ramHack)
 
 				}
 
-				if (ns.hackAnalyzeChance(server) > 0.8 && getTotalNetRam(ns) > fullPackageRam) {
+				if (ns.hackAnalyzeChance(server) >= dynamic.chance && getTotalNetRam(ns) > fullPackageRam) {
 
 					while (true) {
 
