@@ -86,19 +86,19 @@ export async function main(ns) {
         if (!accepted(faction.name)) {
 
             //run requirements
-            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run requirements")
+            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Fase requirements")
             ns.run(script.requirements, 1, faction.name)
 
         } else if (Math.floor(ns.singularity.getFactionRep(faction.name)) < faction.reputation) {
 
             //run reputation 
-            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run reputation")
+            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Fase reputation")
             ns.run(script.reputation, 1, faction.name, faction.reputation)
 
         } else {
 
             //run install
-            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Run installation")
+            ns.tprint("The best option Faction = " + faction.name + ", Rep = " + faction.reputation + ", Fase installation")
             ns.run(script.installation, 1, faction.name)
 
         }
