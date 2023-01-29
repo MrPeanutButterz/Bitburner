@@ -2,7 +2,7 @@
 Proces: completes requirements for any faction */
 
 import { getSleepTime, getScriptsPath, getFactionServer, getFactionStats } from "./Default/config.js"
-import { getProgramCount, getRootAccess, getServerPath } from "./Default/library.js"
+import { getProgramCount, getRootAccess, getServerPath, getProgramCount } from "./Default/library.js"
 
 export async function main(ns) {
 
@@ -109,8 +109,20 @@ export async function main(ns) {
         }
     }
 
-    function backdoorServer() {
+    function studyAtSchool() {
 
+        //go to school to study en pump charisma
+
+        if (ns.getPlayer().city !== gymLocation) {
+
+            travelTo(gymLocation)
+
+        } else if (ns.getPlayer().skills.charisma < 300) {
+
+            displayStatus(faction, factionServer, "leadership course at Rothman University")
+            ns.singularity.universityCourse("Rothman University", "Leadership", false)
+
+        }
     }
 
     //\\ MAIN LOGICA
@@ -194,18 +206,56 @@ export async function main(ns) {
         //Have 400K reputation at all mega corporations, Backdooring company server reduces faction requirement to 300k
         //Have 500K reputation at Fulcrum Secret Technologies, Backdooring company server reduces faction requirement to 400K
 
-        //hack level
-        //number programs
-        //get root access
-        //install backdoor
+        //hack levelx
+        //number programsx
+        //get root accessx
+        //install backdoorx
 
-        //go to location
         //study leadership in sector 12
 
         //apply for job
         //work until CEO
 
         //invite
+
+        while (true) {
+
+            if (ns.getPlayer().skills.hacking < requirement.hacklvl) {
+
+                displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + requirement.hacklvl)
+
+            } else if (getProgramCount(ns) < ns.getServerNumPortsRequired(targetServer)) {
+
+                displayStatus(faction, factionServer, "awaiting .exe programs")
+
+            } else if (!ns.hasRootAccess(factionServer)) {
+
+                displayStatus(faction, factionServer, "analyzing root access")
+                getRootAccess(ns, factionServer)
+
+            } else if (!ns.getServer(factionServer).backdoorInstalled) {
+
+                displayStatus(faction, factionServer, "installing backdoor")
+                let serverPath = getServerPath(ns, factionServer)
+                for (let node of serverPath) { ns.singularity.connect(node) }
+
+                await ns.singularity.installBackdoor(factionServer)
+                ns.singularity.connect("home")
+
+            } else if (ns.getPlayer().skills.charisma < 300) {
+
+                studyAtSchool()
+
+            } else if () {
+
+                //work
+
+            } else {
+
+                checkInvitations(faction)
+
+            }
+        }
 
     } else if (faction == "Slum Snakes" || faction == "Tetrads" || faction == "Silhouette" || faction == "Speakers for the Dead" || faction == "The Dark Army" || faction == "The Syndicate") {
 
@@ -258,14 +308,31 @@ export async function main(ns) {
 
     } else if (faction == "The Covenant" || faction == "Daedalus" || faction == "Illuminati") {
 
-        //20 Augmentations, $75b, Hacking Level of 850, All Combat Stats of 850
-        //30 Augmentations, $100b, Hacking Level of 2500 OR All Combat Stats of 1500
-        //30 Augmentations, $150b, Hacking Level of 1500, All Combat Stats of 1200
+        while (true) {
+            await ns.sleep(speed.medium)
 
-        //stats
-        //hacklvl
-        //money
-        //num of augmentations
+            if (ns.getPlayer().skills.charisma < requirement.charisma
+                || ns.getPlayer().skills.strength < requirement.strength
+                || ns.getPlayer().skills.defense < requirement.defense
+                || ns.getPlayer().skills.dexterity < requirement.dexterity
+                || ns.getPlayer().skills.agility < requirement.agility) {
+
+                pumpStats()
+
+            } else if (ns.getPlayer().skills.hacking < requirement.hacklvl) {
+
+                displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + requirement.hacklvl)
+
+            } else if (ns.getPlayer().money < requirement.money) {
+
+                displayStatus(faction, factionServer, "awaiting money " + Math.round(ns.getPlayer().money) + "/" + requirement.money)
+
+            } else {
+
+                checkInvitations(faction)
+
+            }
+        }
 
     } else {
 

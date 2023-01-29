@@ -59,7 +59,7 @@ export function getRootAccess(ns, server) {
 	//cracks ports to gain access
 
 	let portsOpen = 0
-	if (ns.hasRootAccess(server) == false) {
+	if (!ns.hasRootAccess(server)) {
 		if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(server); portsOpen++ }
 		if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(server); portsOpen++ }
 		if (ns.fileExists("RelaySMTP.exe", "home")) { ns.relaysmtp(server); portsOpen++ }
@@ -71,6 +71,9 @@ export function getRootAccess(ns, server) {
 
 /** @param {NS} ns */
 export function getProgramCount(ns) {
+
+	//returns the number of programs owned
+
 	var programs = 0
 	if (ns.fileExists("BruteSSH.exe", "home") == true) { programs++ }
 	if (ns.fileExists("FTPCrack.exe", "home") == true) { programs++ }
@@ -89,12 +92,12 @@ export function copyHackScripts(ns, server) {
 	const files = [script.serverExploid, script.serverWeak, script.serverGrow, script.serverHack]
 
 	if (!ns.fileExists(script.serverExploid, server)
-	|| !ns.fileExists(script.serverWeak, server)
-	|| !ns.fileExists(script.serverGrow, server)
-	|| !ns.fileExists(script.serverHack, server)) {
-		
+		|| !ns.fileExists(script.serverWeak, server)
+		|| !ns.fileExists(script.serverGrow, server)
+		|| !ns.fileExists(script.serverHack, server)) {
+
 		ns.scp(files, server, "home")
-		ns.tprint("Files copied to " + server)
+
 	}
 }
 

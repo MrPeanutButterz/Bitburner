@@ -18,18 +18,6 @@ export async function main(ns) {
     let target = "n00dles"
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
-    function execScript(thisServer) {
-
-        //calculate threads
-        let threads = Math.floor((ns.getServerMaxRam(thisServer) - ns.getServerUsedRam(thisServer)) / ns.getScriptRam(script.serverExploid))
-
-        if (threads >= 1) {
-
-            //ns.killall(thisServer)
-            ns.exec(script.serverExploid, thisServer, threads, target)
-        }
-    }
-
     function hackThisServer() {
 
         let list = []
@@ -42,10 +30,26 @@ export async function main(ns) {
             }
         }
 
-        if (list.length === 0) {
-            return "n00dles"
+        if (list.length === 0) { return "n00dles" } else { return list[list.length - 1] }
+
+    }
+
+    function serverCheck(thisServer, thisHack) {
+
+        //checks server on script & ram 
+
+        let avaliableRam = Math.floor(ns.getServerMaxRam(thisServer) - ns.getServerUsedRam(thisServer))
+        let threads = avaliableRam / ns.getScriptRam(script.serverExploid)
+
+        if (!ns.getRunningScript(script.serverExploid, thisServer, thisHack)) {
+
+            ns.killall(thisServer)
+            if (avaliableRam > ns.getScriptRam(script.serverExploid)) { ns.exec(script.serverExploid, thisServer, threads, thisHack) }
+
         } else {
-            return list[list.length - 1]
+
+            if (avaliableRam > ns.getScriptRam(script.serverExploid)) { ns.exec(script.serverExploid, thisServer, threads, thisHack) }
+
         }
     }
 
@@ -53,26 +57,15 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(speed.medium)
 
+        let thisHack = hackThisServer()
         let servers = getServersWithRam(ns)
 
         for (let server of servers) {
 
+            getRootAccess(ns, server)
             copyHackScripts(ns, server)
+            serverCheck(server, thisHack)
 
-            if (ns.getRunningScript(script.serverExploid, serv, hackThisServer()).args[0] !== target) {
-
-                ns.killall(server)
-
-            } else if (!ns.hasRootAccess(server)) {
-
-                getRootAccess(ns, server)
-
-            } else {
-
-                execScript(server)
-
-            }
         }
-        target = hackThisServer()
     }
 }

@@ -29,14 +29,12 @@ export function getScriptsPath(ns) {
 
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",
+
         serverExploid: "/Genesis/serverExploid.js",
         serverWeak: "/Genesis/serverWeak.js",
         serverGrow: "/Genesis/serverGrow.js",
         serverHack: "/Genesis/serverHack.js",
         netStumbler: "/Genesis/netStumbler.js",
-        //netSparker: "/Genesis/netSparker.js",
-        //metaSploit: "/Genesis/metaSploit.js",
-        //stockmarket: "/Genesis/stockMarket.js",
 
         //SINGULARITY
         buyCore: "/Singularity/buyCore.js",
@@ -47,9 +45,6 @@ export function getScriptsPath(ns) {
         requirements: "/Singularity/requirements.js",
         reputation: "/Singularity/reputation.js",
         installation: "/Singularity/installation.js",
-
-        //CORPORATOCTACY
-        //runCorporation: "/Corporatocracy/Corporation.js",
 
     }
     return path
