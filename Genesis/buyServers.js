@@ -10,14 +10,16 @@ export async function main(ns) {
 	ns.toast("buyServers online", "success", 2000)
 	ns.disableLog("ALL")
 	ns.clearLog()
+	ns.tail()
 
 	//\\ GENERAL DATA
 	let baseRam = ns.args[0]
 	let maxRam = ns.args[1]
 	let speed = getSleepTime(ns)
+	let purchaseLimit = ns.getPurchasedServerLimit()
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
-	function serverNodeRam() {
+	function serverPoolSize() {
 
 		//returns total server
 
@@ -32,15 +34,18 @@ export async function main(ns) {
 		return totalRam
 	}
 
+	function displayStatus(s, r, action) {
+		ns.print(s + " " + r + "GB \t" + action)
+	}
+
 	//\\ MAIN LOGICA
-	while (serverNodeRam() < maxRam * 24) {
+	while (serverPoolSize() < maxRam * 24) {
 		await ns.sleep(speed.medium)
 		ns.clearLog()
 
-		for (let i = 0; i <= ns.getPurchasedServerLimit();) {
-			await ns.sleep(speed.medium)
+		for (let i = 0; i <= purchaseLimit;) {
 
-			let server = "Indexer-" + i
+			let server = "Index-" + i
 
 			//buy or replace servers
 			if (!ns.serverExists(server)) {
@@ -48,20 +53,20 @@ export async function main(ns) {
 				if (ns.getPlayer().money > ns.getPurchasedServerCost(baseRam)) {
 
 					ns.purchaseServer(server, baseRam)
-					ns.print("PURCHASED " + server + " " + baseRam + "GB")
+					displayStatus(server, baseRam, "purchased")
 					i++
 
 				} else {
 
 					ns.clearLog()
-					ns.print("insufficient funds\n" + server + " is awaiting money " + baseRam + "GB")
+					displayStatus(server, baseRam, "insufficient funds for purchase")
 					await ns.sleep(speed.medium)
 
 				}
 
 			} else if (ns.getServerMaxRam(server) >= baseRam) {
 
-				ns.print(server + " is already has at least " + baseRam + "GB")
+				displayStatus(server, baseRam, "is up to date")
 				i++
 
 			} else if (ns.getServerMaxRam(server) < maxRam) {
@@ -69,13 +74,13 @@ export async function main(ns) {
 				if (ns.getPlayer().money > ns.getPurchasedServerUpgradeCost(server, baseRam)) {
 
 					ns.upgradePurchasedServer(server, baseRam)
-					ns.print("UPGRADE " + server + " " + baseRam + "GB")
+					displayStatus(server, baseRam, "ram upgrade")
 					i++
 
 				} else {
 
 					ns.clearLog()
-					ns.print("insufficient funds\n" + server + " is awaiting upgrade " + baseRam + "GB")
+					displayStatus(server, baseRam, "insufficient funds for upgrade")
 					await ns.sleep(speed.medium)
 
 				}
