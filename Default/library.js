@@ -88,7 +88,11 @@ export function copyHackScripts(ns, server) {
 	let script = getScriptsPath(ns)
 	const files = [script.serverExploid, script.serverWeak, script.serverGrow, script.serverHack]
 
-	if (ns.fileExists("/Genesis/serverHack.js", server) == false) {
+	if (!ns.fileExists(script.serverExploid, server)
+	|| !ns.fileExists(script.serverWeak, server)
+	|| !ns.fileExists(script.serverGrow, server)
+	|| !ns.fileExists(script.serverHack, server)) {
+		
 		ns.scp(files, server, "home")
 		ns.tprint("Files copied to " + server)
 	}
