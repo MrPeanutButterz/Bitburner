@@ -121,9 +121,12 @@ export async function main(ns) {
 
         } else if (ns.getPlayer().skills.charisma < maxCharisma) {
 
-            displayStatus(faction, factionServer, "leadership course at Rothman University")
+            displayStatus(faction, factionServer, "leadership course at Rothman Uni")
             ns.singularity.universityCourse("Rothman University", "Leadership", false)
 
+        } else {
+
+            ns.singularity.stopAction()
         }
     }
 
@@ -203,21 +206,15 @@ export async function main(ns) {
             }
         }
 
-    } else if (faction == "ECorp" || faction == "MegaCorp" || faction == "KuaiGong International" || faction == "Four Sigma" || faction == "NWO" || faction == "Blade Industries" || faction == "OmniTek Incorporated" || faction == "Bachman & Associates" || faction == "Clarke Incorporated" || faction == "Fulcrum Secret Technologies") {
+    } else if (faction == "ECorp" || faction == "MegaCorp" || faction == "KuaiGong International" || faction == "Four Sigma" || faction == "NWO" || faction == "Blade Industries" || faction == faction || faction == "Bachman & Associates" || faction == "Clarke Incorporated" || faction == "Fulcrum Secret Technologies") {
 
         //Have 400K reputation at all mega corporations, Backdooring company server reduces faction requirement to 300k
         //Have 500K reputation at Fulcrum Secret Technologies, Backdooring company server reduces faction requirement to 400K
 
-        //apply for job
-        //work until CEO
-
         while (true) {
+            await ns.sleep(speed.medium)
 
-            if (ns.getPlayer().skills.hacking < requirement.hacklvl) {
-
-                displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + requirement.hacklvl)
-
-            } else if (getProgramCount(ns) < ns.getServerNumPortsRequired(targetServer)) {
+            if (getProgramCount(ns) < ns.getServerNumPortsRequired(factionServer)) {
 
                 displayStatus(faction, factionServer, "awaiting .exe programs")
 
@@ -225,6 +222,10 @@ export async function main(ns) {
 
                 displayStatus(faction, factionServer, "analyzing root access")
                 getRootAccess(ns, factionServer)
+
+            } else if (ns.getPlayer().skills.hacking < ns.getServerRequiredHackingLevel(factionServer)) {
+
+                displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + ns.getServerRequiredHackingLevel(factionServer))
 
             } else if (!ns.getServer(factionServer).backdoorInstalled) {
 
@@ -239,11 +240,13 @@ export async function main(ns) {
 
                 studyAtSchool(300)
 
-            } else if (1 == 2) {
+            } else if (ns.singularity.applyToCompany(faction, "Business")) {
 
-                //apply for job
-                //work until CEO
-                ns.tprint("update the requirements script!!! -> @Mega Corp")
+                displayStatus(faction, factionServer, "You got a job or promo")
+
+            } else if (ns.singularity.workForCompany(faction, false)) {
+
+                displayStatus(faction, factionServer, "CEO in the making")
 
             } else {
 
@@ -288,15 +291,49 @@ export async function main(ns) {
 
             } else if (faction === "Silhouette") {
 
-                //if statment must also have !CEO argument
-                //make a work function that also works for mega corps 
+                while (true) {
+                    await ns.sleep(speed.medium)
 
-                //CTO, CFO, or CEO of a company, $15m, -22 Karma
+                    if (getProgramCount(ns) < ns.getServerNumPortsRequired(factionServer)) {
 
-                //backdoor corp server
-                //work en become CEO
+                        displayStatus(faction, factionServer, "awaiting .exe programs")
 
-                ns.tprint("update the requirements script!!! -> @Silhouette")
+                    } else if (!ns.hasRootAccess(factionServer)) {
+
+                        displayStatus(faction, factionServer, "analyzing root access")
+                        getRootAccess(ns, factionServer)
+
+                    } else if (ns.getPlayer().skills.hacking < ns.getServerRequiredHackingLevel(factionServer)) {
+
+                        displayStatus(faction, factionServer, "awaiting hack level " + ns.getPlayer().skills.hacking + "/" + ns.getServerRequiredHackingLevel(factionServer))
+
+                    } else if (!ns.getServer(factionServer).backdoorInstalled) {
+
+                        displayStatus(faction, factionServer, "installing backdoor")
+                        let serverPath = getServerPath(ns, factionServer)
+                        for (let node of serverPath) { ns.singularity.connect(node) }
+
+                        await ns.singularity.installBackdoor(factionServer)
+                        ns.singularity.connect("home")
+
+                    } else if (ns.getPlayer().skills.charisma < 300) {
+
+                        studyAtSchool(300)
+
+                    } else if (ns.singularity.applyToCompany(faction, "Business")) {
+
+                        displayStatus(faction, factionServer, "You got a job or promo")
+
+                    } else if (ns.singularity.workForCompany(faction, false)) {
+
+                        displayStatus(faction, factionServer, "CEO in the making")
+
+                    } else {
+
+                        checkInvitations(faction)
+
+                    }
+                }
 
             } else {
 

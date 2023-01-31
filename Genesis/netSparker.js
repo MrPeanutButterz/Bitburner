@@ -145,7 +145,6 @@ export async function main(ns) {
 					var fase3Start = (fase2End + spacer) - fase3.time
 					var fase3End = fase3Start + fase3.time
 					var fase4Start = (fase3End + spacer) - fase4.time
-					var fase4End = fase4Start + fase4.time
 
 					var ramWeak = ns.getScriptRam(script.serverWeak)
 					var ramGrow = ns.getScriptRam(script.serverGrow)
