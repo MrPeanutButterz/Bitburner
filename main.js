@@ -16,6 +16,7 @@ export async function main(ns) {
 	let script = getScriptsPath(ns)
 
 	let factionScript = true
+	let hackScript = true
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function runScript(thisScript) {
@@ -41,9 +42,26 @@ export async function main(ns) {
 		}
 	}
 
+	function Genesis() {
+
+		//awaits free ram, then runs hack scripts
+
+		let freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+		let scriptRam = ns.getScriptRam(script.findFaction, "home")
+
+		if (freeRam > scriptRam && hackScript) {
+
+			if (!ns.scriptRunning(script.netStumbler, "home") || !ns.scriptRunning(script.netSparker, "home")) {
+
+				ns.run(script.netStumbler, 1)
+				hackScript = false
+			}
+		}
+	}
+
 	function singularity() {
 
-		//awaits free ram, then runs script
+		//awaits free ram, then runs faction script
 
 		let freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
 		let scriptRam = ns.getScriptRam(script.findFaction, "home")
@@ -63,17 +81,17 @@ export async function main(ns) {
 
 		if (ns.getServerMaxRam("home") < 128) {
 
-			//hacking, programs, ram - 30GB
 			runScript(script.buyRam)
-			runScript(script.netStumbler)
 			basicPrograms()
+
+			Genesis()
 
 		} else {
 
-			//hacking, programs, ram, faction 
 			runScript(script.buyRam)
-			runScript(script.netStumbler)
 			basicPrograms()
+
+			Genesis()
 			singularity()
 
 		}
