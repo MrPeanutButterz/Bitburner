@@ -36,6 +36,7 @@ export function getScriptsPath(ns) {
         serverHack: "/Genesis/serverHack.js",
 
         netStumbler: "/Genesis/netStumbler.js",
+        netSparker: "/Genesis/netSparker.js",
 
         //SINGULARITY
         buyCore: "/Singularity/buyCore.js",
@@ -150,7 +151,7 @@ export function getFactionServer(ns, faction) {
         case "Four Sigma": { return "4sigma" }
         case "NWO": { return "nwo" }
         case "Blade Industries": { return "blade" }
-        case "OmniTek Incorporated": { return "omnia" }
+        case "OmniTek Incorporated": { return "omnitek" }
         case "Bachman & Associates": { return "b-and-a" }
         case "Clarke Incorporated": { return "clarkinc" }
         case "Fulcrum Secret Technologies": { return "fulcrumassets" }

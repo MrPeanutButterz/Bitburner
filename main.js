@@ -2,7 +2,7 @@
 Proces: this script controls all scripts based on what is needed for next goal */
 
 import { getSleepTime, getScriptsPath } from "./Default/config.js"
-import { getProgramCount } from "./Default/library.js"
+import { getProgramCount, getTotalNetRam } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -23,7 +23,7 @@ export async function main(ns) {
 		//awaits free ram, then runs script
 
 		let freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-		let scriptRam = ns.getScriptRam(thisScript, "home")
+		let scriptRam = ns.getScriptRam(thisScript)
 
 		if (!ns.scriptRunning(thisScript, "home") && freeRam > scriptRam) {
 
@@ -35,9 +35,9 @@ export async function main(ns) {
 
 		//checks if the basic programs are available
 
-		if (getProgramCount(ns) < 5) { 
+		if (getProgramCount(ns) < 5) {
 
-			runScript(script.buyPrograms) 
+			runScript(script.buyPrograms)
 		}
 	}
 
