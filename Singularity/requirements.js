@@ -9,7 +9,7 @@ export async function main(ns) {
     //\\ SCRIPT SETTINGS
     ns.toast("requirements online", "success", 2000)
     ns.resizeTail(500, 130)
-    ns.moveTail(1200, 20)
+    ns.moveTail(1150, 20)
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
@@ -139,7 +139,7 @@ export async function main(ns) {
             if (ns.hacknet.numNodes() < 4) {
 
                 displayStatus(faction, factionServer, "buying hacknet nodes")
-                if (!ns.scriptRunning(script.buyHacknet, "home")) { ns.run(script.buyHacknet, 1, 4, 25, 2, 1) }
+                if (!ns.scriptRunning(script.buyHacknet, "home")) { ns.run(script.buyHacknet, 1) }
 
             } else {
 
@@ -207,9 +207,6 @@ export async function main(ns) {
         }
 
     } else if (faction == "ECorp" || faction == "MegaCorp" || faction == "KuaiGong International" || faction == "Four Sigma" || faction == "NWO" || faction == "Blade Industries" || faction == "OmniTek Incorporated" || faction == "Bachman & Associates" || faction == "Clarke Incorporated" || faction == "Fulcrum Secret Technologies") {
-
-        //Have 400K reputation at all mega corporations, Backdooring company server reduces faction requirement to 300k
-        //Have 500K reputation at Fulcrum Secret Technologies, Backdooring company server reduces faction requirement to 400K
 
         while (true) {
             await ns.sleep(speed.medium)
@@ -328,7 +325,11 @@ export async function main(ns) {
 
                         displayStatus(faction, "omnitek", "CEO in the making")
 
-                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 300000) {
+                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000 && ns.getPlayer().skills.charisma < 725) {
+
+                        studyAtSchool(725)
+
+                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000) {
 
                         checkInvitations(faction)
 

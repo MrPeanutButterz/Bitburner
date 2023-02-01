@@ -83,16 +83,14 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(speed.medium)
 
-        let thisHack = hackThisServer()
-        let servers = getServersWithRam(ns)
-
         if (getTotalNetRam(ns) > 10000) { switchToScript() }
 
+        let servers = getServersWithRam(ns)
         for (let server of servers) {
 
             getRootAccess(ns, server)
             copyHackScripts(ns, server)
-            if (ns.hasRootAccess(server)) { serverCheck(server, thisHack) }
+            if (ns.hasRootAccess(server)) { serverCheck(server, hackThisServer()) }
 
         }
     }
