@@ -38,13 +38,13 @@ export async function main(ns) {
 	}
 
 	function displayStatus(s, r, action) {
+		ns.clearLog()
 		ns.print(s + " " + r + "GB " + action)
 	}
 
 	//\\ MAIN LOGICA
 	while (serverPoolSize() < maxRam * 24) {
 		await ns.sleep(speed.average)
-		ns.clearLog()
 
 		for (let i = 1; i <= purchaseLimit;) {
 
