@@ -53,6 +53,19 @@ export function getServersWithRam(ns) {
 	return list
 }
 
+
+/** @param {NS} ns */
+export function networkCleaner(ns) {
+
+	//clears the network of all running scripts
+
+	let servers = getServersWithRam(ns)
+
+	for (let server of servers) {
+		ns.killall(server)
+	}
+}
+
 /** @param {NS} ns */
 export function getRootAccess(ns, server) {
 

@@ -2,7 +2,7 @@
 Proces: basic hacking script */
 
 import { getScriptsPath, getSleepTime } from "./Default/config.js"
-import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts, getTotalNetRam } from "./Default/library.js"
+import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts, getTotalNetRam, networkCleaner } from "./Default/library.js"
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -24,13 +24,10 @@ export async function main(ns) {
 
         for (let server of servers) {
 
-            if (ns.hackAnalyzeChance(server) * 100 > 99) {
-                list.push(server)
-            }
+            if (ns.hackAnalyzeChance(server) * 100 > 99) { list.push(server) }
         }
 
         if (list.length === 0) { return "n00dles" } else { return list[list.length - 1] }
-
     }
 
     function serverCheck(thisServer, thisHack) {
@@ -52,17 +49,6 @@ export async function main(ns) {
         }
     }
 
-    function clearUpNetwork() {
-
-        //cleans up the network of any scripts
-
-        let netRamServers = getServersWithRam(ns)
-
-        for (let netRamServ of netRamServers) {
-            ns.killall(netRamServ)
-        }
-    }
-
     function switchToScript() {
 
         //awaits free ram, then runs script
@@ -72,11 +58,10 @@ export async function main(ns) {
 
         if (freeRam > scriptRam) {
 
-            clearUpNetwork()
+            networkCleaner(ns)
             ns.run(script.netSparker, 1)
             ns.exit()
         }
-
     }
 
     //\\ MAIN LOGICA

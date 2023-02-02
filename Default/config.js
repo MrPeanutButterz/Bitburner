@@ -27,8 +27,12 @@ export function getScriptsPath(ns) {
         //ROOT
         main: "main.js",
 
+        //DEFAULT
+        netCleaner: "/Default/netCleaner.js",
+
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",
+        buyServers: "/Genesis/buyServers.js",
 
         serverExploid: "/Genesis/serverExploid.js",
         serverWeak: "/Genesis/serverWeak.js",
