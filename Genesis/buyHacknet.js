@@ -32,6 +32,7 @@ export async function main(ns) {
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function displayStatus() {
 		ns.clearLog()
+		ns.print("Objective")
 		ns.print("Nodes: \t" + maxNode)
 		ns.print("Level: \t" + maxLevel)
 		ns.print("Ram: \t" + maxRam)
