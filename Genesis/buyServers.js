@@ -10,7 +10,6 @@ export async function main(ns) {
 	ns.toast("buyServers online", "success", 2000)
 	ns.disableLog("ALL")
 	ns.clearLog()
-	ns.tail()
 
 	//\\ GENERAL DATA
 	let baseRam = ns.args[0]
