@@ -237,6 +237,10 @@ export async function main(ns) {
 
                 studyAtSchool(300)
 
+            } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000) {
+
+                checkInvitations(faction)
+
             } else if (ns.singularity.applyToCompany(faction, "Business")) {
 
                 displayStatus(faction, factionServer, "You got a job or promo")
@@ -244,10 +248,6 @@ export async function main(ns) {
             } else if (ns.singularity.workForCompany(faction, false)) {
 
                 displayStatus(faction, factionServer, "CEO in the making")
-
-            } else {
-
-                checkInvitations(faction)
 
             }
         }
@@ -317,6 +317,10 @@ export async function main(ns) {
 
                         studyAtSchool(300)
 
+                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000) {
+
+                        checkInvitations(faction)
+
                     } else if (ns.singularity.applyToCompany("OmniTek Incorporated", "Business")) {
 
                         displayStatus(faction, "omnitek", "You got a job or promo")
@@ -324,14 +328,6 @@ export async function main(ns) {
                     } else if (ns.singularity.workForCompany("OmniTek Incorporated", false)) {
 
                         displayStatus(faction, "omnitek", "CEO in the making")
-
-                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000 && ns.getPlayer().skills.charisma < 725) {
-
-                        studyAtSchool(725)
-
-                    } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000) {
-
-                        checkInvitations(faction)
 
                     }
                 }
