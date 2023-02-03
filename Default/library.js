@@ -160,7 +160,7 @@ export function getUniqueID(ns) {
 }
 
 /** @param {NS} ns */
-export function checkStockAccounts(ns) {
+export function getStockAccounts(ns) {
 
 	//checks if we have all accounts (boolean)
 

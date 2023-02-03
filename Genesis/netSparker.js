@@ -20,6 +20,8 @@ export async function main(ns) {
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function displayStats(target, batchSize, version, action) {
 
+		//display status in log
+
 		ns.clearLog()
 		ns.print("Target: \t" + target)
 		ns.print("BatchSize: \t" + batchSize + "GB")
@@ -28,6 +30,8 @@ export async function main(ns) {
 
 	}
 	function getDynamicNetwork() {
+
+		//returns (array) of settings for hacking
 
 		let netRam = getTotalNetRam(ns)
 

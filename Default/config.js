@@ -57,6 +57,21 @@ export function getScriptsPath(ns) {
 }
 
 /** @param {NS} ns */
+export function getStockSettings(ns) {
+    const stockSettings = {
+
+        //returns (number) of stock settings
+
+        forecastThresh: 0.6,
+        minCash: 1000000000,
+        sellThresh: 0.5,
+        spendRatio: 1,
+        minSpend: 1000000000,
+    }
+    return scriptSpeed
+}
+
+/** @param {NS} ns */
 export function getTickerServer(ns, ticker) {
 
     //returns (string) the corresponding server for a ticker
