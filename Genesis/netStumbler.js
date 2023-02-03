@@ -78,7 +78,7 @@ export async function main(ns) {
 
         displayRam()
 
-        if (getTotalNetRam(ns) > 10000) { switchToScript() }
+        if (getTotalNetRam(ns) > 15000) { switchToScript() }
 
         let servers = getServersWithRam(ns)
         for (let server of servers) {

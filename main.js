@@ -18,7 +18,7 @@ export async function main(ns) {
 	//\\ MAIN LOGICA
 	ns.run(script.buyRam, 1)
 	ns.run(script.buyCore, 1)
-	ns.run(script.buyHacknet, 1, 10, 75, 8, 1)
+	ns.run(script.buyHacknet, 1, 12, 75, 8, 1)
 	ns.run(script.buyServers, 1)
 	ns.run(script.buyPrograms, 1)
 
