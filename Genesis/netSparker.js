@@ -29,6 +29,7 @@ export async function main(ns) {
 		ns.print("Action: \t" + action)
 
 	}
+
 	function getDynamicNetwork() {
 
 		//returns (array) of settings for hacking
@@ -60,6 +61,8 @@ export async function main(ns) {
 	}
 
 	function installPackage(host, script, ram, threads, timing, id) {
+
+		//installs scripts in on the servers with ram (make sure there is space avaliable)
 
 		let server = getServersWithRam(ns)
 

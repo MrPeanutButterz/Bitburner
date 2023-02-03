@@ -160,6 +160,36 @@ export function getUniqueID(ns) {
 }
 
 /** @param {NS} ns */
+export function installPackage(ns, host, script, ram, threads, timing, id) {
+
+	//installs scripts in on the servers with ram (make sure there is space avaliable)
+
+	let server = getServersWithRam(ns)
+
+	for (let i = 0; i < server.length; i++) {
+
+		getRootAccess(ns, server[i])
+
+
+		let ramAvailable = ns.getServerMaxRam(server[i]) - ns.getServerUsedRam(server[i])
+		let threadsAvailable = Math.floor(ramAvailable / ram)
+
+		if (threadsAvailable >= 1) {
+
+			if (threadsAvailable > threads) {
+				ns.exec(script, server[i], threads, host, timing, id)
+				break
+			}
+
+			if (threadsAvailable < threads) {
+				ns.exec(script, server[i], threadsAvailable, host, timing, id)
+				threads = threads - threadsAvailable
+			}
+		}
+	}
+}
+
+/** @param {NS} ns */
 export function getStockAccounts(ns) {
 
 	//checks if we have all accounts (boolean)

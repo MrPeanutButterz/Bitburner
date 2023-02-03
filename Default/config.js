@@ -57,6 +57,37 @@ export function getScriptsPath(ns) {
 }
 
 /** @param {NS} ns */
+export function getDynamicNetwork(ns) {
+
+    //returns (array) of settings for hacking
+
+    let netRam = getTotalNetRam(ns)
+
+    if (netRam < 1000) {
+        return { growth: 1.030, steal: 0.010, defence: 8, chance: 0.8, version: "Level 01", }
+
+    } else if (netRam < 1450) {
+        return { growth: 1.063, steal: 0.017, defence: 7, chance: 0.8, version: "Level 02", }
+
+    } else if (netRam < 3000) {
+        return { growth: 1.096, steal: 0.033, defence: 6, chance: 0.7, version: "Level 03", }
+
+    } else if (netRam < 4600) {
+        return { growth: 1.129, steal: 0.049, defence: 5, chance: 0.7, version: "Level 04", }
+
+    } else if (netRam < 7800) {
+        return { growth: 1.162, steal: 0.065, defence: 4, chance: 0.6, version: "Level 05", }
+
+    } else if (netRam < 11000) {
+        return { growth: 1.195, steal: 0.081, defence: 4, chance: 0.6, version: "Level 06", }
+
+    } else {
+        return { growth: 1.327, steal: 0.145, defence: 2, chance: 0.1, version: "Level 07", }
+
+    }
+}
+
+/** @param {NS} ns */
 export function getStockSettings(ns) {
     const stockSettings = {
 
