@@ -32,7 +32,7 @@ export async function main(ns) {
 
         for (let server of servers) {
 
-            if (ns.hackAnalyzeChance(server) * 100 > 99) { list.push(server) }
+            if (ns.hackAnalyzeChance(server) * 100 > 99 && ns.hasRootAccess(server)) { list.push(server) }
         }
 
         if (list.length === 0) { return "n00dles" } else { return list[list.length - 1] }
