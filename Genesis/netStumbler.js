@@ -2,7 +2,7 @@
 Proces: basic hacking script */
 
 import { getScriptsPath, getSleepTime } from "./Default/config.js"
-import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts, getTotalNetRam, networkCleaner } from "./Default/library.js"
+import { getServersWithRam, getServersWithMoney, getRootAccess, copyHackScripts, getTotalNetRam, getUsableNetRam, networkCleaner, } from "./Default/library.js"
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -17,6 +17,14 @@ export async function main(ns) {
     let speed = getSleepTime(ns)
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
+    function displayRam() {
+
+        //displays ram used/total
+
+        ns.clearLog()
+        ns.print("netRam: " + getUsableNetRam(ns) + " / " + getTotalNetRam(ns) + " Gb")
+    }
+
     function hackThisServer() {
 
         let list = []
@@ -67,6 +75,8 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     while (true) {
         await ns.sleep(speed.medium)
+
+        displayRam()
 
         if (getTotalNetRam(ns) > 10000) { switchToScript() }
 
