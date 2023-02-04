@@ -20,7 +20,6 @@ export async function main(ns) {
 
 	}
 
-
 	//\\ MAIN LOGICA
 	while (true) {
 		await ns.sleep(speed.superSlow)
