@@ -23,6 +23,7 @@ export async function main(ns) {
 
         ns.clearLog()
         ns.print("netRam: " + getUsableNetRam(ns) + " / " + getTotalNetRam(ns) + " Gb")
+        ns.print("Target: " + hackThisServer())
     }
 
     function hackThisServer() {
