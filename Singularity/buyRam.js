@@ -7,11 +7,19 @@ import { getSleepTime } from "./Default/config.js"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.toast("buyRam online", "success", 2000)
 	ns.disableLog("ALL")
 
 	//\\ GENERAL DATA
 	var speed = getSleepTime(ns)
+
+	//\\ SCRIPT SPECIFIC FUNCTIONS
+	function displayStatus() {
+
+		ns.clearLog()
+		ns.print(Math.round(ns.getPlayer().money / ns.singularity.getUpgradeHomeRamCost() * 100) + "% until ram upgrade")
+
+	}
+
 
 	//\\ MAIN LOGICA
 	while (true) {
@@ -25,7 +33,7 @@ export async function main(ns) {
 
 		} else {
 
-			ns.print(Math.round(ns.getPlayer().money / ns.singularity.getUpgradeHomeRamCost() * 100) + "% until ram upgrade")
+			displayStatus()
 
 		}
 	}

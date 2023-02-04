@@ -12,6 +12,14 @@ export async function main(ns) {
 	//\\ GENERAL DATA
 	var speed = getSleepTime(ns)
 
+	//\\ SCRIPT SPECIFIC FUNCTIONS
+	function displayStatus() {
+
+		ns.clearLog()
+		ns.print(Math.round(ns.getPlayer().money / ns.singularity.getUpgradeHomeCoresCost() * 100) + "% until core upgrade")
+
+	}
+
 	//\\ MAIN LOGICA
 	while (true) {
 		await ns.sleep(speed.superSlow)
@@ -24,7 +32,7 @@ export async function main(ns) {
 
 		} else {
 
-			ns.print(Math.round(ns.getPlayer().money / ns.singularity.getUpgradeHomeCoresCost() * 100) + "% until core upgrade")
+			displayStatus()
 
 		}
 	}
