@@ -3,10 +3,10 @@ Proces: configurations */
 
 /** @param {NS} ns */
 export function getSleepTime(ns) {
+
+    //returns (number) different script speeds
+
     const scriptSpeed = {
-
-        //returns (number) different script speeds
-
         superFast: 50,
         fast: 200,
         average: 600,
@@ -41,6 +41,7 @@ export function getScriptsPath(ns) {
 
         netStumbler: "/Genesis/netStumbler.js",
         netSparker: "/Genesis/netSparker.js",
+        metaSploit: "/Genesis/metaSploit.js",
 
         //SINGULARITY
         buyCore: "/Singularity/buyCore.js",
@@ -57,49 +58,49 @@ export function getScriptsPath(ns) {
 }
 
 /** @param {NS} ns */
-export function getDynamicNetwork(ns) {
+export function getDynamicNetwork(ns, netRam) {
 
     //returns (array) of settings for hacking
 
-    let netRam = getTotalNetRam(ns)
+    //max network ram 12587548 Gb
 
-    if (netRam < 1000) {
-        return { growth: 1.030, steal: 0.010, defence: 8, chance: 0.8, version: "Level 01", }
+    if (netRam < 20000) {
+        return { growth: 1.030, steal: 0.010, defence: 8, chance: 0.8, version: "lvl.1", }
 
-    } else if (netRam < 1450) {
-        return { growth: 1.063, steal: 0.017, defence: 7, chance: 0.8, version: "Level 02", }
+    } else if (netRam < 22500) {
+        return { growth: 1.063, steal: 0.017, defence: 7, chance: 0.8, version: "lvl.2", }
 
-    } else if (netRam < 3000) {
-        return { growth: 1.096, steal: 0.033, defence: 6, chance: 0.7, version: "Level 03", }
+    } else if (netRam < 35000) {
+        return { growth: 1.096, steal: 0.033, defence: 6, chance: 0.7, version: "lvl.3", }
 
-    } else if (netRam < 4600) {
-        return { growth: 1.129, steal: 0.049, defence: 5, chance: 0.7, version: "Level 04", }
+    } else if (netRam < 50000) {
+        return { growth: 1.129, steal: 0.049, defence: 5, chance: 0.7, version: "lvl.4", }
 
-    } else if (netRam < 7800) {
-        return { growth: 1.162, steal: 0.065, defence: 4, chance: 0.6, version: "Level 05", }
+    } else if (netRam < 80000) {
+        return { growth: 1.162, steal: 0.065, defence: 4, chance: 0.6, version: "lvl.5", }
 
-    } else if (netRam < 11000) {
-        return { growth: 1.195, steal: 0.081, defence: 4, chance: 0.6, version: "Level 06", }
+    } else if (netRam < 150000) {
+        return { growth: 1.195, steal: 0.081, defence: 4, chance: 0.6, version: "lvl.6", }
 
     } else {
-        return { growth: 1.327, steal: 0.145, defence: 2, chance: 0.1, version: "Level 07", }
+        return { growth: 1.327, steal: 0.145, defence: 2, chance: 0.1, version: "lvl.7", }
 
     }
 }
 
 /** @param {NS} ns */
 export function getStockSettings(ns) {
+
+    //returns (number) of stock settings
+
     const stockSettings = {
-
-        //returns (number) of stock settings
-
         forecastThresh: 0.6,
         minCash: 1000000000,
         sellThresh: 0.5,
         spendRatio: 1,
         minSpend: 1000000000,
     }
-    return scriptSpeed
+    return stockSettings
 }
 
 /** @param {NS} ns */
@@ -150,8 +151,8 @@ export function getFactionNames(ns) {
     //returns (string array) a list of all factions
 
     const list = [
-        "Netburners",					//Hacking Level 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
-        "Tian Di Hui",					//$1m & Hacking Level 50 & Be in Chongqing, New Tokyo, or Ishima
+        "Netburners",					//Hacking lvl 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
+        "Tian Di Hui",					//$1m & Hacking lvl 50 & Be in Chongqing, New Tokyo, or Ishima
         "Sector-12",					//Be in Sector-12 & $15m
         "Chongqing",					//Be in Chongqing & $20m
         "New Tokyo",					//Be in New Tokyo & $20m
@@ -175,12 +176,12 @@ export function getFactionNames(ns) {
         "Slum Snakes",					//All Combat Stats of 30, -9 Karma, $1m
         "Tetrads",						//Be in Chongqing, New Tokyo, or Ishima, All Combat Stats of 75, -18 Karma
         "Silhouette",					//CTO, CFO, or CEO of a company, $15m, -22 Karma
-        "Speakers for the Dead",		//Hacking Level 100, All Combat Stats of 300, 30 People Killed, -45 Karma, Not working for CIA or NSA
-        "The Dark Army",				//Hacking Level 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
-        "The Syndicate",				///Hacking Level 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
-        "The Covenant",					//20 Augmentations, $75b, Hacking Level of 850, All Combat Stats of 850
-        "Daedalus",						//30 Augmentations, $100b, Hacking Level of 2500 OR All Combat Stats of 1500
-        "Illuminati",					//30 Augmentations, $150b, Hacking Level of 1500, All Combat Stats of 1200
+        "Speakers for the Dead",		//Hacking lvl 100, All Combat Stats of 300, 30 People Killed, -45 Karma, Not working for CIA or NSA
+        "The Dark Army",				//Hacking lvl 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
+        "The Syndicate",				///Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
+        "The Covenant",					//20 Augmentations, $75b, Hacking lvl of 850, All Combat Stats of 850
+        "Daedalus",						//30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
+        "Illuminati",					//30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
     ]
     return list
 }

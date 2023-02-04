@@ -170,7 +170,6 @@ export function installPackage(ns, host, script, ram, threads, timing, id) {
 
 		getRootAccess(ns, server[i])
 
-
 		let ramAvailable = ns.getServerMaxRam(server[i]) - ns.getServerUsedRam(server[i])
 		let threadsAvailable = Math.floor(ramAvailable / ram)
 
