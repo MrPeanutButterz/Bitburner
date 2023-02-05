@@ -108,7 +108,10 @@ export async function main(ns) {
 			}
 
 			let dynamic = getDynamicNetwork(ns, getTotalNetRam(ns))
-			if (ns.hackAnalyzeChance(server) >= dynamic.chance && ns.getHackingLevel() > ns.getServerRequiredHackingLevel(server) && getTotalNetRam(ns) > batch.size) {
+
+			if (ns.hackAnalyzeChance(server) >= dynamic.chance &&
+				ns.getHackingLevel() > ns.getServerRequiredHackingLevel(server) &&
+				getTotalNetRam(ns) > batch.size) {
 
 				while (true) {
 

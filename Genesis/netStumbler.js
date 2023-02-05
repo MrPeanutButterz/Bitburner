@@ -69,6 +69,7 @@ export async function main(ns) {
 
             networkCleaner(ns)
             ns.run(script.netSparker, 1)
+            ns.closeTail()
             ns.exit()
         }
     }
