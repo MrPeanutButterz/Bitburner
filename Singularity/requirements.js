@@ -237,7 +237,7 @@ export async function main(ns) {
 
                 studyAtSchool(300)
 
-            } else if (ns.singularity.getCompanyRep("OmniTek Incorporated") > 800000) {
+            } else if (ns.singularity.getCompanyRep(faction) > 300000) {
 
                 checkInvitations(faction)
 
