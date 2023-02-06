@@ -61,7 +61,7 @@ export async function main(ns) {
 				} else {
 
 					ns.clearLog()
-					displayStatus(server, baseRam, "insufficient funds for purchase")
+					displayStatus(server, baseRam, "insufficient funds")
 					await ns.sleep(speed.average)
 
 				}
@@ -82,14 +82,14 @@ export async function main(ns) {
 				} else {
 
 					ns.clearLog()
-					displayStatus(server, baseRam, "insufficient funds for upgrade")
+					displayStatus(server, baseRam, "insufficient funds")
 					await ns.sleep(speed.average)
 
 				}
 
 			}
 		}
-		baseRam = baseRam + baseRam
+		baseRam += baseRam
 	}
 	ns.closeTail()
 }
