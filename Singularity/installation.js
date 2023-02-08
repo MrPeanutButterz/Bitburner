@@ -25,6 +25,13 @@ export async function main(ns) {
 
 
     //\\ MAIN LOGICA
+    if (ns.getRunningScript(script.metaSploit, "home")) {
+        ns.kill(script.metaSploit)
+        await ns.sleep(superSlow)
+        ns.run(script.metaSploit, 1, "sell")
+    }
+
+
     for (let i = 0; i < shoppingList.length;) {
 
         await ns.sleep(sleep.medium)
