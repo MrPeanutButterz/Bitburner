@@ -12,7 +12,6 @@ export async function main(ns) {
     ns.toast("metaSploit online", "success", 2000)
     ns.disableLog("ALL")
     ns.clearLog()
-    ns.tail()
 
     //\\ GENERAL DATA
     let script = getScriptsPath(ns)

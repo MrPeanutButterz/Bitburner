@@ -237,19 +237,42 @@ export async function main(ns) {
 
                 studyAtSchool(300)
 
-            } else if (ns.singularity.getCompanyRep(faction) > 300000) {
+            } else if (faction != "Fulcrum Secret Technologies") {
 
-                checkInvitations(faction)
+                if (ns.singularity.getCompanyRep(faction) > 300000) {
 
-            } else if (ns.singularity.applyToCompany(faction, "Business")) {
+                    checkInvitations(faction)
 
-                displayStatus(faction, factionServer, "You got a job or promo")
+                } else if (ns.singularity.applyToCompany(faction, "Business")) {
 
-            } else if (ns.singularity.workForCompany(faction, false)) {
+                    displayStatus(faction, factionServer, "You got a job or promo")
 
-                displayStatus(faction, factionServer, "CEO in the making")
+                } else if (ns.singularity.workForCompany(faction, false)) {
+
+                    displayStatus(faction, factionServer, "CEO in the making")
+
+                }
+
+            } else {
+
+                if (ns.singularity.getCompanyRep(faction) > 400000) {
+
+                    checkInvitations(faction)
+
+                } else if (ns.singularity.applyToCompany("Fulcrum Technologies", "Business")) {
+
+                    displayStatus(faction, factionServer, "You got a job or promo")
+
+                } else if (ns.singularity.workForCompany("Fulcrum Technologies", false)) {
+
+                    displayStatus(faction, factionServer, "CEO in the making")
+
+                }
 
             }
+
+
+
         }
 
     } else if (faction == "Slum Snakes" || faction == "Tetrads" || faction == "Silhouette" || faction == "Speakers for the Dead" || faction == "The Dark Army" || faction == "The Syndicate") {

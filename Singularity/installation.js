@@ -15,7 +15,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    let sleep = getSleepTime(ns)
+    let speed = getSleepTime(ns)
     let script = getScriptsPath(ns)
 
     let faction = ns.args[0]
@@ -26,15 +26,15 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
     if (ns.getRunningScript(script.metaSploit, "home")) {
-        ns.kill(script.metaSploit)
-        await ns.sleep(superSlow)
+        ns.scriptKill(script.metaSploit, "home")
+        await ns.sleep(speed.superSlow)
         ns.run(script.metaSploit, 1, "sell")
     }
 
 
     for (let i = 0; i < shoppingList.length;) {
 
-        await ns.sleep(sleep.medium)
+        await ns.sleep(speed.medium)
 
         if (ns.getPlayer().money < ns.singularity.getAugmentationPrice(shoppingList[i])) {
 
@@ -55,7 +55,7 @@ export async function main(ns) {
         && ns.getPlayer().money > ns.singularity.getAugmentationPrice("NeuroFlux Governor")) {
 
         ns.singularity.purchaseAugmentation(faction, "NeuroFlux Governor")
-        await ns.sleep(sleep.superFast)
+        await ns.sleep(speed.superFast)
     }
 
     ns.singularity.installAugmentations(script.main)
