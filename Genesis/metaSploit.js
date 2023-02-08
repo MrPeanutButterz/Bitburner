@@ -35,7 +35,16 @@ export async function main(ns) {
         ns.clearLog()
         ns.print("Stock\tShares")
         for (let p of portfolio) {
-            ns.print(p.sym + "\t" + p.shares)
+
+            if (p.shares >= ns.stock.getMaxShares(p.sym)) {
+
+                ns.print(p.sym + "\t" + "MAX")
+
+            } else {
+
+                ns.print(p.sym + "\t" + p.shares)
+
+            }
         }
     }
 
@@ -102,10 +111,10 @@ export async function main(ns) {
     //\\ MAIN LOGICA
 
     while (ns.getServerMoneyAvailable('home') < minCash) {
-		ns.print("metaSploit has no money!")
-		await ns.sleep(speed.superSlow)
+        ns.print("metaSploit has no money!")
+        await ns.sleep(speed.superSlow)
         ns.clearLog()
-	}
+    }
 
     while (true) {
 
