@@ -31,6 +31,14 @@ If no argument is given it will hack n00dles by default.
 ***Arguments - optional***
 1. specify the server to start hacking it. 
 
+`serverWeak.js` - `serverGrow.js` - `serverHack.js` 
+
+These scripts have the same functions as serverExploid.js buy are seperated for more control on timing en threads.
+
+* Weakens the security of a server, use arg to define target server with a delay
+* Grows the money of a server, use arg to define target server with a delay
+* Hacks the money available of a server, use arg to define target server with a delay
+
 `netStumbler.js`
 
 This is a basic hack script, the purpose of which is to kickstart your game... 
@@ -43,19 +51,16 @@ As the network ram increases with more avialable servers it will switch over to 
 
 **Example:** run netStumbler.js n00dles
 
-`serverWeak.js` - `serverGrow.js` - `serverHack.js` 
-
-These scripts have the same functions as serverExploid.js buy are seperated for more control on timing en threads.
-
-* Weakens the security of a server, use arg to define target server with a delay
-* Grows the money of a server, use arg to define target server with a delay
-* Hacks the money available of a server, use arg to define target server with a delay
-
 `netSparker.js`
 
 This is a advanced hack script, the purpose of which is make as mutch money as posible. 
 It wil make a timed package with fases: weak, grow, weak, hack. All script ending within 500 ticks after one another. 
 These script are installed on the servers with free ram. 
+
+`metaSploit.js`
+
+MetaSploit runs the stockmarket by buying stock with a forcast over 70% en selling below 50%. 
+All stocks owned are pumped by runnig grow scripts on home server to get the most money out of them.
 
 `buyHacknet.js` 
 
@@ -93,13 +98,12 @@ Keeps buying untill your money runs out.
 
 `buyPrograms.js` 
 
-This script buys all .exe programs needed to run the hack scripts. There are 2 lists an essential en a non essential list.
-If the script is run the essential list will be bought 
+This script buys all .exe programs needed to run the hack scripts. Only essential programs will be bought. 
 
 1. essential: BruteSSH.exe, FTPCrack.exe, relaySMTP.exe, HTTPWorm.exe, SQLInject.exe
 2. non essential: AutoLink.exe, ServerProfiler.exe, DeepscanV1.exe, DeepscanV2.exe, Formulas.exe
 
-**Example:** run buyPrograms.js [ e or n ]
+**Example:** run buyPrograms.js
 
 `findFaction.js`
 
@@ -122,5 +126,6 @@ If the required reputation is reached the script will go back to findFaction.js.
 
 The last part will be the installation, it will get all augmentations from the faction en list them from price high / low.
 If an augmentation needs a pre install it will be listed before the actual augmentation. 
+Before buying the script kills metaSploit en sell all stocks.
 When all augmentations are bought, money left will be spend on Neuroflux. 
 All will be installed en the main.js script will be run te reboot the procces.
