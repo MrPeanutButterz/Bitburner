@@ -2,7 +2,7 @@
 Proces: finds servers with money, creates a timed package to hack, and installs it on servers that have ram. */
 
 import { getScriptsPath, getSleepTime, getDynamicNetwork } from "./Default/config.js"
-import { getRootAccess, copyHackScripts, getServersWithMoney, getTotalNetRam, getUsableNetRam, getUniqueID, installPackage, getStockAccounts } from "./Default/library.js"
+import { getRootAccess, copyHackScripts, getServersWithMoney, getTotalNetRam, getUsableNetRam, getUniqueID, installPackage } from "./Default/library.js"
 
 
 /** @param {NS} ns */
@@ -76,27 +76,11 @@ export async function main(ns) {
 		return hackPackage
 	}
 
-	function addScript() {
-
-		//awaits free ram, then runs script
-
-		let freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-		let scriptRam = ns.getScriptRam(script.metaSploit)
-
-		if (freeRam > scriptRam
-			&& !ns.getRunningScript(script.metaSploit, "home")
-			&& !ns.getRunningScript(script.installation, "home")) {
-
-			ns.run(script.metaSploit, 1)
-		}
-	}
-
 	//\\ MAIN LOGICA
 	while (true) {
 
 		await ns.sleep(speed.medium)
 		let servers = getServersWithMoney(ns)
-		if (getStockAccounts(ns)) { addScript() }
 
 		for (let server of servers) {
 
