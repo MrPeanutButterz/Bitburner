@@ -62,9 +62,15 @@ It wil create a timed package with fases: weak, grow, weak, hack. All script end
 These script are installed on the servers with ram. 
 
 `metaSploit.js`
+**args optional**
 
 MetaSploit runs the stockmarket by buying stock with a forcast over 70% en selling below 50%. 
 All stocks owned are pumped by runnig grow scripts on home server to get the most money out of the stocks.
+If the script is run with a sell argument, all stocks will be sold.
+
+1. if you want to sell all stocks add sell when running script
+
+**Example:** run metaSploit.js sell
 
 `buyHacknet.js`
 **args optional**
