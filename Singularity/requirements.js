@@ -237,23 +237,7 @@ export async function main(ns) {
 
                 studyAtSchool(300)
 
-            } else if (faction != "Fulcrum Secret Technologies") {
-
-                if (ns.singularity.getCompanyRep(faction) > 300000) {
-
-                    checkInvitations(faction)
-
-                } else if (ns.singularity.applyToCompany(faction, "Business")) {
-
-                    displayStatus(faction, factionServer, "You got a job or promo")
-
-                } else if (ns.singularity.workForCompany(faction, false)) {
-
-                    displayStatus(faction, factionServer, "CEO in the making")
-
-                }
-
-            } else {
+            } else if (faction === "Fulcrum Secret Technologies") {
 
                 if (ns.singularity.getCompanyRep(faction) > 400000) {
 
@@ -265,10 +249,25 @@ export async function main(ns) {
 
                 } else if (ns.singularity.workForCompany("Fulcrum Technologies", false)) {
 
-                    displayStatus(faction, factionServer, "CEO in the making")
+                    displayStatus(faction, factionServer, "Working on 400000 reputation")
 
                 }
 
+            } else {
+
+                if (ns.singularity.getCompanyRep(faction) > 300000) {
+
+                    checkInvitations(faction)
+
+                } else if (ns.singularity.applyToCompany(faction, "Business")) {
+
+                    displayStatus(faction, factionServer, "You got a job or promo")
+
+                } else if (ns.singularity.workForCompany(faction, false)) {
+
+                    displayStatus(faction, factionServer, "Working on 300000 reputation")
+
+                }
             }
 
 
