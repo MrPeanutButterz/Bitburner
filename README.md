@@ -117,6 +117,7 @@ This script buys all .exe programs needed to run the hack scripts. Only essentia
 Finds the best faction based on the highest reputation in the list of buyable augmentations.
 Then it will compair it to all factions en select the one with the least amount of work. 
 When a faction is found it will start the requirements or reputation or installation script.
+If all factions are completed this script will start bitnode.js.
 
 `requirements.js`
 **args optional**
@@ -124,7 +125,7 @@ When a faction is found it will start the requirements or reputation or installa
 Reputation is run with an argument (faction name) en finds the required tasks en execute hem.
 When the selected faction has send an invitation it will be accepted en control is given back to findFaction.js.
 
-**Example:** run requirements.js Netburners
+**Example:** run requirements.js netburners
 
 `reputation.js`
 **args optional**
@@ -133,7 +134,7 @@ When findFaction.js starts reputation.js it is run with 2 arguments (faction nam
 First it will do a 10 second test run to get an indication on the finish time.
 If the required reputation is reached the script will go back to findFaction.js.
 
-**Example:** run requirements.js Netburners 52000
+**Example:** run requirements.js netburners 52000
 
 `installation.js`
 **args optional**
@@ -143,3 +144,7 @@ If an augmentation needs a pre install it will be listed before the actual augme
 Before buying the script kills metaSploit en sell all stocks.
 When all augmentations are bought, money left will be spend on Neuroflux. 
 All augmentations will be installed en the main.js script will be run to reboot the procces.
+
+`bitnode.js`
+
+When all factions are completed the bitnode script will hack the last server (w0r1d_d43m0n).
