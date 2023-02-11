@@ -35,7 +35,13 @@ export async function main(ns) {
             }
         }
         list.sort(function (a, b) { return a.reputation - b.reputation })
-        return list[0]
+
+        if (list.length === 0) {
+            list.push({ name: undefined })
+            return list
+        } else {
+            return list[0]
+        }
     }
 
     function reputationGoal(faction) {
@@ -81,7 +87,10 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     let faction = bestFaction()
 
-    if (faction.name != undefined) {
+    ns.tprint(faction.name)
+
+
+    if (faction.name !== undefined) {
 
         if (!accepted(faction.name)) {
 
@@ -109,7 +118,7 @@ export async function main(ns) {
 
             //kill bitnode 
             ns.tprint("Its time to take the red pill")
-            ns.run(script.bitnode, 1)
+            ns.run(script.killBitnode, 1)
         }
 
     }

@@ -1,24 +1,27 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: Destroys the bitnode bij installing a backdoor on the World Deamon server */
 
+import { getSleepTime } from "Default/config.js"
 import { numOfPrograms, getRootAccess, getServerPath } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    ns.toast("findFaction online", "success", 2000)
+    ns.toast("end of the road", "success", 2000)
     ns.disableLog("ALL")
     ns.clearLog()
+    ns.tail()
 
     //\\ GENERAL DATA
+    let speed = getSleepTime
     let server = "w0r1d_d43m0n"
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
 
     //\\ MAIN LOGICA
     while (true) {
-        await ns.sleep(1000)
+        await ns.sleep(speed.medium)
 
         if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(server)) {
 
