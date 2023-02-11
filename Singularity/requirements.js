@@ -239,7 +239,7 @@ export async function main(ns) {
 
             } else if (faction === "Fulcrum Secret Technologies") {
 
-                if (ns.singularity.getCompanyRep(faction) > 400000) {
+                if (ns.singularity.getCompanyRep("Fulcrum Technologies") > 400000) {
 
                     checkInvitations(faction)
 
