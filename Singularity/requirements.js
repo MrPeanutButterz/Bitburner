@@ -286,6 +286,8 @@ export async function main(ns) {
                 || ns.getPlayer().skills.agility < requirement.agility) {
 
                 pumpStats()
+                await ns.sleep(speed.medium)
+                ns.singularity.stopAction()
 
             } else if (ns.heart.break() > requirement.karma
                 || ns.getPlayer().numPeopleKilled < requirement.kills) {
@@ -373,6 +375,8 @@ export async function main(ns) {
                 || ns.getPlayer().skills.agility < requirement.agility) {
 
                 pumpStats()
+                await ns.sleep(speed.medium)
+                ns.singularity.stopAction()
 
             } else if (ns.getPlayer().skills.hacking < requirement.hacklvl) {
 
