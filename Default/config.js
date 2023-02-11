@@ -197,7 +197,7 @@ export function getFactionServer(ns, faction) {
         case "The Black Hand": { return "I.I.I.I" }
         case "BitRunners": { return "run4theh111z" }
         case "ECorp": { return "ecorp" }
-        case "MegaCorp": { "megacorp" }
+        case "MegaCorp": { return "megacorp" }
         case "KuaiGong International": { return "kuai-gong" }
         case "Four Sigma": { return "4sigma" }
         case "NWO": { return "nwo" }
