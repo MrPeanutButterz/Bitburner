@@ -52,6 +52,7 @@ export function getScriptsPath(ns) {
         requirements: "/Singularity/requirements.js",
         reputation: "/Singularity/reputation.js",
         installation: "/Singularity/installation.js",
+        bitnode: "/Singularity/bitnode.js",
 
     }
     return path

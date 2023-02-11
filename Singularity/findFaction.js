@@ -105,7 +105,12 @@ export async function main(ns) {
 
     } else {
 
-        //redpill
+        if (redPill()) {
+
+            //kill bitnode 
+            ns.tprint("Its time to take the red pill")
+            ns.run(script.bitnode, 1)
+        }
 
     }
 }
