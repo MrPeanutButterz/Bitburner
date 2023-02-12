@@ -15,11 +15,11 @@ export async function main(ns) {
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	let scripts = [
-		script.buyRam,
 		script.buyHacknet,
 		script.buyPrograms,
 		script.netStumbler,
 		script.buyServers,
+		script.buyRam,
 		script.findFaction,
 		script.metaSploit,
 		script.buyCore
