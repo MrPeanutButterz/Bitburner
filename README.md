@@ -2,12 +2,15 @@
 
 These are the scripts I wrote for the Bitburner Game. Before I started this game I couldn't write any code.
 
+Bitburner is a programming-based incremental game that revolves around hacking and cyberpunk themes. The game can be played at https://danielyxie.github.io/bitburner or installed through Steam.
 
 ## ROOT
 
 `main.js`
 
-Kickstarts all scripts.
+In this file you will find a list of scripts. 
+If there is avaliable ram on home the scripts will be run. 
+Otherwise main will wait. 
 
 ## DEFAULT
 
@@ -23,7 +26,7 @@ The library of functions.
 ## GENESIS
 
 
-`serverExploid.js` 
+`serverExploid.js`
 **args optional**
 
 Weakens the security, grows the balance, hacks the money avaliable. 
@@ -145,6 +148,6 @@ Before buying the script kills metaSploit en sell all stocks.
 When all augmentations are bought, money left will be spend on Neuroflux. 
 All augmentations will be installed en the main.js script will be run to reboot the procces.
 
-`bitnode.js`
+`killBitnode.js`
 
 When all factions are completed the bitnode script will hack the last server (w0r1d_d43m0n).
