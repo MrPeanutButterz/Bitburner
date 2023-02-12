@@ -13,6 +13,7 @@ export function getSleepTime(ns) {
         medium: 1000,
         slow: 2000,
         superSlow: 5000,
+        sleeping: 10000,
     }
     return scriptSpeed
 }
@@ -23,12 +24,6 @@ export function getScriptsPath(ns) {
     //returns (string array) path to any script used in operation
 
     const path = {
-
-        //ROOT
-        main: "main.js",
-
-        //DEFAULT
-        buffer: "/Default/buffer.js",
 
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",

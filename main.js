@@ -34,7 +34,7 @@ export async function main(ns) {
 		} else {
 			ns.clearLog()
 			ns.print("awaiting ram for " + scripts[i])
-			await ns.sleep(speed.slow)
+			await ns.sleep(speed.sleeping)
 		}
 	}
 }
