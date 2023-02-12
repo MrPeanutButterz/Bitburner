@@ -28,7 +28,7 @@ export function getScriptsPath(ns) {
         main: "main.js",
 
         //DEFAULT
-        netCleaner: "/Default/netCleaner.js",
+        buffer: "/Default/buffer.js",
 
         //GENESIS
         buyHacknet: "/Genesis/buyHacknet.js",

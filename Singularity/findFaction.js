@@ -87,9 +87,6 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     let faction = bestFaction()
 
-    ns.tprint(faction.name)
-
-
     if (faction.name !== undefined) {
 
         if (!accepted(faction.name)) {
