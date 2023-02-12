@@ -2,7 +2,7 @@
 Proces: Destroys the bitnode bij installing a backdoor on the World Deamon server */
 
 import { getSleepTime } from "Default/config.js"
-import { numOfPrograms, getRootAccess, getServerPath } from "./Default/library.js"
+import { getProgramCount, getRootAccess, getServerPath } from "./Default/library.js"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -14,7 +14,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    let speed = getSleepTime
+    let speed = getSleepTime(ns)
     let server = "w0r1d_d43m0n"
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
@@ -29,7 +29,7 @@ export async function main(ns) {
             ns.clearLog()
             ns.print("Hacking level: \t\t" + ns.getHackingLevel() + "/" + ns.getServerRequiredHackingLevel(server))
 
-        } else if (numOfPrograms(ns) < ns.getServerNumPortsRequired(server)) {
+        } else if (getProgramCount(ns) < ns.getServerNumPortsRequired(server)) {
 
             //awaits number of programs to breach
             ns.clearLog()
@@ -40,7 +40,7 @@ export async function main(ns) {
             //get root access
             ns.clearLog()
             ns.print("Analyzing root access")
-            getRootAccess(ns)
+            getRootAccess(ns, server)
 
         } else if (ns.getServer(server).backdoorInstalled == false) {
 
