@@ -49,10 +49,9 @@ The arguments are provided bij netSparker.js.
 `netStumbler.js`
 **args optional**
 
-This is a basic hack script, the purpose of which is to kickstart your game... 
-It will install serverExploid.js on every server. 
-Start hacking the server that is provided as an argument, or if non is given it will find one for you.
-As the network ram increases with more avialable servers it will switch over to netSparker.js as it is more profitable. 
+This basic hack script is intended to give your game a jumpstart. It installs "serverExploit.js" on each available server, then begins hacking the server specified as an argument. If no server is specified, it will locate one automatically. As the network's RAM grows with the addition of more available servers, the script will transition to using "netSparker.js," which is more profitable.
+
+The script accepts the following arguments:
 
 1. specify the server to start hacking it.
 
@@ -60,41 +59,35 @@ As the network ram increases with more avialable servers it will switch over to 
 
 `netSparker.js`
 
-This is a advanced hack script, the purpose of which is make as much money as possible. 
-It wil create a timed package with fases: weak, grow, weak, hack. All script ending within 500 ticks after one another. 
-These script are installed on the servers with ram. 
+This advanced hack script is designed to generate maximum profit. It follows a timed sequence consisting of the following stages: weak, grow, weak, hack. All scripts conclude within 500 ticks of each other and are installed on servers with ample RAM.
 
 `metaSploit.js`
 **args optional**
 
-MetaSploit runs the stockmarket by buying stock with a forcast over 70% en selling below 50%. 
-All stocks owned are pumped by runnig grow scripts on home server to get the most money out of the stocks.
-If the script is run with a sell argument, all stocks will be sold.
+MetaSploit manages the stock market by purchasing stocks with a forecast of over 70% and selling when they dip below 50%. All owned stocks are boosted by running "grow" scripts on the home server to maximize profit potential. If the script is executed with a "sell" argument, all stocks will be liquidated.
 
-1. if you want to sell all stocks add sell when running script
+To sell all stocks, include the "sell" argument when running the script.
 
 **Example:** run metaSploit.js sell
 
 `buyHacknet.js`
 **args optional**
 
-This script runs on autopilot until all the provided arguments are met. When this happens the script will exit itself.
-In addition to the arguments, it can also be run without. if no arguments are provided the script will buy 4 nodes with 25 levels en 2 ram en 1 core.
-This is enough to get an invite from Netburners.
+This script will operate autonomously until all provided arguments are met, at which point it will terminate. If no arguments are given, the script will automatically purchase 4 nodes with 25 levels, 2 gigabytes of RAM, and 1 core. This configuration is sufficient to receive an invitation from Netburners.
 
-1. specify how many nodes you want to buy
-2. specify how many levels you want to buy
-3. specify how many gb ram you want to buy
-4. specify how many cores you want to buy
+The script accepts the following arguments:
+
+1. Number of nodes to purchase
+2. Number of levels per node to purchase
+3. Amount of RAM per node to purchase (in gigabytes)
+4. Number of cores per node to purchase
 
 **Example:** run buyHacknet.js 5 100 16 2
 
 `buyServer.js`
 **args optional**
 
-This script keeps buying servers until the provided arguments are met. 
-If no arguments are given the script will start buying 4GB ram servers en if all 24 servers have 4GB it will replace every server
-with 8 GB ram en so on untill the maximum amount of ram is reached. 
+This script will continue purchasing servers until the specified conditions are met. If no arguments are provided, the script will begin by buying 4GB RAM servers, and once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the maximum amount of RAM is reached.
 
 1. specify the amount of ram you want to start buying
 2. specify the amount of ram you want to stop buying
@@ -111,43 +104,33 @@ Keeps buying untill your money runs out.
 
 `buyPrograms.js` 
 
-This script buys all .exe programs needed to run the hack scripts. Only essential programs will be bought. 
+This script purchases only the necessary .exe programs required to run the hack scripts, ensuring that essential programs are the only ones acquired.
 
-1. essential: BruteSSH.exe, FTPCrack.exe, relaySMTP.exe, HTTPWorm.exe, SQLInject.exe
+BruteSSH.exe, FTPCrack.exe, relaySMTP.exe, HTTPWorm.exe, SQLInject.exe
 
 `findFaction.js`
 
-Finds the best faction based on the highest reputation in the list of buyable augmentations.
-Then it will compair it to all factions en select the one with the least amount of work. 
-When a faction is found it will start the requirements or reputation or installation script.
-If all factions are completed this script will start bitnode.js.
+This script will identify the most desirable faction based on the highest reputation available in the list of purchasable augmentations. Next, it will compare this faction against all other factions and select the one with the least amount of work required. Once a suitable faction is found, the script will initiate the requirements, reputation, or installation script as needed. Once all factions have been completed, the script will launch bitnode.js.
 
 `requirements.js`
 **args optional**
 
-Reputation is run with an argument (faction name) en finds the required tasks en execute hem.
-When the selected faction has send an invitation it will be accepted en control is given back to findFaction.js.
+Reputation is executed with a faction name argument and locates the necessary tasks to complete. Once identified, the script executes these tasks. If the selected faction sends an invitation, the script accepts it and returns control to findFaction.js.
 
 **Example:** run requirements.js netburners
 
 `reputation.js`
 **args optional**
 
-When findFaction.js starts reputation.js it is run with 2 arguments (faction name + reputation amount).
-First it will do a 10 second test run to get an indication on the finish time.
-If the required reputation is reached the script will go back to findFaction.js.
+When findFaction.js launches reputation.js, it passes two arguments to the script: the faction name and the desired reputation amount. The script will perform a 10-second test run to estimate the completion time. If the required reputation is achieved, the script will return to findFaction.js.
 
 **Example:** run requirements.js netburners 52000
 
 `installation.js`
 **args optional**
 
-The last part will be the installation, it will get all augmentations from the faction en list them from price high / low.
-If an augmentation needs a pre install it will be listed before the actual augmentation. 
-Before buying the script kills metaSploit en sell all stocks.
-When all augmentations are bought, money left will be spend on Neuroflux. 
-All augmentations will be installed en the main.js script will be run to reboot the procces.
+The final step will involve the installation process, which will gather all augmentations from the faction and list them in order of price, from highest to lowest. If an augmentation requires a pre-installation step, it will be listed before the actual augmentation. Before making any purchases, the script will terminate MetaSploit and sell all stocks. Once all augmentations have been purchased, any remaining funds will be spent on Neuroflux. Finally, all augmentations will be installed, and the main.js script will run to reboot the process.
 
 `killBitnode.js`
 
-When all factions are completed the bitnode script will hack the last server (w0r1d_d43m0n).
+Once all factions have been successfully completed, the bitnode script will initiate a hack of the final server (w0r1d_d43m0n).
