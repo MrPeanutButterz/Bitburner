@@ -183,6 +183,26 @@ export function getFactionNames(ns) {
 }
 
 /** @param {NS} ns */
+export function hasCompanyWork(ns, faction) {
+
+    //returns (bool) if has company work
+
+    switch (faction) {
+        case "ECorp": { return true }
+        case "MegaCorp": { return true }
+        case "KuaiGong International": { return true }
+        case "Four Sigma": { return true }
+        case "NWO": { return true }
+        case "Blade Industries": { return true }
+        case "OmniTek Incorporated": { return true }
+        case "Bachman & Associates": { return true }
+        case "Clarke Incorporated": { return true }
+        case "Fulcrum Secret Technologies": { return true }
+        default: { return false }
+    }
+}
+
+/** @param {NS} ns */
 export function getFactionServer(ns, faction) {
 
     //returns (string) the faction corresponding server

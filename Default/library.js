@@ -1,7 +1,7 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: functions used across all scripts */
 
-import { getScriptsPath } from "./Default/config.js"
+import { getScriptsPath, hasCompanyWork } from "./Default/config.js"
 
 /** @param {NS} ns */
 export function networkScanner(ns) {
@@ -88,11 +88,11 @@ export function getProgramCount(ns) {
 	//returns the number of programs owned
 
 	var programs = 0
-	if (ns.fileExists("BruteSSH.exe", "home") == true) { programs++ }
-	if (ns.fileExists("FTPCrack.exe", "home") == true) { programs++ }
-	if (ns.fileExists("RelaySMTP.exe", "home") == true) { programs++ }
-	if (ns.fileExists("HTTPWorm.exe", "home") == true) { programs++ }
-	if (ns.fileExists("SQLInject.exe", "home") == true) { programs++ }
+	if (ns.fileExists("BruteSSH.exe", "home")) { programs++ }
+	if (ns.fileExists("FTPCrack.exe", "home")) { programs++ }
+	if (ns.fileExists("RelaySMTP.exe", "home")) { programs++ }
+	if (ns.fileExists("HTTPWorm.exe", "home")) { programs++ }
+	if (ns.fileExists("SQLInject.exe", "home")) { programs++ }
 	return programs
 }
 
@@ -277,5 +277,155 @@ export function getServerPath(ns, server) {
 			}
 		}
 		return serverPathList
+	}
+}
+
+/** @param {NS} ns */
+export function getFactionDetails(ns, faction) {
+
+	return {
+		name: faction,
+		getMaxRep: getMaxRep(ns, faction),
+		completed: factionCompleted(ns, faction),
+		hasCompanyWork: hasCompanyWork(ns, faction),
+		augmentations: {
+			buyList: getBuyList(ns, faction),
+			preBuyList: getPreBuyList(ns, faction),
+			preRequireInstalled: preRequireInstalled(ns, faction),
+			buyAtFaction: buyAtFaction(ns, faction),
+		}
+	}
+}
+
+/** @param {NS} ns */
+export function removeInstalledFromList(ns, arr) {
+
+	//removes installed or bought augmentations
+
+	let playerAug = ns.singularity.getOwnedAugmentations(true)
+
+	for (let i = 0; i < playerAug.length; i++) {
+
+		if (arr.includes(playerAug[i])) {
+			arr.splice(arr.indexOf(playerAug[i]), 1)
+		}
+	}
+	return arr
+}
+
+/** @param {NS} ns */
+export function addPrice(ns, arr) {
+
+	//adds price to augmentation list 
+	return arr = arr.map((item) => { return { name: item, price: Math.ceil(ns.singularity.getAugmentationPrice(item)) } })
+}
+
+/** @param {NS} ns */
+export function getBuyList(ns, faction) {
+
+	//returns (list) of augmentations sorted on price high/low
+
+	let factionAug = removeInstalledFromList(ns, ns.singularity.getAugmentationsFromFaction(faction))
+
+	let arr = addPrice(ns, factionAug)
+
+	arr.sort((a, b) => { return a.price - b.price })
+	arr.reverse()
+
+	return arr
+}
+
+/** @param {NS} ns */
+export function getPreBuyList(ns, faction) {
+
+	//returns (list) of pre augmentations sorted on price low/high
+
+	let factionAug = getBuyList(ns, faction)
+	let arr = []
+
+	factionAug.forEach((item) => {
+
+		let preInstallList = ns.singularity.getAugmentationPrereq(item.name)
+
+		if (preInstallList.length > 0) {
+			arr = arr.concat(preInstallList)
+		}
+	})
+
+	arr = [...new Set(arr)]
+	arr = addPrice(ns, arr)
+	arr.sort((a, b) => { return a.price - b.price })
+	return arr
+}
+
+/** @param {NS} ns */
+export function factionCompleted(ns, faction) {
+
+	//returns (bool) faction completed
+
+	let buyList = getBuyList(ns, faction)
+
+	if (buyList.length === 0) {
+		return true
+
+	} else {
+		return false
+	}
+}
+
+/** @param {NS} ns */
+export function getMaxRep(ns, faction) {
+
+	//returns (number) the augmentation with the highest reputation at faction
+
+	let buyList = getBuyList(ns, faction)
+	let highestReputation = 0
+
+	for (let item of buyList) {
+
+		if (ns.singularity.getAugmentationRepReq(item.name) > highestReputation) {
+			highestReputation = ns.singularity.getAugmentationRepReq(item.name)
+		}
+	}
+	return Math.ceil(highestReputation)
+}
+
+/** @param {NS} ns */
+export function preRequireInstalled(ns, faction) {
+
+	//returns (bool) pre installed
+
+	let buyList = getPreBuyList(ns, faction)
+
+	if (buyList.length > 0) {
+		return true
+
+	} else {
+		return false
+	}
+}
+
+/** @param {NS} ns */
+export function buyAtFaction(ns, faction) {
+
+	//returns (bool) pre installs can be bought at this faction
+
+	let factionAug = ns.singularity.getAugmentationsFromFaction(faction)
+	let preBuyList = getPreBuyList(ns, faction)
+	let count = 0
+
+	preBuyList.forEach((item) => {
+
+		if (factionAug.find(element => element === item.name) == item.name) { 
+			count++
+		}
+	})
+
+	if (count === preBuyList.length) {
+		return true
+
+	} else {
+		return false
+
 	}
 }
