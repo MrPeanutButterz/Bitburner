@@ -47,7 +47,7 @@ export async function main(ns) {
 
 		for (let i = 1; i <= purchaseLimit;) {
 
-			let server = "Heavy-indexer-" + i
+			let server = "pool-server-" + i
 
 			//buy or replace servers
 			if (!ns.serverExists(server)) {

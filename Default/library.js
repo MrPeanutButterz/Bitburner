@@ -304,20 +304,29 @@ export function removeInstalledFromList(ns, arr) {
 
 	let playerAug = ns.singularity.getOwnedAugmentations(true)
 
-	for (let i = 0; i < playerAug.length; i++) {
+	if (arr.length > 0) {
+		for (let i = 0; i < playerAug.length; i++) {
 
-		if (arr.includes(playerAug[i])) {
-			arr.splice(arr.indexOf(playerAug[i]), 1)
+			if (arr.includes(playerAug[i])) {
+				arr.splice(arr.indexOf(playerAug[i]), 1)
+			}
 		}
+		return arr
+	} else {
+		return []
 	}
-	return arr
 }
 
 /** @param {NS} ns */
 export function addPrice(ns, arr) {
 
 	//adds price to augmentation list 
-	return arr = arr.map((item) => { return { name: item, price: Math.ceil(ns.singularity.getAugmentationPrice(item)) } })
+
+	if (arr.length > 0) {
+		return arr = arr.map((item) => { return { name: item, price: Math.ceil(ns.singularity.getAugmentationPrice(item)) }})
+	} else {
+		return []
+	}
 }
 
 /** @param {NS} ns */
@@ -327,12 +336,15 @@ export function getBuyList(ns, faction) {
 
 	let factionAug = removeInstalledFromList(ns, ns.singularity.getAugmentationsFromFaction(faction))
 
-	let arr = addPrice(ns, factionAug)
+	if (factionAug.length > 0) {
+		let arr = addPrice(ns, factionAug)
+		arr.sort((a, b) => { return a.price - b.price })
+		arr.reverse()
+		return arr
+	} else {
+		return []
+	}
 
-	arr.sort((a, b) => { return a.price - b.price })
-	arr.reverse()
-
-	return arr
 }
 
 /** @param {NS} ns */
@@ -367,7 +379,6 @@ export function factionCompleted(ns, faction) {
 
 	if (buyList.length === 0) {
 		return true
-
 	} else {
 		return false
 	}
@@ -416,7 +427,7 @@ export function buyAtFaction(ns, faction) {
 
 	preBuyList.forEach((item) => {
 
-		if (factionAug.find(element => element === item.name) == item.name) { 
+		if (factionAug.find(element => element === item.name) == item.name) {
 			count++
 		}
 	})

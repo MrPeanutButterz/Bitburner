@@ -43,8 +43,8 @@ export async function main(ns) {
 
         //checks server on script & ram 
 
-        let avaliableRam = Math.floor(ns.getServerMaxRam(thisServer) - ns.getServerUsedRam(thisServer))
-        let threads = avaliableRam / ns.getScriptRam(script.serverExploid)
+        let avaliableRam = ns.getServerMaxRam(thisServer) - ns.getServerUsedRam(thisServer)
+        let threads = Math.floor(avaliableRam / ns.getScriptRam(script.serverExploid))
 
         if (!ns.getRunningScript(script.serverExploid, thisServer, thisHack)) {
 
