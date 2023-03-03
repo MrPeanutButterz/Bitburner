@@ -198,6 +198,7 @@ export function hasCompanyWork(ns, faction) {
         case "Bachman & Associates": { return true }
         case "Clarke Incorporated": { return true }
         case "Fulcrum Secret Technologies": { return true }
+        case "Silhouette": { return true }
         default: { return false }
     }
 }
