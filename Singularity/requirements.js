@@ -8,8 +8,6 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     ns.toast("requirements online", "success", 2000)
-    ns.resizeTail(500, 130)
-    ns.moveTail(1150, 20)
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
@@ -41,8 +39,6 @@ export async function main(ns) {
 
         //returns (boolean) if the best faction has sent an invite 
 
-        ns.singularity.stopAction()
-
         let list = ns.singularity.checkFactionInvitations()
         let found = list.find(element => element == faction)
 
@@ -50,6 +46,7 @@ export async function main(ns) {
 
         if (ns.singularity.joinFaction(faction) || found === faction) {
             ns.run(script.findFaction, 1)
+            ns.singularity.stopAction()
             ns.closeTail()
             ns.exit()
         }
@@ -92,7 +89,7 @@ export async function main(ns) {
 
             } else {
 
-                ns.singularity.stopAction()
+                //ns.singularity.stopAction()
             }
         }
     }
@@ -287,7 +284,6 @@ export async function main(ns) {
 
                 pumpStats()
                 await ns.sleep(speed.medium)
-                ns.singularity.stopAction()
 
             } else if (ns.heart.break() > requirement.karma
                 || ns.getPlayer().numPeopleKilled < requirement.kills) {
@@ -309,6 +305,10 @@ export async function main(ns) {
             } else if (ns.getPlayer().city !== requirement.city) {
 
                 travelTo(requirement.city)
+
+            } else if (ns.getPlayer().money < requirement.money) {
+
+                displayStatus(faction, factionServer, "awaiting money " + Math.round(ns.getPlayer().money) + "/" + requirement.money)
 
             } else if (faction === "Silhouette") {
 

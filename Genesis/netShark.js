@@ -1,5 +1,5 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz
-Proces: find a server to continualy hack, hack all other servers */
+Proces: find a server to continualy hack, drain all other servers */
 
 import { getScriptsPath, getSleepTime } from "Default/config"
 import { getServersWithMoney, getServersWithRam, getTotalNetRam, getUsableNetRam, copyHackScripts, getRootAccess } from "Default/library"
