@@ -7,8 +7,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     ns.toast("reputation online", "success", 2000)
-    ns.resizeTail(500, 130)
-    ns.moveTail(1200, 20)
+    ns.resizeTail(500, 150)
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
@@ -75,7 +74,7 @@ export async function main(ns) {
         //display
         ns.clearLog()
         ns.print("Hacking contracts for: \t\t" + faction)
-        ns.print("Reputation needed: \t\t" + Math.round(ns.singularity.getFactionRep(faction)) + "/" + reputation)
+        ns.print("Reputation needed: \t\t" + Math.round(ns.singularity.getFactionRep(faction)) + "/" + Math.round(reputation))
         ns.print("Total time estimate: \t\t" + msToTime(timeToAugmentation * 1000))
 
         let procentDone = ns.singularity.getFactionRep(faction) / reputation * 100

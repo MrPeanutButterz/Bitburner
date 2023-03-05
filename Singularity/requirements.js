@@ -8,6 +8,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     ns.toast("requirements online", "success", 2000)
+    ns.resizeTail(500, 150)
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()

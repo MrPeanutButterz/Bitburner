@@ -9,6 +9,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     ns.toast("findFaction online", "success", 2000)
+    ns.resizeTail(500, 150)
     ns.disableLog("ALL")
     ns.clearLog()
 
