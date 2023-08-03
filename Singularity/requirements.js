@@ -267,9 +267,6 @@ export async function main(ns) {
 
                 }
             }
-
-
-
         }
 
     } else if (faction == "Slum Snakes" || faction == "Tetrads" || faction == "Silhouette" || faction == "Speakers for the Dead" || faction == "The Dark Army" || faction == "The Syndicate") {

@@ -42,12 +42,12 @@ export async function main(ns) {
 	}
 
 	//\\ MAIN LOGICA
-	while (serverPoolSize() < maxRam * 24) {
+	while (serverPoolSize() < maxRam * purchaseLimit) {
 		await ns.sleep(speed.average)
 
 		for (let i = 1; i <= purchaseLimit;) {
 
-			let server = "pool-server-" + i
+			let server = "Pserv_" + i
 
 			//buy or replace servers
 			if (!ns.serverExists(server)) {
@@ -61,14 +61,14 @@ export async function main(ns) {
 				} else {
 
 					ns.clearLog()
-					displayStatus(server, baseRam, "insufficient funds")
+					displayStatus(server, baseRam, "awaiting funds")
 					await ns.sleep(speed.average)
 
 				}
 
 			} else if (ns.getServerMaxRam(server) >= baseRam) {
 
-				displayStatus(server, baseRam, "is up to date")
+				displayStatus(server, baseRam, "no action required")
 				i++
 
 			} else if (ns.getServerMaxRam(server) < maxRam) {
@@ -76,13 +76,13 @@ export async function main(ns) {
 				if (ns.getPlayer().money > ns.getPurchasedServerUpgradeCost(server, baseRam)) {
 
 					ns.upgradePurchasedServer(server, baseRam)
-					displayStatus(server, baseRam, "ram upgrade")
+					displayStatus(server, baseRam, "installing larger ssd")
 					i++
 
 				} else {
 
 					ns.clearLog()
-					displayStatus(server, baseRam, "insufficient funds")
+					displayStatus(server, baseRam, "awaiting funds")
 					await ns.sleep(speed.average)
 
 				}
