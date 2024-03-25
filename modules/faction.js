@@ -1,4 +1,3 @@
-
 /** @param {NS} ns */
 export function getFactionShopList(ns, faction) {
 

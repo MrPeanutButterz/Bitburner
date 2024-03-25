@@ -33,7 +33,6 @@ export async function main(ns) {
 		ns.print("Core: \t" + maxCore)
 	}
 
-
 	//\\ MAIN LOGICA
 	while (true) {
 		await ns.sleep(speed.ms2)

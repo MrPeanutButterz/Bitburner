@@ -1,7 +1,4 @@
-/* 
-Kickstart the game
-*/
-
+/** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
