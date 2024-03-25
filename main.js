@@ -1,6 +1,8 @@
 /*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
 Proces: this script controls all scripts based on what is needed for next goal */
 
+//Hello World
+
 import { getSleepTime, getScriptsPath } from "./Default/config.js"
 
 /** @param {NS} ns */
