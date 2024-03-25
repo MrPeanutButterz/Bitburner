@@ -12,5 +12,5 @@ export async function main(ns) {
     await ns.sleep(1000)
     ns.tprint("Analyzing...")
     await ns.sleep(1000)
-    ns.tprint("Happy hacking!")
+    ns.tprint("INIT Process")
 }

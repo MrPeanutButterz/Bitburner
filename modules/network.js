@@ -1,4 +1,4 @@
-import { scriptPath } from "./lib/scripting-module"
+import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
 export function Nmap(ns) {

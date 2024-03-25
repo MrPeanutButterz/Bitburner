@@ -28,14 +28,6 @@ export function scriptPath(ns) {
 }
 
 /** @param {NS} ns */
-export function consoleLog(ns, msg) {
-
-    // shows toast on script startup 
-
-    ns.tprint(msg)
-}
-
-/** @param {NS} ns */
 export function getLocalTimeDate(inDate) {
 
     // returns time.now

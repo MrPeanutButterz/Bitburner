@@ -3,29 +3,23 @@ import { NmapMoneyServers, NmapRamServers } from "modules/network"
 /** @param {NS} ns */
 export async function main(ns) {
 
+    // find servers with money
+    // find servers with free ram
+    // get root access to all
+    // copy script to severs with ram
+    // start hacking servers with money
+    // repeat process
+
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
 
     //\\ GENERAL DATA
+    let ramServers = NmapRamServers()
+    let monServers = NmapMoneyServers()
+
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGICA
 
-    // list servers with ram
-    // get root if not
-    // push scripts
-    const ramServers = NmapRamServers(ns)
-    for (let server of ramServers) {
-        if (!ns.hasRootAccess(server)) {
-            getRootAccess(ns, server)
-        } else {
-            copyHackScripts(ns, server)
-        }
-    }
-
-    // list servers with money
-    // focus 70% grow/weak on one server 
-    // focus 30% grow/weak at random 
-    // hack from home
 } 
