@@ -1,18 +1,15 @@
-/*Creator: Charles, add me on github https://github.com/MrPeanutbutterz 
-Proces: This script runs with 4 arguments, 1:max nodes, 2:max levels, 3:max ram, 4: max cores. */
-
-import { getSleepTime } from "./Default/config.js"
+import { consoleLog, sleepTime } from "./lib/scripting-module"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.toast("Hacknet online", "success", 2000)
+	consoleLog(ns, "Hacknet Auto Purchase Running")
 	ns.disableLog("ALL")
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-	let speed = getSleepTime(ns)
+	const speed = sleepTime(ns)
 
 	let maxNode = ns.args[0]
 	let maxLevel = ns.args[1]
@@ -23,8 +20,6 @@ export async function main(ns) {
 	if (maxLevel === undefined) { maxLevel = 25 }
 	if (maxRam === undefined) { maxRam = 2 }
 	if (maxCore === undefined) { maxCore = 1 }
-
-	if (maxNode > 40) { maxNode = ns.hacknet.maxNumNodes() }
 	if (maxLevel > 200) { maxLevel = 200 }
 	if (maxRam > 64) { maxRam = 64 }
 	if (maxCore > 16) { maxCore = 16 }
@@ -42,7 +37,7 @@ export async function main(ns) {
 
 	//\\ MAIN LOGICA
 	while (true) {
-		await ns.sleep(speed.superFast)
+		await ns.sleep(speed.ms2)
 		displayStatus()
 
 		if (ns.hacknet.numNodes() === 0) {
@@ -76,6 +71,7 @@ export async function main(ns) {
 				if (ns.hacknet.getNodeStats(maxNode - 1).level >= maxLevel
 					&& ns.hacknet.getNodeStats(maxNode - 1).ram >= maxRam
 					&& ns.hacknet.getNodeStats(maxNode - 1).cores >= maxCore) {
+                    consoleLog(ns, "Hacknet Auto Purchase Completed")
 					ns.exit()
 				}
 			}
