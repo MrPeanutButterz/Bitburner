@@ -55,7 +55,7 @@ export function NmapClear(ns) {
 
 	//clears the network of all running scripts
 
-	let servers = NmapRam(ns)
+	let servers = NmapRamServers(ns)
 
 	for (let server of servers) {
 		ns.killall(server)
@@ -68,7 +68,7 @@ export function NmapTotalRam(ns) {
 	//returns the total ram in the network
 
 	let ram = 0
-	let servers = NmapRam(ns)
+	let servers = NmapRamServers(ns)
 
 	for (let server of servers) {
 		if (ns.hasRootAccess(server)) {
@@ -84,7 +84,7 @@ export function NmapFreeRam(ns) {
 	//returns the usable ram in the network
 
 	let ram = 0
-	let servers = NmapRam(ns)
+	let servers = NmapRamServers(ns)
 
 	for (let server of servers) {
 		if (ns.hasRootAccess(server)) {

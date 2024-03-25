@@ -23,7 +23,6 @@ export function scriptPath(ns) {
         grow: "/bin/gen/helpers/grow.js",
         weak: "/bin/gen/helpers/weak.js",
         hack: "/bin/gen/helpers/hack.js",
-        weakgrow: "/bin/gen/helpers/weakGrow.js",
     }
     return path
 }
@@ -38,6 +37,9 @@ export function consoleLog(ns, msg) {
 
 /** @param {NS} ns */
 export function getLocalTimeDate(inDate) {
+
+    // returns time.now
+    
     var date = new Date();
     date.setTime(inDate.valueOf() + 1000 + 7200000);
     return date;

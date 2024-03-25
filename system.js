@@ -1,22 +1,8 @@
 /* 
-kickstart > hacking program - stockmarket
-buy > hacknet, servers, ram, core
-
-* get 128 gb ram first 
-hacking scripts 
-ram script 
-
-*
-
-
+Kickstart the game
 */
 
 export async function main(ns) {
-
-    ns.tprint("Booting")
-    await ns.sleep(1000)
-    ns.tprint("Analyzing...")
-    await ns.sleep(2000)
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
@@ -25,6 +11,9 @@ export async function main(ns) {
     //\\ GENERAL DATA
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGIC
-
-    ns.tprint("Done...")
+    ns.tprint("Booting")
+    await ns.sleep(1000)
+    ns.tprint("Analyzing...")
+    await ns.sleep(1000)
+    ns.tprint("Happy hacking!")
 }
