@@ -1,10 +1,9 @@
-import { consoleLog, sleepTime } from "./lib/scripting-module"
+import { sleepTime } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	consoleLog(ns, "Hacknet Auto Purchase Running")
 	ns.disableLog("ALL")
 	ns.clearLog()
 

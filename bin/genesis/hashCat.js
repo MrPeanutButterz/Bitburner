@@ -1,6 +1,6 @@
-import { sleepTime, scriptPath } from "./lib/scripting-module"
-import { NmapRamServers, getRootAccess, copyHackScripts } from "./lib/network-module"
+import { NmapMoneyServers, NmapRamServers } from "modules/network"
 
+/** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
@@ -28,5 +28,4 @@ export async function main(ns) {
     // focus 70% grow/weak on one server 
     // focus 30% grow/weak at random 
     // hack from home
-
 } 

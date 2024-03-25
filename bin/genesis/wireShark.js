@@ -1,3 +1,4 @@
+/** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint("Hello World")
+    ns.tprint("Hello WireShark")
 }

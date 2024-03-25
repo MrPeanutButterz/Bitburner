@@ -1,9 +1,8 @@
-import { consoleLog, sleepTime } from "./lib/scripting-module"
+import { sleepTime } from "modules/scripting"
 
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    consoleLog(ns, "Ram Auto Purchase Running")
     ns.disableLog("ALL")
     ns.clearLog()
     
