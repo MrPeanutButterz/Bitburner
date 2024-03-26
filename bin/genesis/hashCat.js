@@ -1,49 +1,61 @@
-import { Nmap, getRootAccess, copyHackScripts } from "modules/network"
+import { Nmap, NmapClear, getRootAccess, copyHackScripts, NmapRamServers } from "modules/network"
 import { scriptPath } from "/modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // find servers with money
     // find servers with free ram
     // get root access to all servers
     // copy script (sequence) to severs with ram
-    // start hacking servers with money
-    // repeat process
+    // start hacking servers n00dles
+    // repeat process 
 
     //\\ SCRIPT SETTINGS
     ns.tprint("HashCat active")
     ns.disableLog("ALL")
     ns.clearLog()
-    ns.tail()
 
     //\\ GENERAL DATA
     const hackScript = scriptPath(ns).sequense
+    let target = ns.args[0]
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
+    function runScriptWithThread(server) {
+
+        // get server max ram
+        // subtract server used ram
+        // devide by script ram
+        // run script on server with thread
+
+        if (ns.hasRootAccess(server) && ns.getServerMaxRam(server) > 0 && !ns.isRunning(hackScript, server)) {
+            let serverMaxRam = ns.getServerMaxRam(server)
+            let serverUsedRam = ns.getServerUsedRam(server)
+            let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(hackScript))
+            if (threads != 0) { ns.exec(hackScript, server, threads, target) }
+        }
+    }
+
     //\\ MAIN LOGICA
+    if (target === undefined) { target = "n00dles" }
+    NmapClear(ns)
+
     while (true) {
         await ns.sleep(1000)
 
-        let servers = Nmap(ns)
+        // todo: if net ram is more than x, kill script en go to wireShark for more profit
+        let servers
+
+        servers = Nmap(ns)
         servers.forEach(server => {
 
             getRootAccess(ns, server)
             copyHackScripts(ns, server)
+        })
 
-            if (ns.hasRootAccess(server) && ns.getServerMaxRam(server) > 0 && !ns.isRunning(hackScript, server)) {
+        servers = NmapRamServers(ns)
+        servers.forEach(server => {
 
-                // get server max ram
-                // subtract server used ram
-                // devide by script ram
-                // run script on server with thread
-
-                let serverMaxRam = ns.getServerMaxRam(server)
-                let serverUsedRam = ns.getServerUsedRam(server)
-                let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(hackScript))
-
-                if (threads != 0) { ns.exec(hackScript, server, threads, "n00dles") }
-            }
+            runScriptWithThread(server)
         })
     }
 } 
