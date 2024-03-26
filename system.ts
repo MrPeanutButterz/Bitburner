@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 
 /** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
 
   //\\ SCRIPT SETTINGS
   ns.disableLog("ALL")
@@ -16,7 +16,6 @@ export async function main(ns) {
   await ns.sleep(1000)
   ns.tprint("INIT Process")
 
-  
   
 
   

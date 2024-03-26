@@ -4,11 +4,11 @@ import { NS } from "@ns";
 export async function main(ns) {
  
     // weaken server defense below threshhold
-    // grow server money a little over 1%
-    // hack server money by 1%
+    // grow server money, baseline grows incremental
+    // hack server money
 
     //\\ SCRIPT SETTINGS
-    //ns.disableLog("ALL")
+    ns.disableLog("ALL")
     ns.clearLog()
 
     //\\ GENERAL DATA
@@ -35,15 +35,9 @@ export async function main(ns) {
         } else {
             await ns.hack(target)
             moneyHackPerc++
-
+            
+            
         }
 
     }   
 }
-
-/* 
-getServerMoneyAvailable()
-getServerMaxMoney()
-getServerSecurityLevel()
-getServerMinSecurityLevel()
-*/
