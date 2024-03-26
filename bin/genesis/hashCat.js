@@ -1,3 +1,4 @@
+import { NS } from "@ns";
 import { NmapMoneyServers, NmapRamServers } from "modules/network"
 
 /** @param {NS} ns */
@@ -5,8 +6,8 @@ export async function main(ns) {
 
     // find servers with money
     // find servers with free ram
-    // get root access to all
-    // copy script to severs with ram
+    // get root access to all servers
+    // copy script (sequence) to severs with ram
     // start hacking servers with money
     // repeat process
 
