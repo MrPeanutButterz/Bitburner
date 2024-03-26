@@ -9,25 +9,25 @@ export async function main(ns) {
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-    const sleep = sleepTime()
+	const sleep = sleepTime()
 
 	const program = [
-		{name: "BruteSSH.exe", lvl: 50},
-		{name: "FTPCrack.exe", lvl: 100},
-		{name: "relaySMTP.exe", lvl: 250},
-		{name: "HTTPWorm.exe", lvl: 500},
-		{name: "SQLInject.exe", lvl: 750},
+		{ name: "BruteSSH.exe", lvl: 50 },
+		{ name: "FTPCrack.exe", lvl: 100 },
+		{ name: "relaySMTP.exe", lvl: 250 },
+		{ name: "HTTPWorm.exe", lvl: 500 },
+		{ name: "SQLInject.exe", lvl: 750 },
 	]
 
 	const nonEssential = [
-		{name: "AutoLink.exe", lvl: 25},
-		{name: "ServerProfiler.exe", lvl: 75},
-		{name: "DeepscanV1.exe", lvl: 75},
-		{name: "DeepscanV2.exe", lvl: 400},
-		{name: "Formulas.exe", lvl: 1000},
+		{ name: "AutoLink.exe", lvl: 25 },
+		{ name: "ServerProfiler.exe", lvl: 75 },
+		{ name: "DeepscanV1.exe", lvl: 75 },
+		{ name: "DeepscanV2.exe", lvl: 400 },
+		{ name: "Formulas.exe", lvl: 1000 },
 	]
 
-    //\\ SCRIPT SPECIFIC FUNCTIONS
+	//\\ SCRIPT SPECIFIC FUNCTIONS
 
 	//\\ MAIN LOGIC
 	for (let i = 0; i < program.length; i++) {
@@ -45,7 +45,7 @@ export async function main(ns) {
 				//create
 				ns.singularity.createProgram(program[i].name, false)
 				ns.print("Created " + program[i].name)
-				
+
 			}
 		}
 	}

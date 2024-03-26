@@ -70,7 +70,7 @@ export async function main(ns) {
 				if (ns.hacknet.getNodeStats(maxNode - 1).level >= maxLevel
 					&& ns.hacknet.getNodeStats(maxNode - 1).ram >= maxRam
 					&& ns.hacknet.getNodeStats(maxNode - 1).cores >= maxCore) {
-                    ns.tprint("Hacknet auto purchase completed")
+					ns.tprint("Hacknet auto purchase completed")
 					ns.exit()
 				}
 			}
