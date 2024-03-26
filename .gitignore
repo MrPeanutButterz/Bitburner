@@ -2,3 +2,5 @@
 /.vscode
 NetscriptDefinitions.d.ts
 jsconfig.json
+lib/
+template.ts
