@@ -1,5 +1,3 @@
-import { NS } from "@ns";
-
 /** @param {NS} ns */
 export async function main(ns) {
  
@@ -13,31 +11,31 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const target = ns.args[0]
-    let moneyHackPerc = 10
-    
+    let attackPerc = 10    
     
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGIC
-    
-    
     while(true) {
         await ns.sleep(1000)
-        
-        let moneyPerc = ns.getServerMoneyAvailable(target) / ns.getServerMaxMoney(target) * 100
+
+        let moneyPerc = Math.floor(ns.getServerMoneyAvailable(target) / ns.getServerMaxMoney(target) * 100)
         const minSecurtiyLevel = ns.getServerMinSecurityLevel(target) + 5 
 
-        if (moneyPerc < moneyHackPerc) {
+        ns.print("Attack percent: " + attackPerc)
+
+        if (moneyPerc < attackPerc) {
+            ns.print("GROW@" + moneyPerc)
             await ns.grow(target)
-
+            
         } else if (ns.getServerSecurityLevel(target) > minSecurtiyLevel) {
+            ns.print("WEAK")
             await ns.weaken(target)
-
+            
         } else {
+            ns.print("HACK @" + moneyPerc)
             await ns.hack(target)
-            moneyHackPerc++
-            
-            
+            attackPerc++
+                        
         }
-
     }   
 }
