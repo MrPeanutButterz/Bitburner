@@ -1,3 +1,5 @@
+import { NS } from "@ns";
+
 /** @param {NS} ns */
 export async function main(ns) {
  
@@ -34,7 +36,13 @@ export async function main(ns) {
         } else {
             ns.print("HACK @" + moneyPerc)
             await ns.hack(target)
-            attackPerc++
+
+            if (attackPerc < 99) { 
+                attackPerc++
+
+            } else {
+                attackPerc = 80
+            }
                         
         }
     }   
