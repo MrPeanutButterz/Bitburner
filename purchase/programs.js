@@ -1,11 +1,10 @@
 import { sleepTime } from "modules/scripting"
 
-sleepTime
-
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
+	ns.tprint("Programs active")
 	ns.disableLog("ALL")
 	ns.clearLog()
 
@@ -50,4 +49,5 @@ export async function main(ns) {
 			}
 		}
 	}
+	ns.tprint("Programs creating purchase completed")
 }

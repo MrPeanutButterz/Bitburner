@@ -4,6 +4,7 @@ import { sleepTime } from "modules/scripting"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
+	ns.tprint("Hacknet active")
 	ns.disableLog("ALL")
 	ns.clearLog()
 
@@ -69,7 +70,7 @@ export async function main(ns) {
 				if (ns.hacknet.getNodeStats(maxNode - 1).level >= maxLevel
 					&& ns.hacknet.getNodeStats(maxNode - 1).ram >= maxRam
 					&& ns.hacknet.getNodeStats(maxNode - 1).cores >= maxCore) {
-                    consoleLog(ns, "Hacknet Auto Purchase Completed")
+                    ns.tprint("Hacknet auto purchase completed")
 					ns.exit()
 				}
 			}
