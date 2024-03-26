@@ -1,4 +1,4 @@
-import { sleepTime } from "Bitburner/modules/scripting"
+import { sleepTime } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {

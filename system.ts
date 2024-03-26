@@ -15,4 +15,5 @@ export async function main(ns: NS): Promise<void> {
   ns.tprint("Analyzing...")
   await ns.sleep(1000)
   ns.tprint("INIT Process")
+  
 }
