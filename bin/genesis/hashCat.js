@@ -1,4 +1,5 @@
 import { Nmap, getRootAccess, copyHackScripts } from "modules/network"
+import { scriptPath } from "/modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -17,8 +18,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    const hackScript = "bin/genesis/sequence.js"
-
+    const hackScript = scriptPath(ns).sequense
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGICA
