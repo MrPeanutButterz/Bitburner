@@ -174,9 +174,18 @@ export function copyHackScripts(ns, server) {
 
 	//copy the scripts to the destination server
 
-	const script = scriptPath(ns)
-	const files = [script.grow, script.weak, script.hack, script.weakgrow]
-	if (!ns.fileExists(script.hack, server) || !ns.fileExists(script.weak, server) || !ns.fileExists(script.hack, server) || !ns.fileExists(script.weakgrow, server)) {
+	const path = {
+		grow: "/bin/genesis/grow.js",
+		weak: "/bin/genesis/weak.js",
+		hack: "/bin/genesis/hack.js",
+		sequense: "/bin/genesis/sequence.js",
+	}
+
+	const files = [path.grow, path.weak, path.hack, path.sequense]
+	if (!ns.fileExists(path.grow, server)
+		|| !ns.fileExists(path.weak, server)
+		|| !ns.fileExists(path.hack, server)
+		|| !ns.fileExists(path.sequense, server)) {
 		ns.scp(files, server, "home")
 	}
 }
