@@ -4,7 +4,7 @@ import { sleepTime } from "modules/scripting"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.tprint("Hacknet active")
+	ns.tprint("Active")
 	ns.disableLog("ALL")
 	ns.clearLog()
 

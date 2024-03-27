@@ -3,7 +3,7 @@ import { scriptPath } from "/modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
-    
+
     // get root access to all servers
     // find servers with free ram
     // copy script (sequence) to severs with ram
@@ -11,7 +11,7 @@ export async function main(ns) {
     // repeat process 
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("HashCat active")
+    ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
 
@@ -25,11 +25,11 @@ export async function main(ns) {
         // (get server max ram > subtract server used ram) > devide by script ram
         // run script on server with thread pointed at target
 
-        if (ns.hasRootAccess(server) && ns.getServerMaxRam(server) > 0 && !ns.isRunning(hackScript, server)) {
+        if (ns.hasRootAccess(server) && !ns.isRunning(hackScript, server)) {
             let serverMaxRam = ns.getServerMaxRam(server)
             let serverUsedRam = ns.getServerUsedRam(server)
             let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(hackScript))
-            if (threads != 0) { ns.exec(hackScript, server, threads, target) }
+            if (threads >= 1) { ns.exec(hackScript, server, threads, target) }
         }
     }
 
@@ -39,10 +39,9 @@ export async function main(ns) {
 
     while (true) {
         await ns.sleep(1000)
+        let servers
 
         // todo: if net ram is more than x, kill script en go to wireShark for more profit
-
-        let servers
 
         servers = Nmap(ns)
         servers.forEach(server => {
