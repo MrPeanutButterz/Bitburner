@@ -3,7 +3,7 @@ export async function main(ns) {
 
     // weaken server defense below threshhold
     // grow server money, baseline grows incremental
-    // hack server money
+    // hack server on payday
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
