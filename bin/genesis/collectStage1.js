@@ -17,7 +17,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     let target = ns.args[0]
-    const hackScript = scriptPath(ns).sequense
+    const hackScript = scriptPath(ns).gwh
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function runScriptWithThread(server) {
@@ -29,7 +29,7 @@ export async function main(ns) {
             let serverMaxRam = ns.getServerMaxRam(server)
             let serverUsedRam = ns.getServerUsedRam(server)
             let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(hackScript))
-            if (threads >= 1) { ns.exec(hackScript, server, threads, target) }
+            if (threads >= 1 && threads < 9999999999) { ns.exec(hackScript, server, threads, target) }
         }
     }
 

@@ -20,10 +20,11 @@ export function scriptPath(ns) {
     // returns path to any script used in operation (string array)
 
     const path = {
-        grow: "/bin/genesis/grow.js",
-        weak: "/bin/genesis/weak.js",
-        hack: "/bin/genesis/hack.js",
-        sequense: "/bin/genesis/sequence.js",
+        grow: "/bin/genesis/pck_grow.js",
+        weak: "/bin/genesis/pck_weak.js",
+        hack: "/bin/genesis/pck_hack.js",
+        gwh: "/bin/genesis/sqn_gwh.js",
+        gw: "/bin/genesis/sqn_gw.js",
     }
     return path
 }
