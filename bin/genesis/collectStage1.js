@@ -6,7 +6,7 @@ export async function main(ns) {
 
     // get root access to all servers
     // find servers with free ram
-    // copy script (sequence) to severs with ram
+    // copy hack scripts to severs with ram
     // start hacking servers n00dles
     // repeat process 
 
