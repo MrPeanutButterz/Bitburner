@@ -1,4 +1,5 @@
-import { Nmap, NmapClear, NmapMoneyServers, copyHackScripts, getRootAccess, NmapTotalRam } from "modules/network"
+import { Nmap, NmapClear, NmapMoneyServers, NmapRamServers, copyHackScripts, getRootAccess, NmapTotalRam } from "modules/network"
+import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -16,18 +17,19 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
+    const script = scriptPath(ns)
     const hackchance = 0.9
-    let activeGrow = []
-    let activeHack = []
+    let hackable = []
 
     //\\ FUNCTIONS
     //\\ MAIN LOGICA
-    //NmapClear(ns)
+    NmapClear(ns)
+    ns.tprint(NmapTotalRam(ns))
+
     while (true) {
         await ns.sleep(1000)
 
         let servers
-        ns.tprint(NmapTotalRam(ns))
 
         servers = Nmap(ns)
         servers.forEach(server => {
@@ -39,24 +41,15 @@ export async function main(ns) {
         servers.forEach(server => {
             if (ns.hackAnalyzeChance(server) > hackchance) {
 
-                // check if server is already calculated 
-                // create object server
-                // push to active grow
+                ns.print(server)
+                ns.print(ns.getServerMaxMoney(server))
+                ns.print(ns.getServerMoneyAvailable(server))
 
-                if (!Boolean(activeGrow.find(o => o.name === server))) {
-                    let balance = ns.getServerMoneyAvailable(server)
-                    let goal = balance * 1.02
-                    let tGrow = Math.ceil(ns.growthAnalyze(server, 2, 1))
-                    let tHack = Math.ceil(ns.hackAnalyzeThreads(server, (goal - balance) / 2))
-                    let time = Math.ceil(ns.getGrowTime(server))
-                    activeGrow.push({ "name": server, "balance": balance, "goal": goal, "tGrow": tGrow, "tHack": tHack, "time": time / 1000 })
-                }
+                ns.print(ns.getServerMaxMoney(server) - ns.getServerMoneyAvailable(server))
 
 
 
             }
         })
-        ns.tprint(activeGrow)
-
     }
 }

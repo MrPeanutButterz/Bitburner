@@ -175,12 +175,13 @@ export function copyHackScripts(ns, server) {
 	//copy the scripts to the destination server
 
 	const path = scriptPath(ns)
-	const files = [path.grow, path.weak, path.hack, path.gwh]
+	const files = [path.grow, path.weak, path.hack, path.gwh, path.gw]
 
 	if (!ns.fileExists(path.grow, server)
 		|| !ns.fileExists(path.weak, server)
 		|| !ns.fileExists(path.hack, server)
-		|| !ns.fileExists(path.gwh, server)) {
+		|| !ns.fileExists(path.gwh, server) 
+		|| !ns.fileExists(path.gw, server)) {
 		ns.scp(files, server, "home")
 	}
 }
@@ -190,7 +191,7 @@ export function installPackage(ns, host, script, ram, threads, timing, id) {
 
 	//installs scripts in on the servers with ram (make sure there is space avaliable)
 
-	let server = getServersWithRam(ns)
+	let server = NmapRamServers(ns)
 
 	for (let i = 0; i < server.length; i++) {
 

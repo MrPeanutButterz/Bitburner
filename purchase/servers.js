@@ -4,6 +4,7 @@ import { sleepTime } from "modules/scripting"
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
+	ns.tprint("Active")
 	ns.disableLog("ALL")
 	ns.clearLog()
 
@@ -91,4 +92,5 @@ export async function main(ns) {
 		baseRam += baseRam
 		pwr += 1
 	}
+	ns.tprint("Server auto purchase completed")
 }
