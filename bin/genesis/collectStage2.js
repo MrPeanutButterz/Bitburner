@@ -18,19 +18,15 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
-    const hackChance = 0.9
+    const hackChance = 0.8
     let initRun = true
-    let totalNetRam
     let servers
 
     //\\ MAIN LOGICA
     NmapClear(ns)
 
     while (true) {
-
-        await ns.sleep(1000)
-
-        totalNetRam = NmapTotalRam(ns)
+        await ns.sleep(500)
 
         // todo: if net ram is more than x, kill script en go to collectStage3 for more profit
 

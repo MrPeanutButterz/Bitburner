@@ -11,7 +11,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     let servers = []
-    const hackChance = 0.9
+    const hackChance = 0.85
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function Nmap() {
