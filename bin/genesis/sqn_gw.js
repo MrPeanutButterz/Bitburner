@@ -51,16 +51,16 @@ export async function main(ns) {
         await ns.sleep(1000)
         servers = NmapMoneyServers()
 
-        for (let server of servers) {
-            if (ns.hackAnalyzeChance(server) > hackChance) {
+        for (var i = 0; i < 6; i++) {
+            if (ns.hackAnalyzeChance(servers[i]) > hackChance) {
 
-                if (ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server) + 5) {
-                    ns.print("Weak " + server)
-                    await ns.weaken(server)
+                if (ns.getServerSecurityLevel(servers[i]) > ns.getServerMinSecurityLevel(servers[i]) + 5) {
+                    ns.print("Weak " + servers[i])
+                    await ns.weaken(servers[i])
 
                 } else {
-                    ns.print("Grow " + server)
-                    await ns.grow(server)
+                    ns.print("Grow " + servers[i])
+                    await ns.grow(servers[i])
                 }
             }
         }

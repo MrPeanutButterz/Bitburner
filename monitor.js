@@ -21,8 +21,9 @@ export async function main(ns) {
             if (ns.hackAnalyzeChance(server) > hackChance) {
 
                 ns.print(" ")
-                ns.print(server + ": " + Math.floor(ns.getServerMoneyAvailable(server)))
-                ns.print("money max " + Math.floor(ns.getServerMaxMoney(server)))
+                ns.print("$" + Math.floor(ns.getServerMoneyAvailable(server)) + " " +  server)
+                ns.print("$" + Math.floor(ns.getServerMaxMoney(server)) + " Max")
+                ns.print("Sec min/cur " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3))
             }
         }
     }
