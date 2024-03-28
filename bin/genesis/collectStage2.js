@@ -1,4 +1,4 @@
-import { Nmap, NmapClear, NmapMoneyServers, NmapRamServers, copyHackScripts, getRootAccess, NmapTotalRam } from "modules/network"
+import { Nmap, NmapClear, NmapMoneyServers, NmapRamServers, copyHackScripts, getRootAccess } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */

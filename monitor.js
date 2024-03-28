@@ -6,6 +6,7 @@ export async function main(ns) {
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
     ns.clearLog()
+    ns.tail()
 
     //\\ GENERAL DATA
     const hackChance = 0.8

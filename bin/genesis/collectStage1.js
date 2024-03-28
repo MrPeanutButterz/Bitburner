@@ -27,7 +27,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         let servers
 
-        // todo: if net ram is more than x, kill script en go to collectStage2 for more profit
+        // todo: if net ram is more than x && home ram is more than x, kill script en go to collectStage2 for more profit
 
         servers = Nmap(ns)
         servers.forEach(server => {
