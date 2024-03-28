@@ -15,6 +15,8 @@ export async function main(ns) {
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGIC
+    if (target === undefined) { target = "n00dles" }
+
     while (true) {
         await ns.sleep(1000)
 
