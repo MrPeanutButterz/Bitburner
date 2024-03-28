@@ -11,7 +11,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     let servers = []
-    const hackChance = 0.85
+    const hackChance = 0.8
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function Nmap() {
@@ -55,11 +55,11 @@ export async function main(ns) {
             if (ns.hackAnalyzeChance(server) > hackChance) {
 
                 if (ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server) + 5) {
-                    ns.print("Weaken " + server)
+                    ns.print("Weak " + server)
                     await ns.weaken(server)
 
                 } else {
-                    ns.print("Growing " + server)
+                    ns.print("Grow " + server)
                     await ns.grow(server)
                 }
             }
