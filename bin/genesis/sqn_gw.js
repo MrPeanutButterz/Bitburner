@@ -1,7 +1,8 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // only servers with hackchance 90%
+    // only servers with hackchance hackChance%
+    // first numOfServers will be affected
     // weaken server defense below threshhold
     // grow server money, baseline grows incremental
 
@@ -11,7 +12,8 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     let servers = []
-    const hackChance = 0.8
+    const hackChance = ns.args[0]
+    const numOfServers = ns.args[1]
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function Nmap() {
@@ -51,7 +53,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         servers = NmapMoneyServers()
 
-        for (var i = 0; i < 6; i++) {
+        for (var i = 0; i < numOfServers; i++) {
             if (ns.hackAnalyzeChance(servers[i]) > hackChance) {
 
                 if (ns.getServerSecurityLevel(servers[i]) > ns.getServerMinSecurityLevel(servers[i]) + 5) {

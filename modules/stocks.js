@@ -3,10 +3,10 @@ export function getStockAccounts(ns) {
 
 	//checks if we have all accounts (boolean)
 
-	if (ns.stock.purchaseWseAccount() == true
-		&& ns.stock.purchase4SMarketData() == true
-		&& ns.stock.purchaseTixApi() == true
-		&& ns.stock.purchase4SMarketDataTixApi() == true) {
+	if (ns.stock.purchaseWseAccount()
+		&& ns.stock.purchase4SMarketData()
+		&& ns.stock.purchaseTixApi()
+		&& ns.stock.purchase4SMarketDataTixApi()) {
 		return true
 	} else {
 		return false
