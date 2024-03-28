@@ -1,4 +1,4 @@
-import { NmapMoneyServers } from "modules/network"
+import { NmapMoneyServers, NmapTotalRam } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -14,14 +14,14 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         ns.clearLog()
+        ns.print("Total Net Ram: " + NmapTotalRam(ns) + "gb")
 
         for (let server of NmapMoneyServers(ns)) {
 
             if (ns.hackAnalyzeChance(server) > hackChance) {
 
                 ns.print(" ")
-                ns.print(server)
-                ns.print("money ava " + Math.floor(ns.getServerMoneyAvailable(server)))
+                ns.print(server + ": " + Math.floor(ns.getServerMoneyAvailable(server)))
                 ns.print("money max " + Math.floor(ns.getServerMaxMoney(server)))
             }
         }
