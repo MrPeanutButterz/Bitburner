@@ -20,7 +20,7 @@ export async function main(ns) {
     const scripts = scriptPath(ns)
     const hackChance = 0.8
 
-    let initRun = true
+    let initRun = 1000
     let servers
 
     //\\ MAIN LOGICA
@@ -40,7 +40,7 @@ export async function main(ns) {
         servers = NmapRamServers(ns)
         for (let server of servers) {
 
-            if (initRun) { await ns.sleep(1000) } else { await ns.sleep(100) }
+            await ns.sleep(init)
 
             // (get server max ram > subtract server used ram) > devide by script ram
             // run script on server with thread
@@ -53,7 +53,7 @@ export async function main(ns) {
             }
         }
 
-        initRun = false
+        initRun = 100
 
         servers = NmapMoneyServers(ns)
         for (let server of servers) {
