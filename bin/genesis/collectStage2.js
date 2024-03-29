@@ -19,7 +19,6 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
     const hackChance = 0.8
-    const numOfServers = 8
 
     let initRun = true
     let servers
@@ -49,7 +48,7 @@ export async function main(ns) {
             if (ns.hasRootAccess(server)) {
                 let threads = Math.floor((ns.getServerMaxRam(server) - ns.getServerUsedRam(server)) / ns.getScriptRam(scripts.gw))
                 if (threads >= 1 && threads < 9999999999) {
-                    ns.exec(scripts.gw, server, threads, hackChance, numOfServers)
+                    ns.exec(scripts.gw, server, threads, hackChance)
                 }
             }
         }
