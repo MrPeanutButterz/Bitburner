@@ -11,6 +11,8 @@ export async function main(ns) {
     // run hack on home server
     // repeat process 
 
+    // script is not using threads effectivly, but still generates a lot of money
+
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
     ns.disableLog("ALL")
@@ -29,7 +31,8 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(500)
 
-        // todo: if net ram is more than x, kill script en go to collectStage3 for more profit
+        // todo: if net ram is more than x, kill script en go to collectStage3 for more profit 
+        // about 1500gb / 2000gb would be a good start
 
         servers = Nmap(ns)
         servers.forEach(server => {

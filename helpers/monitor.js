@@ -23,7 +23,7 @@ export async function main(ns) {
 
                 ns.print(" ")
 
-                ns.print(server + " " + (ns.hackAnalyzeChance(server)).toPrecision(3) * 100 + "%")
+                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server)* 100) + "%")
                 ns.print("Money " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
                 ns.print("Secur " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3))
 
