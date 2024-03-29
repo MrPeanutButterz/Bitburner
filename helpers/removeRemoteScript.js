@@ -1,4 +1,4 @@
-import { NmapRamServers } from "modules/network";
+import { NmapRamServers, NmapClear } from "modules/network";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -11,9 +11,14 @@ export async function main(ns) {
     let script = ns.args[0]
 
     //\\ MAIN LOGIC
+    NmapClear(ns)
     NmapRamServers(ns).forEach(server => {
-        ns.rm(script, server)
+        if (ns.rm(script, server)) {
+            ns.tprint("Removed instance " + script + " on " + server)
+
+        } else {
+            ns.tprint("Script not present on " + server)
+        }
     })
 
-    ns.tprint("Removed instance " + script + " on every server...")
 }
