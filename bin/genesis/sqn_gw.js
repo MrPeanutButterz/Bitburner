@@ -13,7 +13,6 @@ export async function main(ns) {
     //\\ GENERAL DATA
     let servers = []
     const hackChance = ns.args[0]
-    const numOfServers = ns.args[1]
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function Nmap() {
@@ -50,24 +49,26 @@ export async function main(ns) {
 
     //\\ MAIN LOGIC
     if (hackChance === undefined) { hackChance = 0.9 }
-    if (numOfServers === undefined) { numOfServers = servers.length }
-
 
     while (true) {
 
         await ns.sleep(1000)
         servers = NmapMoneyServers()
 
-        for (var i = 0; i <= numOfServers; i++) {
-            if (ns.hackAnalyzeChance(servers[i]) > hackChance) {
+        for (let server of servers) {
+            if (ns.hackAnalyzeChance(server) > hackChance) {
 
-                if (ns.getServerSecurityLevel(servers[i]) > ns.getServerMinSecurityLevel(servers[i]) + 5) {
-                    ns.print("Weak " + servers[i])
-                    await ns.weaken(servers[i])
+                if (ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server) + 5) {
+                    ns.print("Weak " + server)
+                    await ns.weaken(server)
+
+                } else if (ns.getServerMoneyAvailable(server) < ns.getServerMaxMoney(server)) {
+                    ns.print("Grow " + server)
+                    await ns.grow(server)
 
                 } else {
-                    ns.print("Grow " + servers[i])
-                    await ns.grow(servers[i])
+                    continue
+
                 }
             }
         }
