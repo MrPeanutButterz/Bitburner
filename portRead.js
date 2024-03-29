@@ -7,5 +7,17 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA   
+    const port = 1
+
     //\\ MAIN LOGICA
+
+    //Reads a value from port 1 and then prints it
+
+    if (ns.peek(port) !== "NULL PORT DATA") {
+
+        let data = ns.readPort(port)
+        ns.tprint(data.name)
+        ns.tprint(data.action)
+        ns.tprint(data.threads)
+    }
 }

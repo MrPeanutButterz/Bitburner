@@ -1,7 +1,11 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // get money
+    // make system with ports 
+    // on every server run a script that receive instuctions
+    // on home calculate en dispatch instructions 
+
+    //
 
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
@@ -11,6 +15,12 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     //\\ FUNCTIONS
+    function broadcastTransaction() {
+        
+        ns.writePort(1, {});
+    }
+
     //\\ MAIN LOGICA
+
 
 }
