@@ -20,7 +20,7 @@ export async function main(ns) {
     const scripts = scriptPath(ns)
     const hackChance = 0.8
 
-    let initRun = 1000
+    let init = 1000
     let servers
 
     //\\ MAIN LOGICA
@@ -53,7 +53,7 @@ export async function main(ns) {
             }
         }
 
-        initRun = 100
+        init = 100
 
         servers = NmapMoneyServers(ns)
         for (let server of servers) {

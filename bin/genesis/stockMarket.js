@@ -1,23 +1,25 @@
 class Stock {
-    constructor(ticker, forcast, volatility, maxShares, shares, avrPrice, totalCost) {
+    constructor(ticker, forcast, volatility, maxShares, shares, avrPrice, stockValue) {
         this.ticker = ticker
         this.forcast = forcast
         this.volatility = volatility
         this.maxShares = maxShares
         this.shares = shares
         this.avrPrice = avrPrice
-        this.totalCost = totalCost
+        this.stockValue = stockValue
     }
 }
 
 /** @param {NS} ns */
 export async function main(ns) {
 
+    // ====================================================
     // check all accounts, buy if no present
     // make list of active stocks
     // add or remove stocks if needed
     // buy en sell stocks
     // pump n dump
+    // ====================================================
 
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
@@ -90,7 +92,7 @@ export async function main(ns) {
 
     function portfolio_add(stock) {
 
-        // adds stock to portfolio (new Stock("ECP", 60))
+        // adds stock to portfolio
 
         PORTFOLIO.push(stock)
     }
@@ -142,7 +144,7 @@ export async function main(ns) {
         ns.clearLog()
 
         symbols.forEach(sym => {
-            if (Math.floor(sm.getForecast(sym) * 100 > 60)) {
+            if (Math.floor(sm.getForecast(sym) * 100 > FORCAST_THRESHOLD)) {
 
                 ns.print(
                     "name:" + sym +
