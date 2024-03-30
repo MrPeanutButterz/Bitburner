@@ -19,9 +19,9 @@ export async function main(ns) {
   
   ns.run("bin/genesis/collectStage1.js")
   await ns.sleep(1000)
-  ns.run("purchase/hacknet.js", 1, 10, 75, 2, 1)
+  ns.run("purchase/hacknet.js", 1)
   await ns.sleep(1000)
-  ns.run("purchase/servers.js", 1, 4, 512)
+  ns.run("purchase/servers.js", 1)
 
 }
 

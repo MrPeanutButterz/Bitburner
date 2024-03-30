@@ -1,4 +1,4 @@
-import { NmapMoneyServers, NmapTotalRam } from "modules/network"
+import { NmapMoneyServers, NmapFreeRam, NmapTotalRam } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -15,7 +15,7 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         ns.clearLog()
-        ns.print("Total Net Ram: " + NmapTotalRam(ns) + "gb")
+        ns.print("Net Free Ram: " + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "%")
 
         for (let server of NmapMoneyServers(ns)) {
 

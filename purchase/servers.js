@@ -1,4 +1,4 @@
-import { sleepTime } from "modules/scripting"
+import { NmapTotalRam, NmapFreeRam } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -7,16 +7,15 @@ export async function main(ns) {
 	ns.tprint("Active")
 	ns.disableLog("ALL")
 	ns.clearLog()
+	ns.tail()
 
 	//\\ GENERAL DATA
 	const speed = 1000
 	const purchaseLimit = ns.getPurchasedServerLimit()
+	const networkLoadMoreThan = 10
 
-	let pwr = 1
-	let baseRam = ns.args[0]
-	let maxRam = ns.args[1]
-	if (baseRam === undefined) { baseRam = 4, pwr = 2 }
-	if (maxRam === undefined) { maxRam = ns.getPurchasedServerMaxRam() }
+	let baseRam = 4
+	let maxRam = ns.getPurchasedServerMaxRam()
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 	function serverPoolSizeGB() {
@@ -37,21 +36,26 @@ export async function main(ns) {
 		ns.clearLog()
 		ns.print("Server: \t" + s)
 		ns.print("Ram: \t\t" + r + "GB")
-		ns.print("Power: \t\t" + 2 + "*" + pwr)
 		ns.print("Price: \t\t" + "$" + Math.round(price))
 		ns.print("Action: \t" + action)
 	}
 
 	//\\ MAIN LOGICA
 	while (serverPoolSizeGB() < maxRam * purchaseLimit) {
-		await ns.sleep(speed)
+		await ns.sleep(500)
 
 		for (let i = 0; i < purchaseLimit;) {
 
+			await ns.sleep(500)
+
 			let server = "NDX_" + i
 
-			//buy or replace servers
-			if (!ns.serverExists(server)) {
+			if (Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) >= networkLoadMoreThan) {
+
+				ns.clearLog()
+				ns.print("Action: \t" + "network handles load @" + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "% free")
+
+			} else if (!ns.serverExists(server)) {
 
 				if (ns.getPlayer().money > ns.getPurchasedServerCost(baseRam)) {
 
@@ -90,7 +94,6 @@ export async function main(ns) {
 			}
 		}
 		baseRam += baseRam
-		pwr += 1
 	}
 	ns.tprint("Server auto purchase completed")
 }
