@@ -82,6 +82,11 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
+
+    let homeRamAvailable = (ns.getServerMaxRam("home") * 0.85) - ns.getServerUsedRam("home")
+    let homeThreadsAvailable = Math.floor(homeRamAvailable / ns.getScriptRam(scripts.gw))
+    ns.exec(scripts.gw, "home", homeThreadsAvailable, 0.5)
+
     while (true) {
 
         await ns.sleep(1000)
