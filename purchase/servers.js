@@ -52,8 +52,7 @@ export async function main(ns) {
 
 			if (Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) >= networkLoadMoreThan) {
 
-				ns.clearLog()
-				ns.print("Action: \t" + "network handles load @" + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "% free")
+				displayStatus(server, baseRam, ns.getPurchasedServerCost(baseRam), "network handles load @" + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "% free")
 
 			} else if (!ns.serverExists(server)) {
 
@@ -65,7 +64,6 @@ export async function main(ns) {
 
 				} else {
 
-					ns.clearLog()
 					displayStatus(server, baseRam, ns.getPurchasedServerCost(baseRam), "awaiting funds")
 					await ns.sleep(speed)
 
@@ -86,7 +84,6 @@ export async function main(ns) {
 
 				} else {
 
-					ns.clearLog()
 					displayStatus(server, baseRam, ns.getPurchasedServerCost(baseRam), "awaiting funds ")
 					await ns.sleep(speed)
 
