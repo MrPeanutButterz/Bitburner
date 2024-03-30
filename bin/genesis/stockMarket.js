@@ -1,15 +1,3 @@
-class Stock {
-    constructor(ticker, forcast, volatility, maxShares, shares, avrPrice, stockValue) {
-        this.ticker = ticker
-        this.forcast = forcast
-        this.volatility = volatility
-        this.maxShares = maxShares
-        this.shares = shares
-        this.avrPrice = avrPrice
-        this.stockValue = stockValue
-    }
-}
-
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -28,7 +16,8 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const sm = ns.stock
-    const FORCAST_THRESHOLD = 65
+    const FORCAST_THRESHOLD = 0.6
+    const FORCAST_BOTTOM = 0.45
     const BALANCE_THRESHOLD = 100_000_000
 
     let accounts = false
@@ -65,78 +54,27 @@ export async function main(ns) {
             }
         } else {
             accounts = true
-            ns.tprint("Accounts present...")
+
         }
     }
 
-    function portfolio_check() {
-
-        // check active stocks en add to portfolio
-
-        ns.tprint("Active stocks:")
-
-        symbols.forEach(sym => {
-            if (sm.getPosition(sym)[0] > 0) {
-                portfolio_add(new Stock(
-                    sym,
-                    Math.floor(sm.getForecast(sym) * 100),
-                    (sm.getVolatility(sym) * 100).toPrecision(3),
-                    sm.getMaxShares(sym),
-                    sm.getPosition(sym)[0],
-                    Math.round(sm.getPosition(sym)[1]),
-                    sm.getPosition(sym)[0] * Math.round(sm.getPosition(sym)[1]),
-                ))
-            }
-        })
-    }
-
-    function portfolio_add(stock) {
-
-        // adds stock to portfolio
-
-        PORTFOLIO.push(stock)
-    }
-
-    function portfolio_remove(ticker) {
-
-        // remove stock from portfolio
-
-        let index = PORTFOLIO.findIndex(object => {
-            return object.ticker === ticker;
-        })
-
-        PORTFOLIO.splice(index, 1)
+    function addPortfolio(sym) {
+        PORTFOLIO.push(sym)
     }
 
     //\\ MAIN LOGICA
-    ns.tprint("Accounts check...")
+    ns.print("Accounts check...")
     await ns.sleep(1000)
-
+    
     while (!accounts) {
         acquireAccounts()
         await ns.sleep(2000)
         ns.clearLog()
     }
 
-    portfolio_check()
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    // ////////////////////////////////////////////////////////////////////////
-    for (let p of PORTFOLIO) {
-        ns.tprint(p)
-    }
+    ns.print("Accounts present")
+    await ns.sleep(1000)
+    ns.print("Managing Stocks")
 
     while (true) {
 
@@ -144,14 +82,21 @@ export async function main(ns) {
         ns.clearLog()
 
         symbols.forEach(sym => {
-            if (Math.floor(sm.getForecast(sym) * 100 > FORCAST_THRESHOLD)) {
 
+            if (sm.getForecast(sym) >= FORCAST_THRESHOLD) {
+
+                // buy stock
                 ns.print(
-                    "name:" + sym +
+                    sym +
                     " forcast:" + Math.floor(sm.getForecast(sym) * 100) +
-                    " volatility:" + (sm.getVolatility(sym) * 100).toPrecision(3) +
-                    " maxShare:" + sm.getMaxShares(sym)
+                    " volatility:" + (sm.getVolatility(sym) * 100).toPrecision(3)
                 )
+
+
+            } else if (sm.getForecast(sym) < FORCAST_BOTTOM) {
+
+                // sell stock
+
             }
         })
     }
@@ -160,7 +105,6 @@ export async function main(ns) {
 // getBonusTime()	                            Get Stock Market bonus time.
 
 // getSymbols()	                                Returns an array of the symbols of the tradable stocks
-// getOrders()	                                Returns your order book for the stock market.                       BN8 ONLY
 // getPosition(sym)	                            Returns the player’s position in a stock.
 
 // getForecast(sym)	                            Returns the probability that the specified stock’s price will increase (as opposed to decrease) during the next tick.

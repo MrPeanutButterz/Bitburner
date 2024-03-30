@@ -1,5 +1,3 @@
-import { sleepTime } from "modules/scripting"
-
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -9,8 +7,6 @@ export async function main(ns) {
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-	const speed = sleepTime(ns)
-
 	let maxNode = ns.args[0]
 	let maxLevel = ns.args[1]
 	let maxRam = ns.args[2]
@@ -36,7 +32,7 @@ export async function main(ns) {
 
 	//\\ MAIN LOGICA
 	while (true) {
-		await ns.sleep(speed.ms2)
+		await ns.sleep(1000)
 		displayStatus()
 
 		if (ns.hacknet.numNodes() === 0) {

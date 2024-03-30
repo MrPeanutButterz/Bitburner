@@ -7,7 +7,6 @@ export async function main(ns) {
 	ns.tprint("Active")
 	ns.disableLog("ALL")
 	ns.clearLog()
-	ns.tail()
 
 	//\\ GENERAL DATA
 	const speed = 1000
