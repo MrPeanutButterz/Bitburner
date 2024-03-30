@@ -30,12 +30,12 @@ The sqn_gwh.js weakens the security, grows the balance, hacks the money availabl
 
 ### sqn_gw.js
 
-The sqn_gw.js script grows the balance and reduces security. The hacking is done by collectStage2.js.
-The arguments are provided bij collectStage2.js but can also be run manualy. If no argument is given it will hack n00dles by default.
+The sqn_gw.js script increases the account balance and reduces security based on the chance. The hacking process is carried out by either collectStage2.js or collectStage3.js. Initially, the arguments are provided by parents, but they can also be manually specified. If no argument is provided, the default hack chance is set to 80% (in decimal form).
 
 `parent: collectStage2.js`
+`parent: collectStage3.js`
 `args: optional`
-> run sqn_gw.js foodnstuff
+> run sqn_gw.js 0.7
 
 ### pck_grow & pck_weak & pck_hack .js
 
@@ -68,10 +68,7 @@ The script accepts the following arguments:
 
 ### buyServer.js
 
-This script will continue purchasing servers until the specified conditions are met. If no arguments are provided, the script will begin by buying 4GB RAM servers, and once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the maximum amount of RAM is reached.
+This script will continuously purchase servers until specific conditions are met. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the maximum amount of RAM is reached. Additionally, the script will consider the total available RAM in the network. If more than 10% of the total RAM remains unused, the script will delay purchasing new servers or upgrades.
 
-- specify the amount of ram you want to start buying
-- specify the amount of ram you want to stop buying
-
-`args: optional`
-> run buyServers.js 4 16
+`args: non`
+> run buyServers.js
