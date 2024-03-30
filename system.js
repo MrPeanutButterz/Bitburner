@@ -24,8 +24,3 @@ export async function main(ns) {
   ns.run("purchase/servers.js", 1)
 
 }
-
-// system.js                               2.60GB
-// bin/genesis/collectStage1.js            5.30GB
-// purchase/servers.js                     7.45GB
-// purchase/hacknet.js                     6.10GB

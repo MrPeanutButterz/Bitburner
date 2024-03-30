@@ -9,14 +9,12 @@ export async function main(ns) {
     // if not working on it, weak security al low as posible
     // if not working on it, hack the server 
 
-    // requires: 122000gb ram of purchased servers
     // threads are efficient timing is not
 
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
-    ns.tail()
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
@@ -83,7 +81,7 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
 
-    let homeRamAvailable = (ns.getServerMaxRam("home") * 0.85) - ns.getServerUsedRam("home")
+    let homeRamAvailable = ns.getServerMaxRam("home") * 0.85 - ns.getServerUsedRam("home")
     let homeThreadsAvailable = Math.floor(homeRamAvailable / ns.getScriptRam(scripts.gw))
     ns.exec(scripts.gw, "home", homeThreadsAvailable, 0.5)
 
@@ -98,8 +96,6 @@ export async function main(ns) {
         for (let target of targets) {
 
             if (ns.hackAnalyzeChance(target) > hackChance) { 
-
-                // if security is > baseline first weaken so hackChance doesn't get out of reach!
 
                 if (growCondition(target)) {
 
