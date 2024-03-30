@@ -28,7 +28,7 @@ export async function main(ns) {
                 ns.print("Secur " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3))
 
 
-                ns.print("G." + Math.ceil(ns.getGrowTime(server) / 1000) + "s / " + 
+                ns.print("G." + Math.ceil(ns.getGrowTime(server) / 1000) + "s " + 
                 "W." + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
                 "H." + Math.ceil(ns.getHackTime(server) / 1000) + "s")
 
