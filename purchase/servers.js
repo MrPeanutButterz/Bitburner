@@ -9,7 +9,7 @@ export async function main(ns) {
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-	const speed = sleepTime(ns)
+	const speed = 1000
 	const purchaseLimit = ns.getPurchasedServerLimit()
 
 	let pwr = 1
@@ -44,7 +44,7 @@ export async function main(ns) {
 
 	//\\ MAIN LOGICA
 	while (serverPoolSizeGB() < maxRam * purchaseLimit) {
-		await ns.sleep(speed.s1)
+		await ns.sleep(speed)
 
 		for (let i = 0; i < purchaseLimit;) {
 
@@ -63,7 +63,7 @@ export async function main(ns) {
 
 					ns.clearLog()
 					displayStatus(server, baseRam, ns.getPurchasedServerCost(baseRam), "awaiting funds")
-					await ns.sleep(speed.s1)
+					await ns.sleep(speed)
 
 				}
 
@@ -84,7 +84,7 @@ export async function main(ns) {
 
 					ns.clearLog()
 					displayStatus(server, baseRam, ns.getPurchasedServerCost(baseRam), "awaiting funds ")
-					await ns.sleep(speed.s1)
+					await ns.sleep(speed)
 
 				}
 			}

@@ -20,6 +20,8 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
+    const hackChance = 0.8
+    const hackProcent = 0.8
 
     //\\ FUNCTIONS
     function watchForNewServer() {
@@ -90,7 +92,9 @@ export async function main(ns) {
         let targets = NmapMoneyServers(ns)
         for (let target of targets) {
 
-            if (ns.hackAnalyzeChance(target) > 0.8) {
+            if (ns.hackAnalyzeChance(target) > hackChance) { 
+
+                // if security is > baseline first weaken so hackChance doesn't get out of reach!
 
                 if (growCondition(target)) {
 
@@ -100,7 +104,7 @@ export async function main(ns) {
 
                     if (!checkRunningScript(scripts.grow, target)) {
 
-                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target)
+                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target)? ns.getServerMoneyAvailable(target) : 1
                         let serverMoneyMax = ns.getServerMaxMoney(target)
                         let mulitplier = serverMoneyMax / serverMoneyAvailable
 
@@ -141,7 +145,7 @@ export async function main(ns) {
 
                     if (!checkRunningScript(scripts.hack, target)) {
 
-                        let hackAmount = ns.getServerMaxMoney(target) * 0.7
+                        let hackAmount = ns.getServerMaxMoney(target) * hackProcent
                         let hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, hackAmount))
 
                         distributeAcrossNetwork(scripts.hack, hackThreads, target)

@@ -9,7 +9,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    const hackChance = 0.7
+    const hackChance = 0.5
 
     //\\ MAIN LOGICA
     while (true) {
@@ -23,14 +23,15 @@ export async function main(ns) {
 
                 ns.print(" ")
 
-                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server)* 100) + "%")
-                ns.print("Money " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
-                ns.print("Secur " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3))
+                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                ns.print("M^ " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
+                ns.print("S^ " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3) + " / " + ns.getServerBaseSecurityLevel(server))
 
 
-                ns.print("G." + Math.ceil(ns.getGrowTime(server) / 1000) + "s " + 
-                "W." + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
-                "H." + Math.ceil(ns.getHackTime(server) / 1000) + "s")
+                ns.print("T^ " +
+                    "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
+                    "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
+                    "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s")
 
             }
         }
