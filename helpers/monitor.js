@@ -23,15 +23,16 @@ export async function main(ns) {
 
                 ns.print(" ")
 
-                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
-                ns.print("M^ " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
-                ns.print("S^ " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3) + " / " + ns.getServerBaseSecurityLevel(server))
-
-
-                ns.print("T^ " +
+                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "% ---- " +
+                    "T^ " +
                     "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
                     "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
                     "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s")
+
+
+
+                ns.print("M^ " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%  ----" +
+                    "  S^ " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3) + " / " + ns.getServerBaseSecurityLevel(server))
 
             }
         }

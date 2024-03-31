@@ -17,11 +17,9 @@ export async function main(ns) {
   ns.tprint("INIT Process")
   await ns.sleep(2000)
 
-  if (ns.getServerMaxRam("home") < 130 ) {
+  if (ns.getServerMaxRam("home") < 32) {
 
-    ns.run("bin/genesis/collectStage1.js")
-
-  } else if (ns.getServerMaxRam("home") < 4000) { 
+    // step 1: get more ram 
 
     ns.run("bin/genesis/collectStage2.js")
 
@@ -30,7 +28,7 @@ export async function main(ns) {
     ns.run("bin/genesis/collectStage3.js")
 
   }
-  
+
   await ns.sleep(1000)
   ns.run("purchase/hacknet.js", 1)
   await ns.sleep(1000)
