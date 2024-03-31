@@ -1,13 +1,19 @@
+class stock {
+    constructor(ticker) {
+
+        this.ticker = ticker
+
+    }
+}
+
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // ====================================================
     // check all accounts, buy if no present
     // make list of active stocks
     // add or remove stocks if needed
     // buy en sell stocks
     // pump n dump
-    // ====================================================
 
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
@@ -15,15 +21,16 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const sm = ns.stock
-    const FORCAST_THRESHOLD = 0.6
-    const FORCAST_BOTTOM = 0.45
-    const BALANCE_THRESHOLD = 100_000_000
-
     let accounts = false
-    let symbols = sm.getSymbols()
-    let constants = sm.getConstants()
+    let symbols = STOCK.getSymbols()
+    let constants = STOCK.getConstants()
 
+    const STOCK = ns.STOCK
+    const FORCAST_BUY_THRESHOLD = 0.6
+    const FORCAST_SELL_THRESHOLD = 0.4
+    const BALANCE_THRESHOLD = 100_000_000
+    
+    let INTRESTING_STOCKS = []
     let PORTFOLIO = []
 
     //\\ FUNCTIONS
@@ -32,24 +39,25 @@ export async function main(ns) {
         // Checks if all accounts are acquired or buys 
 
         let myBalance = ns.getServerMoneyAvailable("home")
-        if (!sm.has4SData()) {
+
+        if (!STOCK.has4SData()) {
             if (myBalance > constants.MarketData4SCost) {
-                sm.purchase4SMarketData()
+                STOCK.purchase4SMarketData()
                 ns.tprint("4S MarktData bought $" + constants.MarketData4SCost)
             }
-        } else if (!sm.has4SDataTIXAPI()) {
+        } else if (!STOCK.has4SDataTIXAPI()) {
             if (myBalance > constants.MarketDataTixApi4SCost) {
-                sm.purchase4SMarketData()
+                STOCK.purchase4SMarketData()
                 ns.tprint("4S MarktData TIX bought $" + constants.MarketDataTixApi4SCost)
             }
-        } else if (!sm.hasTIXAPIAccess()) {
+        } else if (!STOCK.hasTIXAPIAccess()) {
             if (myBalance > constants.TIXAPICost) {
-                sm.purchase4SMarketData()
+                STOCK.purchase4SMarketData()
                 ns.tprint("TIX API bought $" + constants.TIXAPICost)
             }
-        } else if (!sm.hasWSEAccount()) {
+        } else if (!STOCK.hasWSEAccount()) {
             if (myBalance > constants.WSEAccountCost) {
-                sm.purchase4SMarketData()
+                STOCK.purchase4SMarketData()
                 ns.tprint("WSE Account bought $" + constants.WSEAccountCost)
             }
         } else {
@@ -83,17 +91,17 @@ export async function main(ns) {
 
         symbols.forEach(sym => {
 
-            if (sm.getForecast(sym) >= FORCAST_THRESHOLD) {
+            if (STOCK.getForecast(sym) >= FORCAST_BUY_THRESHOLD) {
 
-                // buy stock
+                // buy STOCK
                 ns.print(
                     sym +
-                    " forcast:" + Math.floor(sm.getForecast(sym) * 100) +
-                    " volatility:" + (sm.getVolatility(sym) * 100).toPrecision(3)
+                    " forcast:" + Math.floor(STOCK.getForecast(sym) * 100) +
+                    " volatility:" + (STOCK.getVolatility(sym) * 100).toPrecision(3)
                 )
 
 
-            } else if (sm.getForecast(sym) < FORCAST_BOTTOM) {
+            } else if (STOCK.getForecast(sym) < FORCAST_SELL_THRESHOLD) {
 
                 // sell stock
 

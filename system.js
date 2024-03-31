@@ -2,8 +2,10 @@
 export async function main(ns) {
 
   // game starts with 32gb of ram (BN.1.2)
-  // get all .exe programs
-  // get purchase servers
+  // purchase hacknet 
+  // purchase servers
+  // buy TOR router en get .exe programs
+  // get to 2.05TB on home ram
 
   //\\ SCRIPT SETTINGS
   ns.disableLog("ALL")
@@ -21,13 +23,13 @@ export async function main(ns) {
 
   if (ns.getServerMaxRam("home") === 32) {
 
-    // step 1: get more ram 
+    // get more ram 
 
     ns.run("bin/genesis/collectStage1.js")
     await ns.sleep(1000)
-    ns.run("purchase/hacknet.js", 1, 15, 100, 32, 1)
+    ns.run("purchase/hacknet.js", 1, 10, 100, 32, 1)
     await ns.sleep(1000)
-    ns.run("purchase/servers.js", 1, 512)
+    ns.run("purchase/servers.js", 1, 128)
 
   } else {
 

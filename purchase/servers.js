@@ -45,17 +45,17 @@ export async function main(ns) {
 
 	//\\ MAIN LOGICA
 	while (serverPoolSizeGB() < LEVEL_RAM_MAX * PURCHASE_LIMIT) {
-		await ns.sleep(500)
+		await ns.sleep(2000)
 
 		for (let i = 0; i < PURCHASE_LIMIT;) {
 
-			await ns.sleep(500)
+			await ns.sleep(200)
 
 			let server = "NDX_" + i
 
 			if (Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) >= FREE_NET_RAM && GB_LIMIT === undefined) {
 
-				displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "network handles load @" + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "% free")
+				displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "network load " + (100 - Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100)) + "%")
 
 			} else if (!ns.serverExists(server)) {
 
@@ -68,7 +68,7 @@ export async function main(ns) {
 				} else {
 
 					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds")
-					await ns.sleep(500)
+					await ns.sleep(200)
 
 				}
 
@@ -88,7 +88,7 @@ export async function main(ns) {
 				} else {
 
 					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds ")
-					await ns.sleep(500)
+					await ns.sleep(200)
 
 				}
 			}
