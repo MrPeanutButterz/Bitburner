@@ -71,5 +71,4 @@ The script accepts the following arguments:
 This script will continuously purchase servers until argument conditions are met. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the args amount of RAM is reached. Additionally if no args are provided, the script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase new servers or upgrades.
 
 `args: optional`
-> run buyServers.js 
 > run buyServers.js 128
