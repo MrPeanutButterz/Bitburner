@@ -1,4 +1,4 @@
-import { Nmap, getRootAccess, copyHackScripts, NmapMoneyServers, NmapRamServers } from "modules/network"
+import { Nmap, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
@@ -22,13 +22,6 @@ export async function main(ns) {
     const hackProcent = 0.8
 
     //\\ FUNCTIONS
-    function watchForNewServer() {
-        Nmap(ns).forEach(server => {
-            getRootAccess(ns, server)
-            copyHackScripts(ns, server)
-        })
-    }
-
     function growCondition(target) {
         return ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
     }
@@ -90,7 +83,7 @@ export async function main(ns) {
         await ns.sleep(1000)
 
         ns.clearLog()
-        watchForNewServer()
+        watchForNewServer(ns)
 
         let targets = NmapMoneyServers(ns)
         for (let target of targets) {

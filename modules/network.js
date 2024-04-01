@@ -94,6 +94,14 @@ export function NmapFreeRam(ns) {
 	return Math.floor(ram)
 }
 
+/** @param {NS} ns */
+export function watchForNewServer(ns) {
+	Nmap(ns).forEach(server => {
+		getRootAccess(ns, server)
+		copyHackScripts(ns, server)
+	})
+}
+
 
 /** @param {NS} ns */
 export function NmapServerPath(ns, server) {

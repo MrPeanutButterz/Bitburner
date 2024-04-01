@@ -1,4 +1,4 @@
-import { Nmap, NmapClear, NmapMoneyServers, NmapRamServers, copyHackScripts, getRootAccess } from "modules/network"
+import { Nmap, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
@@ -20,7 +20,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
-    const hackChance = 0.8
+    const hackChance = 0.9
 
     let init = 1000
     let servers
@@ -34,11 +34,7 @@ export async function main(ns) {
         // todo: if net ram is more than x, kill script en go to collectStage3 for more profit 
         // about 1500gb / 2000gb would be a good start
 
-        servers = Nmap(ns)
-        servers.forEach(server => {
-            getRootAccess(ns, server)
-            copyHackScripts(ns, server)
-        })
+        watchForNewServer(ns)
 
         servers = NmapRamServers(ns)
         for (let server of servers) {

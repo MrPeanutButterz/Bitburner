@@ -1,4 +1,4 @@
-import { Nmap, NmapClear, getRootAccess, copyHackScripts, NmapRamServers } from "modules/network"
+import { Nmap, NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers } from "modules/network"
 import { scriptPath } from "/modules/scripting"
 
 /** @param {NS} ns */
@@ -28,12 +28,11 @@ export async function main(ns) {
         let servers
 
         // todo: if net ram is more than x && home ram is more than x, kill script en go to collectStage2 for more profit
+        // switch around 1000 gb
+        if (NmapTotalRam(ns) > 1500) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
 
-        servers = Nmap(ns)
-        servers.forEach(server => {
-            getRootAccess(ns, server)
-            copyHackScripts(ns, server)
-        })
+
+        watchForNewServer(ns)
 
         servers = NmapRamServers(ns)
         servers.forEach(server => {
