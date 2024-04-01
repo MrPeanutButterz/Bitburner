@@ -73,11 +73,6 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
-
-    // let homeRamAvailable = ns.getServerMaxRam("home") * 0.85 - ns.getServerUsedRam("home")
-    // let homeThreadsAvailable = Math.floor(homeRamAvailable / ns.getScriptRam(scripts.gw))
-    // if (homeThreadsAvailable > 0) { ns.exec(scripts.gw, "home", homeThreadsAvailable, 0.5) }
-
     NmapClear(ns)
 
     while (true) {
@@ -122,7 +117,7 @@ export async function main(ns) {
 
                         let effectSingleThread = ns.weakenAnalyze(1)
 
-                        let serverSecurityMin = ns.getServerMinSecurityLevel(target)
+                        let serverSecurityMin = ns.getServerMinSecurityLevel(target) + 2
                         let serverSecurityNow = ns.getServerSecurityLevel(target)
 
                         let serverSecutityDiff = Math.ceil(serverSecurityNow - serverSecurityMin)
@@ -150,15 +145,18 @@ export async function main(ns) {
                     
                 }
                 
-            } else if (ns.hackAnalyzeChance(target) > hackChance - 0.1){
+            } else if (ns.hackAnalyzeChance(target) > hackChance - 0.05){
                 
                 // for servers that don't meet args 
                 // calculate current security level to minimal in threads 
                 // run on home server 
                 ns.print("POKE - " + target)
 
-                
+                if (!checkRunningScript(scripts.weak, target)) {
 
+                    distributeAcrossNetwork(scripts.weak, 20, target)
+                    
+                }
             }
         }
     }

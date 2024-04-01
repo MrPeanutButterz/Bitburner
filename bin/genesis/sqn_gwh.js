@@ -11,7 +11,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const target = ns.args[0]
-    let attackPerc = 10
+    let attackPerc = 20
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGIC

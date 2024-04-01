@@ -1,4 +1,4 @@
-import { Nmap, NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers } from "modules/network"
+import { NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers } from "modules/network"
 import { scriptPath } from "/modules/scripting"
 
 /** @param {NS} ns */
@@ -16,21 +16,21 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    let target = ns.args[0]
-    const hackScript = scriptPath(ns).gwh
+    let TARGET = ns.args[0]
+    const SCRIPT = scriptPath(ns)
 
     //\\ MAIN LOGICA
-    if (target === undefined) { target = "n00dles" }
+    if (TARGET === undefined) { TARGET = "n00dles" }
     NmapClear(ns)
 
     while (true) {
+
         await ns.sleep(1000)
+        watchForNewServer(ns)
         let servers
 
-        // todo: if net ram is more than x && home ram is more than x, kill script en go to collectStage2 for more profit
-        // switch around 1000 gb
-        if (NmapTotalRam(ns) > 1500 && ns.getServerMaxRam("home") >= 512) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
-        watchForNewServer(ns)
+        // todo: finetune switch point 
+        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") > 128) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
 
         servers = NmapRamServers(ns)
         servers.forEach(server => {
@@ -38,11 +38,15 @@ export async function main(ns) {
             // (get server max ram > subtract server used ram) > devide by script ram
             // run script on server with thread pointed at target
 
-            if (ns.hasRootAccess(server) && !ns.isRunning(hackScript, server)) {
+            if (ns.hasRootAccess(server) && !ns.isRunning(SCRIPT.gwh, server)) {
+
                 let serverMaxRam = ns.getServerMaxRam(server)
                 let serverUsedRam = ns.getServerUsedRam(server)
-                let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(hackScript))
-                if (threads >= 1 && threads < 9999999999) { ns.exec(hackScript, server, threads, target) }
+                let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(SCRIPT.gwh))
+
+                if (threads >= 1 && threads < 9999999999) { 
+                    ns.exec(SCRIPT.gwh, server, threads, TARGET) 
+                }
             }
         })
     }

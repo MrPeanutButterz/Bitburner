@@ -1,23 +1,20 @@
-import { sleepTime } from "modules/scripting"
-
+/** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
     ns.clearLog()
     
-    //\\ GENERAL DATA
-    const speed = sleepTime(ns)
-    
+    //\\ GENERAL DATA   
     //\\ MAIN LOGICA
     while (true) {
-        await ns.sleep(speed.s1)
+        await ns.sleep(1000)
         ns.clearLog()
         
         if (ns.getPlayer().money > ns.singularity.getUpgradeHomeRamCost()) {
             
             ns.singularity.upgradeHomeRam()
-            ns.toast("Ram upgrade", "success", speed.toast)
+            ns.toast("Ram upgrade", "success", 6000)
             
         } else {
             

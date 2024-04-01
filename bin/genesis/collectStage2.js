@@ -1,4 +1,4 @@
-import { Nmap, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
+import { NmapTotalRam, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
@@ -20,7 +20,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
-    const hackChance = 0.99
+    const hackChance = 0.9
 
     let init = 1000
     let servers
@@ -32,7 +32,7 @@ export async function main(ns) {
         await ns.sleep(500)
 
         // todo: if net ram is more than x, kill script en go to collectStage3 for more profit 
-        // about 1500gb / 2000gb would be a good start
+        if (NmapTotalRam(ns) > 7000) { ns.spawn("bin/genesis/collectStage3.js", { spawnDelay: 1000 }) }
 
         watchForNewServer(ns)
 

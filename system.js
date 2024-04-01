@@ -34,7 +34,7 @@ export async function main(ns) {
     await ns.sleep(1000)
     ns.run("purchase/hacknet.js", 1)
     await ns.sleep(1000)
-    ns.run("purchase/servers.js", 1, 128)
+    ns.run("purchase/servers.js", 1, 64)
 
   } else {
 
@@ -46,5 +46,5 @@ export async function main(ns) {
 
   }
 
-  // run ram++
+  ns.run("helpers/ram.js")
 }
