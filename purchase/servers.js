@@ -44,12 +44,16 @@ export async function main(ns) {
 	}
 
 	//\\ MAIN LOGICA
+	if (GB_LIMIT !== undefined) {
+		LEVEL_RAM_MAX = GB_LIMIT
+	}
+
 	while (serverPoolSizeGB() < LEVEL_RAM_MAX * PURCHASE_LIMIT) {
-		await ns.sleep(2000)
+		await ns.sleep(1000)
 
 		for (let i = 0; i < PURCHASE_LIMIT;) {
 
-			await ns.sleep(200)
+			await ns.sleep(250)
 
 			let server = "NDX_" + i
 
@@ -68,7 +72,7 @@ export async function main(ns) {
 				} else {
 
 					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds")
-					await ns.sleep(200)
+					await ns.sleep(250)
 
 				}
 
@@ -88,7 +92,7 @@ export async function main(ns) {
 				} else {
 
 					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds ")
-					await ns.sleep(200)
+					await ns.sleep(250)
 
 				}
 			}
