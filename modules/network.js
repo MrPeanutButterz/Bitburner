@@ -75,7 +75,7 @@ export function NmapTotalRam(ns) {
 			ram = ram + ns.getServerMaxRam(server)
 		}
 	}
-	return ram
+	return Math.floor(ram)
 }
 
 /** @param {NS} ns */

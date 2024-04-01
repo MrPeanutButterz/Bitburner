@@ -29,9 +29,7 @@ export async function main(ns) {
 
         // todo: if net ram is more than x && home ram is more than x, kill script en go to collectStage2 for more profit
         // switch around 1000 gb
-        if (NmapTotalRam(ns) > 1500) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
-
-
+        if (NmapTotalRam(ns) > 1500 && ns.getServerMaxRam("home") >= 512) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
         watchForNewServer(ns)
 
         servers = NmapRamServers(ns)

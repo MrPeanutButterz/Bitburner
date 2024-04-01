@@ -20,7 +20,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)
-    const hackChance = 0.9
+    const hackChance = 0.99
 
     let init = 1000
     let servers

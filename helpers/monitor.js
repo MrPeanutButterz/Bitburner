@@ -15,7 +15,7 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         ns.clearLog()
-        ns.print("Net Free Ram: " + Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) + "%")
+        ns.print("Net Ram: " + NmapFreeRam(ns) + " / " + NmapTotalRam(ns) + " GB")
 
         for (let server of NmapMoneyServers(ns)) {
 

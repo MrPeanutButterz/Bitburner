@@ -1,4 +1,4 @@
-import { Nmap, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
+import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
@@ -74,9 +74,11 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
 
-    let homeRamAvailable = ns.getServerMaxRam("home") * 0.85 - ns.getServerUsedRam("home")
-    let homeThreadsAvailable = Math.floor(homeRamAvailable / ns.getScriptRam(scripts.gw))
-    ns.exec(scripts.gw, "home", homeThreadsAvailable, 0.5)
+    // let homeRamAvailable = ns.getServerMaxRam("home") * 0.85 - ns.getServerUsedRam("home")
+    // let homeThreadsAvailable = Math.floor(homeRamAvailable / ns.getScriptRam(scripts.gw))
+    // if (homeThreadsAvailable > 0) { ns.exec(scripts.gw, "home", homeThreadsAvailable, 0.5) }
+
+    NmapClear(ns)
 
     while (true) {
 
@@ -95,6 +97,7 @@ export async function main(ns) {
                     // check in network no script is running with this target
                     // calculate balance to max in threads
                     // distribute across network
+                    ns.print("GROW - " + target)
 
                     if (!checkRunningScript(scripts.grow, target)) {
 
@@ -105,7 +108,6 @@ export async function main(ns) {
                         let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
 
                         distributeAcrossNetwork(scripts.grow, growThreads, target)
-                        ns.print("GROW - " + target)
 
                     } else continue
 
@@ -114,6 +116,7 @@ export async function main(ns) {
                     // check in network no script is running with this target
                     // calculate current security level to minimal in threads
                     // distribute across network
+                    ns.print("WEAK - " + target)
 
                     if (!checkRunningScript(scripts.weak, target)) {
 
@@ -129,26 +132,33 @@ export async function main(ns) {
 
                     } else continue
 
-                    ns.print("WEAK - " + target)
-
                 } else {
 
                     // check in network no script is running with this target
                     // calculate hack amount to threads
                     // distribute across network
-
+                    ns.print("HACK - " + target)
+                    
                     if (!checkRunningScript(scripts.hack, target)) {
-
+                        
                         let hackAmount = ns.getServerMaxMoney(target) * hackProcent
                         let hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, hackAmount))
-
+                        
                         distributeAcrossNetwork(scripts.hack, hackThreads, target)
-
+                        
                     } else continue
-
-                    ns.print("HACK - " + target)
-
+                    
                 }
+                
+            } else if (ns.hackAnalyzeChance(target) > hackChance - 0.1){
+                
+                // for servers that don't meet args 
+                // calculate current security level to minimal in threads 
+                // run on home server 
+                ns.print("POKE - " + target)
+
+                
+
             }
         }
     }

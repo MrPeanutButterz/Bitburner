@@ -10,7 +10,7 @@ export async function main(ns) {
 
 	//\\ GENERAL DATA
 	const PURCHASE_LIMIT = ns.getPurchasedServerLimit()
-	const FREE_NET_RAM = 10
+	const FREE_NET_RAM = 12
 
 	let LEVEL_RAM_BASE = 4
 	let LEVEL_RAM_MAX = ns.getPurchasedServerMaxRam()
