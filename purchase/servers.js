@@ -10,7 +10,7 @@ export async function main(ns) {
 
 	//\\ GENERAL DATA
 	const PURCHASE_LIMIT = ns.getPurchasedServerLimit()
-	const FREE_NET_RAM = 12
+	const FREE_NET_RAM = 10
 
 	let LEVEL_RAM_BASE = 4
 	let LEVEL_RAM_MAX = ns.getPurchasedServerMaxRam()
@@ -44,9 +44,7 @@ export async function main(ns) {
 	}
 
 	//\\ MAIN LOGICA
-	if (GB_LIMIT !== undefined) {
-		LEVEL_RAM_MAX = GB_LIMIT
-	}
+	if (GB_LIMIT !== undefined) { LEVEL_RAM_MAX = GB_LIMIT }
 
 	while (serverPoolSizeGB() < LEVEL_RAM_MAX * PURCHASE_LIMIT) {
 		await ns.sleep(1000)

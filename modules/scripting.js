@@ -8,6 +8,7 @@ export function scriptPath(ns) {
         weak: "/bin/genesis/pck_weak.js",
         hack: "/bin/genesis/pck_hack.js",
         gwh: "/bin/genesis/sqn_gwh.js",
+        wgh: "/bin/genesis/sqn_wgh.js",
         gw: "/bin/genesis/sqn_gw.js",
     }
     return path
