@@ -28,7 +28,7 @@ export async function main(ns) {
 
     function weakCondition(target) {
         return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + 2 &&
-            ns.getServerMoneyAvailable(target) === ns.getServerMaxMoney(target)
+            ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
     }
 
     function checkRunningScript(script, target) {
@@ -87,27 +87,7 @@ export async function main(ns) {
 
             if (ns.hackAnalyzeChance(target) > hackChance) {
 
-                if (growCondition(target)) {
-
-                    // check in network no script is running with this target
-                    // calculate balance to max in threads
-                    // distribute across network
-                    ns.print("GROW - " + target)
-
-                    if (!checkRunningScript(scripts.grow, target)) {
-
-                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target) ? ns.getServerMoneyAvailable(target) : 1
-                        let serverMoneyMax = ns.getServerMaxMoney(target)
-                        let mulitplier = serverMoneyMax / serverMoneyAvailable
-
-                        let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
-
-
-                        distributeAcrossNetwork(scripts.grow, growThreads, target)
-
-                    } else continue
-
-                } else if (weakCondition(target)) {
+                if (weakCondition(target)) {
 
                     // check in network no script is running with this target
                     // calculate current security level to minimal in threads
@@ -124,6 +104,26 @@ export async function main(ns) {
                         let weakThreads = serverSecutityDiff / effectSingleThread
 
                         distributeAcrossNetwork(scripts.weak, weakThreads, target)
+
+                    } else continue
+
+                } else if (growCondition(target)) {
+
+                    // check in network no script is running with this target
+                    // calculate balance to max in threads
+                    // distribute across network
+                    ns.print("GROW - " + target)
+
+                    if (!checkRunningScript(scripts.grow, target)) {
+
+                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target) ? ns.getServerMoneyAvailable(target) : 1
+                        let serverMoneyMax = ns.getServerMaxMoney(target)
+                        let mulitplier = serverMoneyMax / serverMoneyAvailable
+
+                        let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
+
+
+                        distributeAcrossNetwork(scripts.grow, growThreads, target)
 
                     } else continue
 

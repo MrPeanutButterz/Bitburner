@@ -17,7 +17,8 @@ export async function main(ns) {
     hack 45% of 100%
     */
 
-    //\\ SCRIPT SETTINGS
+    //\\ SCRIPT SETTINGS\
+    ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
 

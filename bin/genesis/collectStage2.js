@@ -32,7 +32,7 @@ export async function main(ns) {
         await ns.sleep(500)
 
         // todo: if net ram is more than x, kill script en go to collectStage3 for more profit 
-        if (NmapTotalRam(ns) > 7000) { ns.spawn("bin/genesis/collectStage3.js", { spawnDelay: 1000 }) }
+        if (NmapTotalRam(ns) > 5500) { ns.spawn("bin/genesis/collectStage3.js", { spawnDelay: 1000 }) }
 
         watchForNewServer(ns)
 
