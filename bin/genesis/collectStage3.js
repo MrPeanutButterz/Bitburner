@@ -27,7 +27,7 @@ export async function main(ns) {
     }
 
     function weakCondition(target) {
-        return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) &&
+        return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + 2 &&
             ns.getServerMoneyAvailable(target) === ns.getServerMaxMoney(target)
     }
 
@@ -85,7 +85,7 @@ export async function main(ns) {
         let targets = NmapMoneyServers(ns)
         for (let target of targets) {
 
-            if (ns.hackAnalyzeChance(target) > hackChance) { 
+            if (ns.hackAnalyzeChance(target) > hackChance) {
 
                 if (growCondition(target)) {
 
@@ -96,11 +96,12 @@ export async function main(ns) {
 
                     if (!checkRunningScript(scripts.grow, target)) {
 
-                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target)? ns.getServerMoneyAvailable(target) : 1
+                        let serverMoneyAvailable = ns.getServerMoneyAvailable(target) ? ns.getServerMoneyAvailable(target) : 1
                         let serverMoneyMax = ns.getServerMaxMoney(target)
                         let mulitplier = serverMoneyMax / serverMoneyAvailable
 
                         let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
+
 
                         distributeAcrossNetwork(scripts.grow, growThreads, target)
 
@@ -115,12 +116,11 @@ export async function main(ns) {
 
                     if (!checkRunningScript(scripts.weak, target)) {
 
-                        let effectSingleThread = ns.weakenAnalyze(1)
-
-                        let serverSecurityMin = ns.getServerMinSecurityLevel(target) + 2
-                        let serverSecurityNow = ns.getServerSecurityLevel(target)
-
+                        let serverSecurityMin = Math.ceil(ns.getServerMinSecurityLevel(target) + 2)
+                        let serverSecurityNow = Math.ceil(ns.getServerSecurityLevel(target))
                         let serverSecutityDiff = Math.ceil(serverSecurityNow - serverSecurityMin)
+
+                        let effectSingleThread = ns.weakenAnalyze(1)
                         let weakThreads = serverSecutityDiff / effectSingleThread
 
                         distributeAcrossNetwork(scripts.weak, weakThreads, target)
@@ -133,29 +133,16 @@ export async function main(ns) {
                     // calculate hack amount to threads
                     // distribute across network
                     ns.print("HACK - " + target)
-                    
+
                     if (!checkRunningScript(scripts.hack, target)) {
-                        
+
                         let hackAmount = ns.getServerMaxMoney(target) * hackProcent
                         let hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, hackAmount))
-                        
+
                         distributeAcrossNetwork(scripts.hack, hackThreads, target)
-                        
+
                     } else continue
-                    
-                }
-                
-            } else if (ns.hackAnalyzeChance(target) > hackChance - 0.05){
-                
-                // for servers that don't meet args 
-                // calculate current security level to minimal in threads 
-                // run on home server 
-                ns.print("POKE - " + target)
 
-                if (!checkRunningScript(scripts.weak, target)) {
-
-                    distributeAcrossNetwork(scripts.weak, 20, target)
-                    
                 }
             }
         }
