@@ -1,9 +1,9 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // check all accounts, buy if no present
+    // buy all accounts
     // make list of active stocks
-    // buy en sell stocks
+    // buy en sell stocks based on forcast
 
     // buy max shares 
     // sell max shares
@@ -15,7 +15,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const FORCAST_BUY_THRESHOLD = 0.65
-    const FORCAST_SELL_THRESHOLD = 0.4
+    const FORCAST_SELL_THRESHOLD = 0.45
     const BALANCE_THRESHOLD = 100_000_000
 
     //\\ FUNCTIONS
@@ -70,28 +70,26 @@ export async function main(ns) {
 
             if (ns.stock.getPosition(sym)[0] > 0) {
 
-                ns.print("INFO Shares")
-                ns.print("INFO " + ns.stock.getPosition(sym)[0] + " / " + ns.stock.getMaxShares(sym))
+                ns.print("INFO Shares  " + ns.stock.getPosition(sym)[0] + "/" + ns.stock.getMaxShares(sym))
+                ns.print("INFO Profits " + Math.round(ns.stock.getSaleGain(sym, ns.stock.getPosition(sym)[0],"Long") - ns.stock.getPosition(sym)[1] * ns.stock.getPosition(sym)[0]))
                 ns.print(" ")
-
 
             }
 
             if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD && ns.stock.getPosition(sym)[0] === 0) {
 
                 let maxShares = ns.stock.getMaxShares(sym)
-                let askPrice = ns.stock.getAskPrice(sym)
                 let purchaseCost = Math.ceil(ns.stock.getPurchaseCost(sym, ns.stock.getMaxShares(sym), "Long"))
                 
-                ns.print("WARN BUY")
+                ns.print("WARN BUY SIGNAL")
                 
                 if (ns.getServerMoneyAvailable("home") > purchaseCost) {
                     ns.stock.buyStock(sym, maxShares)
-                    ns.print("Shares: " + ns.stock.getPosition(sym)[0])
+                    ns.print("Bought shares: " + ns.stock.getPosition(sym)[0])
                     
                 } else {
                     ns.print("PurchaseCost: " + purchaseCost)
-                    ns.print("We don't have the money...")
+                    ns.print("Gap in money: " + Math.round((ns.getServerMoneyAvailable("home") / purchaseCost) * 100) + "%")
                 }
                 ns.print(" ")
 
@@ -99,7 +97,7 @@ export async function main(ns) {
 
             if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD && ns.stock.getPosition(sym)[0] > 0) {
 
-                ns.print("WARN SELL")
+                ns.print("WARN SELL SIGNAL")
                 ns.print(" ")
 
                 ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
@@ -108,27 +106,3 @@ export async function main(ns) {
         }
     }
 }
-
-// getBonusTime()	                            Get Stock Market bonus time.
-
-// getSymbols()	                                Returns an array of the symbols of the tradable stocks
-// getPosition(sym)	                            Returns the player’s position in a stock.
-
-// getForecast(sym)	                            Returns the probability that the specified stock’s price will increase (as opposed to decrease) during the next tick.
-// getMaxShares(sym)	                        Returns the maximum number of shares of a stock.
-// getVolatility(sym)	                        Returns the volatility of the specified stock.
-
-// getPrice(sym)	                            Returns the price of a stock.
-// getPurchaseCost(sym, shares, posType)	    Calculates cost of buying stocks.
-// getAskPrice(sym)	                            Returns the ask price of that stock.
-// getBidPrice(sym)	                            Returns the bid price of that stock.
-// cancelOrder(sym, shares, price, type, pos)	Cancel order for stocks.
-// getSaleGain(sym, shares, posType)	        Calculate profit of selling stocks.
-// buyStock(sym, shares)	                    Buy stocks.
-// sellStock(sym, shares)	                    Sell stocks.
-
-// getOrganization(sym)	                        Returns the organization associated with a stock symbol.
-// nextUpdate()	                                Sleep until the next Stock Market price update has happened.
-// placeOrder(sym, shares, price, type, pos)	Place order for stocks.
-// buyShort(sym, shares)                        Short stocks.
-// sellShort(sym, shares)	                    Sell short stock.
