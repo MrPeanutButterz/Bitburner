@@ -1,25 +1,26 @@
-import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
+import { watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // run list money servers
-    // if not working on it, grow money to 100%
-    // if not working on it, weak security al low as posible
-    // if not working on it, hack the server 
+    /* 
+    run list money servers
+    if not working on it, grow money to 100%
+    if not working on it, weak security al low as posible
+    if not working on it, hack the server 
+    dont loop to next target if threads are incompleet
+    */
 
-    // threads are efficient timing is not
-
-    //\\ SCRIPT SETTINGS
+    //\\ SCRIPT SETTINGS\
     ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const scripts = scriptPath(ns)
+    const SCRIPTS = scriptPath(ns)
     const HACKCHANCE = 0.8
-    const HACKPROCENT = 0.8
+    const HACKPROCENT = 0.7
 
     //\\ FUNCTIONS
     function growCondition(target) {
@@ -31,29 +32,32 @@ export async function main(ns) {
             ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
     }
 
-    function checkRunningScript(script, target) {
+    function sortMoneyServerByThreads() {
 
-        let isRunning = false
-        const ramServers = NmapRamServers(ns)
+        let sort = []
+        let unsort = NmapMoneyServers(ns)
 
-        ramServers.forEach(server => {
-
-            if (ns.isRunning(script, server, target, 0)) {
-                isRunning = true
-            }
-
+        unsort.forEach(server => {
+            sort.push({ server: server, threads: Math.ceil(ns.growthAnalyze(server, 2)) })
         })
-        return isRunning
+
+        sort.sort(function (a, b) {
+            return a.threads - b.threads
+        })
+
+        return sort
     }
 
     function calculateWeakThreads(target) {
 
         // caculates number of threads for weak
 
-        let serverSecurityMin = ns.getServerMinSecurityLevel(target) + 2
-        let serverSecurityNow = ns.getServerSecurityLevel(target)
+        let serverSecurityMin = Math.ceil(ns.getServerMinSecurityLevel(target) + 2)
+        let serverSecurityNow = Math.ceil(ns.getServerSecurityLevel(target))
         let serverSecutityDiff = Math.ceil(serverSecurityNow - serverSecurityMin)
-        let weakThreads = serverSecutityDiff / ns.weakenAnalyze(1)
+
+        let effectSingleThread = ns.weakenAnalyze(1)
+        let weakThreads = serverSecutityDiff / effectSingleThread
         return weakThreads
     }
 
@@ -95,27 +99,31 @@ export async function main(ns) {
                     ns.exec(script, server, threads, target, 0)
                     break
                 }
- 
+
                 if (threadsAvailable < threads) {
                     ns.exec(script, server, threadsAvailable, target, 0)
                     threads -= threadsAvailable
                 }
             }
         }
+
+        if (threads > 0) { return false } else { return true }
     }
 
-    //\\ MAIN LOGICA
-    NmapClear(ns)
 
+    //\\ MAIN LOGIC
     while (true) {
 
-        await ns.sleep(1000)
-
+        await ns.sleep(50)
         ns.clearLog()
-        watchForNewServer(ns)
 
-        let targets = NmapMoneyServers(ns)
-        for (let target of targets) {
+        let list = sortMoneyServerByThreads()
+
+        for (let i = 0; i < list.length;) {
+
+            await ns.sleep(50)
+            watchForNewServer(ns)
+            let target = list[i]
 
             if (ns.hackAnalyzeChance(target) > HACKCHANCE) {
 
@@ -126,35 +134,43 @@ export async function main(ns) {
                 if (weakCondition(target)) {
 
                     ns.print("WEAK - " + target)
-                    if (!checkRunningScript(scripts.weak, target)) {
+                    if (!checkRunningScript(SCRIPTS.weak, target)) {
 
                         let weakThreads = calculateWeakThreads(target)
-                        distributeAcrossNetwork(scripts.weak, weakThreads, target)
+                        if (distributeAcrossNetwork(SCRIPTS.weak, weakThreads, target)) {
+                            i++
+                        }
 
-                    } else continue
+                    }
 
                 } else if (growCondition(target)) {
 
                     ns.print("GROW - " + target)
-                    if (!checkRunningScript(scripts.grow, target)) {
+                    if (!checkRunningScript(SCRIPTS.grow, target)) {
 
                         let growThreads = calculateGrowThreads(target)
-                        distributeAcrossNetwork(scripts.grow, growThreads, target)
+                        if (distributeAcrossNetwork(SCRIPTS.grow, growThreads, target)) {
+                            i++
+                        }
 
-                    } else continue
+                    }
 
                 } else {
 
                     ns.print("HACK - " + target)
-                    if (!checkRunningScript(scripts.hack, target)) {
+                    if (!checkRunningScript(SCRIPTS.hack, target)) {
 
                         let hackThreads = calculateHackThreads(target)
-                        distributeAcrossNetwork(scripts.hack, hackThreads, target)
+                        if (distributeAcrossNetwork(SCRIPTS.hack, hackThreads, target)) {
+                            i++
+                        }
 
-                    } else continue
+                    }
 
                 }
             }
+
+
         }
     }
 }

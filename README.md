@@ -33,7 +33,6 @@ The sqn_gwh.js weakens the security, grows the balance, hacks the money availabl
 The sqn_gw.js script increases the account balance and reduces security based on the chance. The hacking process is carried out by either collectStage2.js or collectStage3.js. Initially, the arguments are provided by parents, but they can also be manually specified. If no argument is provided, the default hack chance is set to 80% (in decimal form).
 
 `parent: collectStage2.js`
-`parent: collectStage3.js`
 `args: optional`
 > run sqn_gw.js 0.7
 
