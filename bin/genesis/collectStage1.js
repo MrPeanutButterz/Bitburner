@@ -30,7 +30,7 @@ export async function main(ns) {
         let servers
 
         // todo: finetune switch point 
-        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 1000 }) }
+        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 }) }
 
         servers = NmapRamServers(ns)
         servers.forEach(server => {

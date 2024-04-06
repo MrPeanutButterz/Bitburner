@@ -1,16 +1,12 @@
-import { sleepTime } from "modules/scripting"
-
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.tprint("Programs active")
+	ns.tprint("Active")
 	ns.disableLog("ALL")
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-	const sleep = sleepTime()
-
 	const program = [
 		{ name: "BruteSSH.exe", lvl: 50 },
 		{ name: "FTPCrack.exe", lvl: 100 },
@@ -29,25 +25,35 @@ export async function main(ns) {
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
 
+
+
 	//\\ MAIN LOGIC
 	for (let i = 0; i < program.length; i++) {
-		while (!ns.fileExists(program[i].name)) {
-			await ns.sleep(sleep.s1)
 
-			if (ns.singularity.purchaseTor() && ns.getPlayer().money > ns.singularity.getDarkwebProgramCost(program[i].name)) {
+		let exe = program[i].name
+		let lvl = program[i].lvl
+		let cost = ns.singularity.getDarkwebProgramCost(exe)
+
+		while (!ns.fileExists(exe)) {
+
+			await ns.sleep(1000)
+			ns.clearLog()
+			ns.print("Next program " + exe + " at level " + lvl + " for " + cost)
+
+			if (ns.singularity.purchaseTor() && ns.getServerMoneyAvailable("home") > cost) {
 
 				//buy
-				ns.singularity.purchaseProgram(program[i].name)
-				ns.print("Bought " + program[i].name)
+				ns.singularity.purchaseProgram(exe)
+				ns.print("Bought " + exe)
 
-			} else if (ns.getHackingLevel() >= program[i].lvl && !ns.singularity.isBusy()) {
+			} else if (ns.getHackingLevel() >= lvl) {
 
 				//create
-				ns.singularity.createProgram(program[i].name, false)
-				ns.print("Created " + program[i].name)
+				ns.singularity.createProgram(exe, false)
+				ns.print("Created " + exe)
 
 			}
 		}
 	}
-	ns.tprint("Programs creating purchase completed")
+	ns.tprint("Programs purchase completed")
 }

@@ -11,7 +11,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const target = ns.args[0]
-    let attackPerc = 20
+    let attackPerc = 100
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     //\\ MAIN LOGIC
@@ -21,17 +21,17 @@ export async function main(ns) {
         await ns.sleep(1000)
 
         let moneyPerc = Math.floor(ns.getServerMoneyAvailable(target) / ns.getServerMaxMoney(target) * 100)
-        const minSecurtiyLevel = ns.getServerMinSecurityLevel(target) + 5
+        const minSecurtiyLevel = ns.getServerMinSecurityLevel(target) + 9
 
         ns.print("Attack percent: " + attackPerc)
 
-        if (moneyPerc < attackPerc) {
-            ns.print("GROW@" + moneyPerc)
-            await ns.grow(target)
-
-        } else if (ns.getServerSecurityLevel(target) > minSecurtiyLevel) {
+        if (ns.getServerSecurityLevel(target) > minSecurtiyLevel) {
             ns.print("WEAK")
             await ns.weaken(target)
+
+        } else if (moneyPerc < attackPerc) {
+            ns.print("GROW@" + moneyPerc)
+            await ns.grow(target)
 
         } else {
             ns.print("HACK @" + moneyPerc)
