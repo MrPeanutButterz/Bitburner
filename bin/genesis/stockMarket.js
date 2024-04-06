@@ -1,3 +1,5 @@
+import { colorPrint } from "modules/scripting";
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -5,8 +7,7 @@ export async function main(ns) {
     // make list of active stocks
     // buy en sell stocks based on forcast
 
-    // buy max shares 
-    // sell max shares
+    // incorporate grow to pump stock 
 
     //\\ SCRIPT SETTINGS
     ns.tprint("Active")
@@ -16,19 +17,54 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const FORCAST_BUY_THRESHOLD = 0.65
     const FORCAST_SELL_THRESHOLD = 0.45
-    const BALANCE_THRESHOLD = 100_000_000
+    const BALANCE_TRIGGER_THRESHOLD = 2e9 // 1b
+    const BALANCE_SPENDABLE = 5e8 // 500m
 
     //\\ FUNCTIONS
-    //\\ MAIN LOGICA
-    ns.print("Accounts check...")
-    await ns.sleep(2000)
+    function displayLog(forcast, sym) {
 
-    while (!ns.stock.hasWSEAccount()
-        || !ns.stock.has4SData()
-        || !ns.stock.hasTIXAPIAccess()
-        || !ns.stock.has4SDataTIXAPI()) {
+        // first print stock
 
-        await ns.sleep(1000)
+        if (ns.stock.getPosition(sym)[0] > 0) {
+            colorPrint(ns, "brightGreen", sym + "\t Forcast: " + forcast)
+
+        } else if (forcast > 0.6) {
+            colorPrint(ns, "white", sym + "\t Forcast: " + forcast)
+
+        } else if (forcast > 0.5) {
+            colorPrint(ns, "brightBlack", sym + "\t Forcast: " + forcast)
+
+        } else {
+            colorPrint(ns, "black", sym + "\t Forcast: " + forcast)
+
+        }
+
+        // add additional info if we own the stock
+
+        if (ns.stock.getPosition(sym)[0] > 0) {
+
+            let sharesOwnedProcent = Math.round((ns.stock.getPosition(sym)[0] / ns.stock.getMaxShares(sym)) * 100)
+            let profit = Math.round(ns.stock.getSaleGain(sym, ns.stock.getPosition(sym)[0], "Long") - ns.stock.getPosition(sym)[1] * ns.stock.getPosition(sym)[0])
+
+            if (sharesOwnedProcent === 100) {
+                colorPrint(ns, "green", "shares:  " + sharesOwnedProcent + "%")
+
+            } else {
+                colorPrint(ns, "yellow", "shares:  " + sharesOwnedProcent + "%")
+
+            }
+
+            if (profit > 0) {
+                colorPrint(ns, "green", "profit:  " + profit)
+
+            } else {
+                colorPrint(ns, "red", "profit: " + profit)
+
+            }
+        }
+    }
+
+    function getAccounts() {
         ns.clearLog()
 
         // buy Wse
@@ -52,10 +88,58 @@ export async function main(ns) {
         }
     }
 
+    function sellAllShares(sym) {
+        ns.print("WARN SELLING SHARES")
+        ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
+    }
+
+    function buyShares(sym) {
+
+        // buy if forcast is more the threshold ✅
+        // get max shares - owned ✅
+        // buy all or buy in segments ✅
+
+        let availableShares = ns.stock.getMaxShares(sym) - ns.stock.getPosition(sym)[0]
+        let availableMoney = ns.getServerMoneyAvailable("home")
+
+        if (availableMoney > BALANCE_TRIGGER_THRESHOLD) {
+            colorPrint(ns, "yellow", "BUYING SHARES")
+
+            let spendable = BALANCE_SPENDABLE + (ns.getServerMoneyAvailable("home") - BALANCE_TRIGGER_THRESHOLD)
+            let price = availableShares * ns.stock.getPrice(sym)
+
+            if (spendable > price) {
+                ns.stock.buyStock(sym, availableShares)
+
+            } else {
+                // untested: cauze got to many moneyz 
+                let partShares = Math.floor(spendable / ns.stock.getPrice(sym))
+                ns.stock.buyStock(sym, partShares)
+            }
+
+        } else {
+            colorPrint(ns, "red", "LACK OF FUNDS...")
+
+        }
+    }
+
+    //\\ MAIN LOGICA
+    ns.print("Accounts check...")
+    await ns.sleep(2000)
+
+    while (!ns.stock.hasWSEAccount()
+        || !ns.stock.has4SData()
+        || !ns.stock.hasTIXAPIAccess()
+        || !ns.stock.has4SDataTIXAPI()) {
+        await ns.sleep(1000)
+        getAccounts()
+    }
+
     ns.print("Accounts are present")
     await ns.sleep(2000)
 
     ns.print("Managing Stocks")
+    await ns.sleep(1000)
 
     const symbols = ns.stock.getSymbols()
 
@@ -66,41 +150,15 @@ export async function main(ns) {
 
         for (let sym of symbols) {
 
-            ns.print(sym + "\t Forcast " + ns.stock.getForecast(sym).toPrecision(3))
+            let forcast = ns.stock.getForecast(sym).toPrecision(3)
+            displayLog(forcast, sym)
 
-            if (ns.stock.getPosition(sym)[0] > 0) {
-
-                ns.print("INFO Shares  " + ns.stock.getPosition(sym)[0] + "/" + ns.stock.getMaxShares(sym))
-                ns.print("INFO Profits " + Math.round(ns.stock.getSaleGain(sym, ns.stock.getPosition(sym)[0],"Long") - ns.stock.getPosition(sym)[1] * ns.stock.getPosition(sym)[0]))
-                ns.print(" ")
-
-            }
-
-            if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD && ns.stock.getPosition(sym)[0] === 0) {
-
-                let maxShares = ns.stock.getMaxShares(sym)
-                let purchaseCost = Math.ceil(ns.stock.getPurchaseCost(sym, ns.stock.getMaxShares(sym), "Long"))
-                
-                ns.print("WARN BUY SIGNAL")
-                
-                if (ns.getServerMoneyAvailable("home") > purchaseCost) {
-                    ns.stock.buyStock(sym, maxShares)
-                    ns.print("Bought shares: " + ns.stock.getPosition(sym)[0])
-                    
-                } else {
-                    ns.print("PurchaseCost: " + purchaseCost)
-                    ns.print("Gap in money: " + Math.round((ns.getServerMoneyAvailable("home") / purchaseCost) * 100) + "%")
-                }
-                ns.print(" ")
-
+            if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD && ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
+                buyShares(sym)
             }
 
             if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD && ns.stock.getPosition(sym)[0] > 0) {
-
-                ns.print("WARN SELL SIGNAL")
-                ns.print(" ")
-
-                ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
+                sellAllShares(sym)
 
             }
         }
