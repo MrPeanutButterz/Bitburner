@@ -1,4 +1,5 @@
 import { NmapMoneyServers, NmapFreeRam, NmapTotalRam } from "modules/network"
+import { colorPrint } from "modules/scripting";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -16,25 +17,44 @@ export async function main(ns) {
         await ns.sleep(1000)
         ns.clearLog()
         ns.print("Net Ram: " + NmapFreeRam(ns) + " / " + NmapTotalRam(ns) + " GB")
+        ns.print(" ")
 
         for (let server of NmapMoneyServers(ns)) {
 
-            if (ns.hackAnalyzeChance(server) > hackChance) {
+            // green 80% chance
+            // yellow 50% chance
+            // red 0% chance
 
-                ns.print(" ")
-
-                ns.print(server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "% ---- " +
-                    "T^ " +
-                    "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
-                    "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
-                    "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s")
-
-
-
-                ns.print("M^ " + Math.floor(ns.getServerMoneyAvailable(server)) + " / " + ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%  ----" +
-                    "  S^ " + ns.getServerMinSecurityLevel(server).toPrecision(3) + " / " + ns.getServerSecurityLevel(server).toPrecision(3) + " / " + ns.getServerBaseSecurityLevel(server))
+            // server name en hackchance 
+            if (ns.hackAnalyzeChance(server) > 0.8) {
+                colorPrint(ns, "green", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                
+            } else if (ns.hackAnalyzeChance(server) > 0.5) {
+                colorPrint(ns, "yellow", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                
+            } else {
+                colorPrint(ns, "red", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
 
             }
+
+            // Grow Weak Hack stats
+            colorPrint(ns, "white", "Ti " +
+                "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
+                "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
+                "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s")
+
+            // Money stats
+            colorPrint(ns, "white", "Mo " +
+                Math.floor(ns.getServerMoneyAvailable(server)) +
+                " / " +
+                ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
+
+            // Security stats
+            colorPrint(ns, "white", "Se " +
+                ns.getServerSecurityLevel(server).toPrecision(3) +
+                " / " +
+                ns.getServerMinSecurityLevel(server).toPrecision(3)
+            )
         }
     }
 }
