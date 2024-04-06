@@ -1,15 +1,13 @@
-
-
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // sell off stocks
-    
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
+    ns.tail()
 
-    //\\ GENERAL DATA   
-    //\\ MAIN LOGICA
+    //\\ GENERAL DATA
+    //\\ FUNCTIONS 
+    //\\ MAIN LOGIC
+
 }

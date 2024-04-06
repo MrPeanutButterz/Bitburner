@@ -36,7 +36,7 @@ export async function main(ns) {
 
   // hacknet
   while (!calculateHomeRam(scripts[1])) { await ns.sleep(1000) }
-  ns.run(scripts[1], 1)
+  ns.run(scripts[1], 1) // 10, 100, 4, 1 
   await ns.sleep(1000)
 
   // servers limited
@@ -60,8 +60,18 @@ export async function main(ns) {
   await ns.sleep(1000)
 
   // stockmarket
-  while (!calculateHomeRam(scripts[4]) && ns.isRunning(scripts[6], "home")) { await ns.sleep(1000) }
-  ns.run(scripts[5], 1)
-  await ns.sleep(1000)
+  // while (!calculateHomeRam(scripts[4]) && ns.isRunning(scripts[6], "home")) { await ns.sleep(1000) }
+  // ns.run(scripts[5], 1)
+  // await ns.sleep(1000)
+
+  // RUNTIME ERROR
+  // bin / genesis / stockMarket.js@home(PID - 126)
+
+  // stock.purchase4SMarketDataTixApi: You don't have WSE Access! Cannot use purchase4SMarketDataTixApi()
+
+  // Stack:
+  // bin / genesis / stockMarket.js:L72 @getAccounts
+  // bin / genesis / stockMarket.js:L124 @Module.main
+
 
 }
