@@ -102,13 +102,51 @@ export function watchForNewServer(ns) {
 	})
 }
 
+/** @param {NS} ns */
+export function getServerPath(ns, server) {
+
+	// returns the path to a server
+
+	let serverNameList = Nmap(ns)
+	let serverPathList = serverNameList.map(function () {
+		return ""
+	})
+
+	let visited = []
+	let queue = ["home"]
+
+	while (queue.length > 0) {
+		let node = queue.shift()
+		visited.push(node)
+		let neighbours = ns.scan(node)
+		for (let server of neighbours) {
+			if (!visited.includes(server)) {
+				serverPathList[serverNameList.indexOf(server)] = node
+				queue.push(server)
+			}
+		}
+	}
+
+	if (ns.serverExists(server)) {
+		let path = [server]
+
+		while (path[path.length - 1] != "home") {
+			let lasthop = path[path.length - 1]
+			let nexthop = serverPathList[serverNameList.indexOf(lasthop)]
+			path.push(nexthop)
+		}
+		path.reverse()
+		return path
+	}
+}
+
 
 /** @param {NS} ns */
 export function NmapServerPath(ns, server) {
 
 	// returns the path to a server
 
-	var serverNameList = networkScanner(ns)
+	var serverNameList = Nmap(ns)
 	let serverPathList = generatePathList(ns, serverNameList)
 
 	if (ns.serverExists(server)) {
@@ -188,8 +226,8 @@ export function copyHackScripts(ns, server) {
 	if (!ns.fileExists(path.grow, server)
 		|| !ns.fileExists(path.weak, server)
 		|| !ns.fileExists(path.hack, server)
-		|| !ns.fileExists(path.gwh, server) 
-		|| !ns.fileExists(path.wgh, server) 
+		|| !ns.fileExists(path.gwh, server)
+		|| !ns.fileExists(path.wgh, server)
 		|| !ns.fileExists(path.gw, server)) {
 		ns.scp(files, server, "home")
 	}
