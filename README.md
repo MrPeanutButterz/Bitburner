@@ -20,7 +20,7 @@ This script floods the entire network with the sqn_gw.js script, thereby increas
 `args non`
 > run collectStage2.js
 
-### sqn_gwh 
+### sqn_gwh.js
 
 The sqn_gwh.js weakens the security, grows the balance, hacks the money available. Grows server money incremental on every hack + 1%. The arguments are provided bij collectStage1.js but can also be run manualy. If no argument is given it will hack n00dles by default.
 
@@ -36,7 +36,7 @@ The sqn_gw.js script increases the account balance and reduces security based on
 `args: optional`
 > run sqn_gw.js 0.7
 
-### pck_grow & pck_weak & pck_hack .js
+### pck_*.js
 
 These scripts have the same functions as sqn_gwh.js buy are seperated for more control on timing en threads. The arguments are provided bij collectStage3.js
 
@@ -46,7 +46,7 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 
 `parent: collectStage3.js`
 `args required`
-> run sqn_gw.js sigma-cosmetics 2000
+> run pck_grow.js sigma-cosmetics 2000
 
 ## Purchase
 
@@ -64,10 +64,32 @@ The script accepts the following arguments:
 `args: optional`
 > run hacknet.js 5 100 16 2
 
-
 ### server.js
 
 This script will continuously purchase servers until argument conditions are met. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the args amount of RAM is reached. Additionally if no args are provided, the script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase new servers or upgrades.
 
 `args: optional`
 > run servers.js 128
+
+### programs.js
+
+This script purchases or creates only the necessary .exe programs required to run the hack scripts, ensuring that essential programs are the only ones acquired.
+
+BruteSSH.exe, FTPCrack.exe, relaySMTP.exe, HTTPWorm.exe, SQLInject.exe
+
+`args: non`
+> run programs.js
+
+### ram.js
+
+Keeps buying untill your money runs out.
+
+`args: non`
+> run ram.js
+
+### core.js
+
+Keeps buying untill your money runs out.
+
+`args: non`
+> run ram.js
