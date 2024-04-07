@@ -20,6 +20,13 @@ This script floods the entire network with the sqn_gw.js script, thereby increas
 `args non`
 > run collectStage2.js
 
+### collectStage3.js
+
+collectStage3 handles threads very efficiently. When it installs an action in the network, it will only create one instance of it distributed across multiple servers. Although this is efficient with threads, the script struggles with time management because all instances are executed sequentially.
+
+`args non`
+> run collectStage3.js
+
 ### sqn_gwh.js
 
 The sqn_gwh.js weakens the security, grows the balance, hacks the money available. Grows server money incremental on every hack + 1%. The arguments are provided bij collectStage1.js but can also be run manualy. If no argument is given it will hack n00dles by default.
