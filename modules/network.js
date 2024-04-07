@@ -95,6 +95,40 @@ export function NmapFreeRam(ns) {
 }
 
 /** @param {NS} ns */
+export function getRootAccess(ns, server) {
+
+	//cracks ports to gain access
+
+	let portsOpen = 0
+	if (!ns.hasRootAccess(server)) {
+		if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(server); portsOpen++ }
+		if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(server); portsOpen++ }
+		if (ns.fileExists("RelaySMTP.exe", "home")) { ns.relaysmtp(server); portsOpen++ }
+		if (ns.fileExists("HTTPWorm.exe", "home")) { ns.httpworm(server); portsOpen++ }
+		if (ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(server); portsOpen++ }
+		if (ns.getServerNumPortsRequired(server) <= portsOpen) { ns.nuke(server) }
+	}
+}
+
+/** @param {NS} ns */
+export function copyHackScripts(ns, server) {
+
+	//copy the scripts to the destination server
+
+	const path = scriptPath(ns)
+	const files = [path.grow, path.weak, path.hack, path.gwh, path.gw, path.wgh]
+
+	if (!ns.fileExists(path.grow, server)
+		|| !ns.fileExists(path.weak, server)
+		|| !ns.fileExists(path.hack, server)
+		|| !ns.fileExists(path.gwh, server)
+		|| !ns.fileExists(path.wgh, server)
+		|| !ns.fileExists(path.gw, server)) {
+		ns.scp(files, server, "home")
+	}
+}
+
+/** @param {NS} ns */
 export function watchForNewServer(ns) {
 	Nmap(ns).forEach(server => {
 		getRootAccess(ns, server)
@@ -138,107 +172,4 @@ export function getServerPath(ns, server) {
 		path.reverse()
 		return path
 	}
-}
-
-/** @param {NS} ns */
-export function getRootAccess(ns, server) {
-
-	//cracks ports to gain access
-
-	let portsOpen = 0
-	if (!ns.hasRootAccess(server)) {
-		if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(server); portsOpen++ }
-		if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(server); portsOpen++ }
-		if (ns.fileExists("RelaySMTP.exe", "home")) { ns.relaysmtp(server); portsOpen++ }
-		if (ns.fileExists("HTTPWorm.exe", "home")) { ns.httpworm(server); portsOpen++ }
-		if (ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(server); portsOpen++ }
-		if (ns.getServerNumPortsRequired(server) <= portsOpen) { ns.nuke(server) }
-	}
-}
-
-/** @param {NS} ns */
-export function getProgramCount(ns) {
-
-	//returns the number of programs owned
-
-	var programs = 0
-	if (ns.fileExists("BruteSSH.exe", "home")) { programs++ }
-	if (ns.fileExists("FTPCrack.exe", "home")) { programs++ }
-	if (ns.fileExists("RelaySMTP.exe", "home")) { programs++ }
-	if (ns.fileExists("HTTPWorm.exe", "home")) { programs++ }
-	if (ns.fileExists("SQLInject.exe", "home")) { programs++ }
-	return programs
-}
-
-/** @param {NS} ns */
-export function copyHackScripts(ns, server) {
-
-	//copy the scripts to the destination server
-
-	const path = scriptPath(ns)
-	const files = [path.grow, path.weak, path.hack, path.gwh, path.gw, path.wgh]
-
-	if (!ns.fileExists(path.grow, server)
-		|| !ns.fileExists(path.weak, server)
-		|| !ns.fileExists(path.hack, server)
-		|| !ns.fileExists(path.gwh, server)
-		|| !ns.fileExists(path.wgh, server)
-		|| !ns.fileExists(path.gw, server)) {
-		ns.scp(files, server, "home")
-	}
-}
-
-/** @param {NS} ns */
-export function installPackage(ns, host, script, ram, threads, timing, id) {
-
-	//installs scripts in on the servers with ram (make sure there is space avaliable)
-
-	let server = NmapRamServers(ns)
-
-	for (let i = 0; i < server.length; i++) {
-
-		getRootAccess(ns, server[i])
-
-		let ramAvailable = ns.getServerMaxRam(server[i]) - ns.getServerUsedRam(server[i])
-		let threadsAvailable = Math.floor(ramAvailable / ram)
-
-		if (threadsAvailable >= 1) {
-
-			if (threadsAvailable > threads) {
-				ns.exec(script, server[i], threads, host, timing, id)
-				break
-			}
-
-			if (threadsAvailable < threads) {
-				ns.exec(script, server[i], threadsAvailable, host, timing, id)
-				threads = threads - threadsAvailable
-			}
-		}
-	}
-}
-
-/** @param {NS} ns */
-export function getUniqueIDs(ns) {
-
-	//returns a single ID
-
-	let s4 = () => {
-		return Math.floor((1 + Math.random()) * 0x10000)
-			.toString(16)
-			.substring(1)
-	}
-	return s4() + s4() + s4() + s4() + s4()
-}
-
-/** @param {NS} ns */
-export function getUniqueIDm(ns) {
-
-	//returns a single ID
-
-	let s4 = () => {
-		return Math.floor((1 + Math.random()) * 0x10000)
-			.toString(16)
-			.substring(1)
-	}
-	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
 }
