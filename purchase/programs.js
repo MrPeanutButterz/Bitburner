@@ -34,7 +34,7 @@ export async function main(ns) {
 
 		while (!ns.fileExists(exe)) {
 
-			await ns.sleep(1000)
+			await ns.sleep(500)
 			ns.clearLog()
 			ns.print("Progr - " + exe)
 			ns.print("Level - " + lvl)
@@ -71,4 +71,5 @@ export async function main(ns) {
 		}
 	}
 	ns.tprint("Programs purchase completed")
+	ns.closeTail()
 }

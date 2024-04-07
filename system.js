@@ -34,12 +34,12 @@ export async function main(ns) {
   ns.run(scripts[0], 1, "foodnstuff")
   await ns.sleep(1000)
 
-  // hacknet
-  while (!calculateHomeRam(scripts[1])) { await ns.sleep(1000) }
-  ns.run(scripts[1], 1) // 10, 100, 4, 1 
-  await ns.sleep(1000)
+  // // hacknet
+  // while (!calculateHomeRam(scripts[1])) { await ns.sleep(1000) }
+  // ns.run(scripts[1], 1, 10, 100, 4, 1)
+  // await ns.sleep(1000)
 
-  // servers limited
+  // servers limited 32Gb
   while (!calculateHomeRam(scripts[2])) { await ns.sleep(1000) }
   ns.run(scripts[2], 1, 32)
   await ns.sleep(1000)
@@ -55,23 +55,15 @@ export async function main(ns) {
   await ns.sleep(1000)
 
   // servers 
-  while (!calculateHomeRam(scripts[2]) && !ns.isRunning(scripts[2], "home", 32)) { await ns.sleep(1000) }
+  while (!calculateHomeRam(scripts[2]) || ns.isRunning(scripts[2], "home", 32)) { await ns.sleep(1000) }
   ns.run(scripts[2], 1)
   await ns.sleep(1000)
 
   // stockmarket
-  // while (!calculateHomeRam(scripts[4]) && ns.isRunning(scripts[6], "home")) { await ns.sleep(1000) }
-  // ns.run(scripts[5], 1)
-  // await ns.sleep(1000)
-
-  // RUNTIME ERROR
-  // bin / genesis / stockMarket.js@home(PID - 126)
-
-  // stock.purchase4SMarketDataTixApi: You don't have WSE Access! Cannot use purchase4SMarketDataTixApi()
-
-  // Stack:
-  // bin / genesis / stockMarket.js:L72 @getAccounts
-  // bin / genesis / stockMarket.js:L124 @Module.main
-
+  if (ns.getServerMaxRam("home") > 1024) {
+    while (!calculateHomeRam(scripts[4]) && ns.isRunning(scripts[6], "home")) { await ns.sleep(1000) }
+    ns.run(scripts[5], 1)
+    await ns.sleep(1000)
+  }
 
 }

@@ -29,16 +29,17 @@ export async function main(ns) {
     NmapClear(ns)
 
     while (true) {
-        await ns.sleep(500)
 
-        // todo: if net ram is more than x, kill script en go to collectStage3 for more profit 
+        await ns.sleep(500)
+        watchForNewServer(ns)
+
         if (NmapTotalRam(ns) > 5500) { ns.spawn("bin/genesis/collectStage3.js", { spawnDelay: 200 }) }
 
-        watchForNewServer(ns)
+        // run gw script on all servers
 
         servers = NmapRamServers(ns)
         for (let server of servers) {
-
+            
             await ns.sleep(init)
 
             // (get server max ram > subtract server used ram) > devide by script ram
@@ -51,8 +52,9 @@ export async function main(ns) {
                 }
             }
         }
-
         init = 100
+
+        // collect my money
 
         servers = NmapMoneyServers(ns)
         for (let server of servers) {
