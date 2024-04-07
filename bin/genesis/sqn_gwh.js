@@ -21,7 +21,7 @@ export async function main(ns) {
         await ns.sleep(1000)
 
         let moneyPerc = Math.floor(ns.getServerMoneyAvailable(target) / ns.getServerMaxMoney(target) * 100)
-        const minSecurtiyLevel = ns.getServerMinSecurityLevel(target) + 9
+        const minSecurtiyLevel = ns.getServerMinSecurityLevel(target) + 5
 
         ns.print("Attack percent: " + attackPerc)
 
