@@ -140,51 +140,6 @@ export function getServerPath(ns, server) {
 	}
 }
 
-
-/** @param {NS} ns */
-export function NmapServerPath(ns, server) {
-
-	// returns the path to a server
-
-	var serverNameList = Nmap(ns)
-	let serverPathList = generatePathList(ns, serverNameList)
-
-	if (ns.serverExists(server)) {
-		let path = [server]
-
-		while (path[path.length - 1] != "home") {
-			let lasthop = path[path.length - 1]
-			let nexthop = serverPathList[serverNameList.indexOf(lasthop)]
-			path.push(nexthop)
-		}
-		path.reverse()
-		return path
-	}
-
-	function generatePathList(ns, serverNameList) {
-
-		let serverPathList = serverNameList.map(function () {
-			return ""
-		})
-
-		let visited = []
-		let queue = ["home"]
-
-		while (queue.length > 0) {
-			let node = queue.shift()
-			visited.push(node)
-			let neighbours = ns.scan(node)
-			for (let server of neighbours) {
-				if (!visited.includes(server)) {
-					serverPathList[serverNameList.indexOf(server)] = node
-					queue.push(server)
-				}
-			}
-		}
-		return serverPathList
-	}
-}
-
 /** @param {NS} ns */
 export function getRootAccess(ns, server) {
 
