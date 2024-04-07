@@ -92,4 +92,4 @@ Keeps buying untill your money runs out.
 Keeps buying untill your money runs out.
 
 `args: non`
-> run ram.js
+> run core.js
