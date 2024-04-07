@@ -67,24 +67,19 @@ export async function main(ns) {
     function getAccounts() {
         ns.clearLog()
 
-        // buy Wse
-        if (!ns.stock.hasWSEAccount()) {
+
+        if (!ns.stock.hasWSEAccount()) { // buy Wse
             if (ns.stock.purchaseWseAccount()) { ns.print("WSE account found...") } else { ns.print("No WSE account") }
-        }
 
-        // buy 4S data
-        if (!ns.stock.has4SData()) {
+        } else if (!ns.stock.has4SData()) { // buy 4S data
             if (ns.stock.purchase4SMarketData()) { ns.print("4S data account found...") } else { ns.print("No 4S data account") }
-        }
 
-        // buy Tix api
-        if (!ns.stock.has4SDataTIXAPI()) {
+        } else if (!ns.stock.has4SDataTIXAPI()) { // buy Tix api
             if (ns.stock.purchase4SMarketDataTixApi()) { ns.print("Tix Api account found...") } else { ns.print("No Tix Api account") }
-        }
 
-        // buy 4s Tix api access
-        if (!ns.stock.hasTIXAPIAccess()) {
+        } else if (!ns.stock.hasTIXAPIAccess()) { // buy 4s Tix api access
             if (ns.stock.purchaseTixApi()) { ns.print("Tix Api access account found...") } else { ns.print("No Tix Api access account") }
+
         }
     }
 
@@ -95,9 +90,9 @@ export async function main(ns) {
 
     function buyShares(sym) {
 
-        // buy if forcast is more the threshold ✅
-        // get max shares - owned ✅
-        // buy all or buy in segments ✅
+        // buy if forcast is more the threshold
+        // get max shares - owned
+        // buy all or buy in segments
 
         let availableShares = ns.stock.getMaxShares(sym) - ns.stock.getPosition(sym)[0]
         let availableMoney = ns.getServerMoneyAvailable("home")
@@ -153,11 +148,15 @@ export async function main(ns) {
             let forcast = ns.stock.getForecast(sym).toPrecision(3)
             displayLog(forcast, sym)
 
-            if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD && ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
+            // buy 
+            if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD &&
+            ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
                 buyShares(sym)
             }
-
-            if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD && ns.stock.getPosition(sym)[0] > 0) {
+            
+            // sell
+            if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD &&
+                ns.stock.getPosition(sym)[0] > 0) {
                 sellAllShares(sym)
 
             }
