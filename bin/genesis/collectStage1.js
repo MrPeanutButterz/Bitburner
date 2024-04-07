@@ -19,9 +19,16 @@ export async function main(ns) {
     let TARGET = ns.args[0]
     const SCRIPT = scriptPath(ns)
 
+
+
+    
     //\\ MAIN LOGICA
     if (TARGET === undefined) { TARGET = "n00dles" }
     NmapClear(ns)
+
+    let ramAvailable = (ns.getServerMaxRam(server) - 100) - ns.getServerUsedRam(server)
+    let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT.gw))
+    ns.exec(SCRIPT.gw, "home", threadsAvailable, 0.7)
 
     while (true) {
 
@@ -30,7 +37,10 @@ export async function main(ns) {
         let servers
 
         // todo: finetune switch point 
-        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) { ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 }) }
+        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) { 
+            ns.scriptKill(SCRIPT.gw, "home")
+            ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 }) 
+        }
 
         servers = NmapRamServers(ns)
         servers.forEach(server => {
@@ -44,8 +54,8 @@ export async function main(ns) {
                 let serverUsedRam = ns.getServerUsedRam(server)
                 let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(SCRIPT.gwh))
 
-                if (threads >= 1 && threads < 9999999999) { 
-                    ns.exec(SCRIPT.gwh, server, threads, TARGET) 
+                if (threads >= 1 && threads < 9999999999) {
+                    ns.exec(SCRIPT.gwh, server, threads, TARGET)
                 }
             }
         })

@@ -31,9 +31,6 @@ export async function main(ns) {
         } else if (forcast > 0.6) {
             colorPrint(ns, "white", sym + "\t Forcast: " + forcast)
 
-        } else if (forcast > 0.5) {
-            colorPrint(ns, "brightBlack", sym + "\t Forcast: " + forcast)
-
         } else {
             colorPrint(ns, "black", sym + "\t Forcast: " + forcast)
 
@@ -65,33 +62,34 @@ export async function main(ns) {
     }
 
     function getAccounts() {
+
+        // get all accounts
+
         ns.clearLog()
-
-
         if (!ns.stock.hasWSEAccount()) { // buy Wse
             if (ns.stock.purchaseWseAccount()) { ns.print("WSE account found...") } else { ns.print("No WSE account") }
 
         } else if (!ns.stock.has4SData()) { // buy 4S data
             if (ns.stock.purchase4SMarketData()) { ns.print("4S data account found...") } else { ns.print("No 4S data account") }
 
-        } else if (!ns.stock.has4SDataTIXAPI()) { // buy Tix api
-            if (ns.stock.purchase4SMarketDataTixApi()) { ns.print("Tix Api account found...") } else { ns.print("No Tix Api account") }
-
         } else if (!ns.stock.hasTIXAPIAccess()) { // buy 4s Tix api access
             if (ns.stock.purchaseTixApi()) { ns.print("Tix Api access account found...") } else { ns.print("No Tix Api access account") }
+
+        } else if (!ns.stock.has4SDataTIXAPI()) { // buy Tix api
+            if (ns.stock.purchase4SMarketDataTixApi()) { ns.print("Tix Api account found...") } else { ns.print("No Tix Api account") }
 
         }
     }
 
     function sellAllShares(sym) {
-        ns.print("WARN SELLING SHARES")
+        colorPrint(ns, "yellow", "SELLING SHARES")
         ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
     }
 
     function buyShares(sym) {
 
         // buy if forcast is more the threshold
-        // get max shares - owned
+        // get max shares minus owned
         // buy all or buy in segments
 
         let availableShares = ns.stock.getMaxShares(sym) - ns.stock.getPosition(sym)[0]
@@ -150,10 +148,10 @@ export async function main(ns) {
 
             // buy 
             if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD &&
-            ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
+                ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
                 buyShares(sym)
             }
-            
+
             // sell
             if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD &&
                 ns.stock.getPosition(sym)[0] > 0) {
