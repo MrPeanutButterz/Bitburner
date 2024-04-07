@@ -7,7 +7,7 @@ export async function main(ns) {
 	ns.clearLog()
 
 	//\\ GENERAL DATA
-	const program = [
+	const essential = [
 		{ name: "BruteSSH.exe", lvl: 50 },
 		{ name: "FTPCrack.exe", lvl: 100 },
 		{ name: "relaySMTP.exe", lvl: 250 },
@@ -24,10 +24,8 @@ export async function main(ns) {
 	]
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
-	// {"type":"CREATE_PROGRAM","cyclesWorked":1157,"programName":"FTPCrack.exe"}
-
-
 	//\\ MAIN LOGIC
+	const program = essential
 	for (let i = 0; i < program.length; i++) {
 
 		let exe = program[i].name
@@ -45,7 +43,8 @@ export async function main(ns) {
 			if (ns.singularity.purchaseTor() &&
 				ns.getServerMoneyAvailable("home") > cost) {
 
-				//buy
+				// buy, cauz money fix everything...
+
 				if (ns.singularity.purchaseProgram(exe)) {
 					ns.print("Bought " + exe)
 
@@ -53,9 +52,9 @@ export async function main(ns) {
 
 			} else if (ns.getHackingLevel() >= lvl) {
 
-				// check isbussy
+				// check bussyness
 				// what ya working on?
-				// if not programs, start working on it 
+				// if not programs, start!
 
 				if (ns.singularity.isBusy()) {
 
