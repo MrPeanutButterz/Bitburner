@@ -57,37 +57,37 @@ export async function main(ns) {
 
         return hours + ":" + minutes + ":" + seconds;
     }
-    
+
     //\\ MAIN LOGICA
     while (ns.singularity.getFactionRep(faction) < reputation) {
-        
+
         await ns.sleep(1000)
         ns.clearLog()
-        
+
         // display
         ns.print("Faction \t" + faction)
         ns.print("Reputation \t" + Math.round(ns.singularity.getFactionRep(faction)) + "/" + Math.round(reputation))
         ns.print("A.T.A. \t\t" + msToTime(timeToAugmentation * 1000))
         ns.print("Completed \t" + (ns.singularity.getFactionRep(faction) / reputation * 100).toPrecision(4) + "%")
-        
+
         if (ns.singularity.isBusy()) {
-            
+
             let work = ns.singularity.getCurrentWork()
             if (work.type === "CREATE_PROGRAM") {
 
                 ns.print("PENDING \t" + work.programName + " completion")
                 timeToAugmentation++
-                
+
             } else {
                 ns.singularity.workForFaction(faction, task, false)
                 timeToAugmentation--
-                
+
             }
-            
+
         } else {
             ns.singularity.workForFaction(faction, task, false)
             timeToAugmentation--
-            
+
         }
     }
 

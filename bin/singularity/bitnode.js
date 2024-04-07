@@ -1,7 +1,10 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // 
+    // find final server
+    // connect 
+    // backdoor 
+    // set yourself free 
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
