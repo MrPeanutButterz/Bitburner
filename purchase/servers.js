@@ -69,7 +69,7 @@ export async function main(ns) {
 
 				} else {
 
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds")
+					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "LACK OF FUNDS...")
 					await ns.sleep(250)
 
 				}
@@ -89,7 +89,7 @@ export async function main(ns) {
 
 				} else {
 
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "awaiting funds ")
+					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "LACK OF FUNDS...")
 					await ns.sleep(250)
 
 				}
