@@ -24,7 +24,7 @@ export async function main(ns) {
 	]
 
 	//\\ SCRIPT SPECIFIC FUNCTIONS
-
+	// {"type":"CREATE_PROGRAM","cyclesWorked":1157,"programName":"FTPCrack.exe"}
 
 
 	//\\ MAIN LOGIC
@@ -38,20 +38,36 @@ export async function main(ns) {
 
 			await ns.sleep(1000)
 			ns.clearLog()
-			ns.print("Next program " + exe + " at level " + lvl + " for " + cost)
+			ns.print("Progr - " + exe)
+			ns.print("Level - " + lvl)
+			ns.print("Price - " + cost)
 
-			if (ns.singularity.purchaseTor() && ns.getServerMoneyAvailable("home") > cost) {
+			if (ns.singularity.purchaseTor() &&
+				ns.getServerMoneyAvailable("home") > cost) {
 
 				//buy
-				ns.singularity.purchaseProgram(exe)
-				ns.print("Bought " + exe)
+				if (ns.singularity.purchaseProgram(exe)) {
+					ns.print("Bought " + exe)
+
+				}
 
 			} else if (ns.getHackingLevel() >= lvl) {
 
-				//create
-				ns.singularity.createProgram(exe, false)
-				ns.print("Created " + exe)
+				// check isbussy
+				// what ya working on?
+				// if not programs, start working on it 
 
+				if (ns.singularity.isBusy()) {
+
+					let work = ns.singularity.getCurrentWork()
+					if (work.type != "CREATE_PROGRAM") {
+						ns.singularity.stopAction()
+					}
+
+				} else {
+					ns.singularity.createProgram(exe, false)
+
+				} 
 			}
 		}
 	}
