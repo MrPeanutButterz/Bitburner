@@ -19,14 +19,11 @@ export async function main(ns) {
     let TARGET = ns.args[0]
     const SCRIPT = scriptPath(ns)
 
-
-
-    
     //\\ MAIN LOGICA
     if (TARGET === undefined) { TARGET = "n00dles" }
     NmapClear(ns)
 
-    let ramAvailable = (ns.getServerMaxRam(server) - 100) - ns.getServerUsedRam(server)
+    let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
     let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT.gw))
     ns.exec(SCRIPT.gw, "home", threadsAvailable, 0.7)
 

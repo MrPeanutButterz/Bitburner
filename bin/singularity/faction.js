@@ -9,6 +9,9 @@ export async function main(ns) {
     Sector12: CashRoot Starter Kit, NeuroFlux++
     Csec: all
     NiteSec: all
+    The Black Hand: all (takes a long time...)
+    BitRunners: all (takes a long time...)
+    
     */
 
     // find faction

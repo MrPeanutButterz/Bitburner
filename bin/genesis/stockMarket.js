@@ -82,13 +82,15 @@ export async function main(ns) {
     }
 
     function sellAllShares(sym) {
+
+        // sell stock
+         
         colorPrint(ns, "yellow", "SELLING SHARES")
         ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
     }
 
     function buyShares(sym) {
 
-        // buy if forcast is more the threshold
         // get max shares minus owned
         // buy all or buy in segments
 
@@ -105,6 +107,7 @@ export async function main(ns) {
                 ns.stock.buyStock(sym, availableShares)
 
             } else {
+                
                 // untested: cauze got to many moneyz 
                 let partShares = Math.floor(spendable / ns.stock.getPrice(sym))
                 ns.stock.buyStock(sym, partShares)
@@ -117,6 +120,8 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
+
+    // check accounts 
     ns.print("Accounts check...")
     await ns.sleep(2000)
 
@@ -134,8 +139,8 @@ export async function main(ns) {
     ns.print("Managing Stocks")
     await ns.sleep(1000)
 
+    // managing stocks
     const symbols = ns.stock.getSymbols()
-
     while (true) {
 
         await ns.stock.nextUpdate()
