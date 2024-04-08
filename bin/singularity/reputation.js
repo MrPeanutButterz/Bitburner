@@ -2,7 +2,7 @@
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    ns.toast("reputation online", "success", 2000)
+
     ns.disableLog("ALL")
     ns.clearLog()
     ns.tail()
@@ -11,30 +11,30 @@ export async function main(ns) {
     // let script = getScriptsPath(ns)
 
     let faction = ns.args[0]
-    let reputation = ns.args[1]
+    let reputation = getMaxReputation()
 
     let testRunTime = 10
     let task = "Hacking contracts"
     if (faction === "Slum Snakes" || faction === "Tetrads") { task = "Field work" }
 
-    //get initial reputation
+    // get initial reputation
     let initialReputation = ns.singularity.getFactionRep(faction)
 
-    //start run
+    // start run
     ns.singularity.stopAction()
     ns.print("Test run duration: \t" + testRunTime + " sec")
     ns.singularity.workForFaction(faction, task, false);
 
-    //finish run
+    // finish run
     await ns.asleep((testRunTime) * 1000)
     ns.singularity.stopAction()
 
-    //calculate result rep/time
+    // calculate result rep/time
     let newReputation = ns.singularity.getFactionRep(faction)
     let reputationPerSecond = (newReputation - initialReputation) / testRunTime
     let timeToAugmentation = reputation / reputationPerSecond
 
-    //display
+    // display
     ns.print("Rate: \t\t\t" + reputationPerSecond.toPrecision(5) + "/" + testRunTime + " sec")
     ns.print("Time estimate: \t\t" + msToTime(timeToAugmentation * 1000))
     ns.print(" ")
@@ -56,6 +56,32 @@ export async function main(ns) {
         seconds = (seconds < 10) ? "0" + seconds : seconds;
 
         return hours + ":" + minutes + ":" + seconds;
+    }
+
+    function isOwnedAugmentation(augmentation) {
+
+        // return true if its owned
+        return Boolean(ns.singularity.getOwnedAugmentations(true).find(e => e === augmentation))
+    }
+
+    function getMaxReputation() {
+
+        let listSorted = []
+        ns.singularity.getAugmentationsFromFaction(faction).forEach(aug => {
+            
+            // push not owned to list 
+            if (!isOwnedAugmentation(aug)) {
+                listSorted.push({
+                    aug: aug,
+                    rep: ns.singularity.getAugmentationRepReq(aug)
+                })
+            }
+        })
+        
+        // sort by reputation 
+        listSorted.sort(function (a, b) { return a.rep - b.rep })
+        listSorted.reverse()
+        return listSorted[0].rep
     }
 
     //\\ MAIN LOGICA
