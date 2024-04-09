@@ -17,9 +17,9 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const FORCAST_BUY_THRESHOLD = 0.62
     const FORCAST_SELL_THRESHOLD = 0.5
-    const BALANCE_TRIGGER_THRESHOLD = 3e9 // 2b
-    const BALANCE_RESERVE_THRESHOLD = 1e9 // 1b
-    
+    const BALANCE_TRIGGER_THRESHOLD = 6e9 // 6b spend 
+    const BALANCE_RESERVE_THRESHOLD = 1e9 // 1b keep
+
     let SYMBOLS
     let PORTFOLIO = []
 
@@ -136,21 +136,18 @@ export async function main(ns) {
             let spendableMoney = availableMoney - BALANCE_RESERVE_THRESHOLD
             let priceMaxShares = availableShares * ns.stock.getPrice(stock.sym)
 
-            if (availableShares > 0) {
+            if (availableShares > 0 && availableMoney > BALANCE_TRIGGER_THRESHOLD) {
 
-                if (availableMoney > BALANCE_TRIGGER_THRESHOLD) {
+                if (spendableMoney > priceMaxShares) {
 
-                    if (spendableMoney > priceMaxShares) {
+                    // buy all 
+                    ns.stock.buyStock(stock.sym, availableShares)
 
-                        // buy all 
-                        ns.stock.buyStock(stock.sym, availableShares)
+                } else {
 
-                    } else {
-
-                        // buy parts 
-                        let partShares = Math.floor(spendableMoney / ns.stock.getPrice(stock.sym))
-                        ns.stock.buyStock(stock.sym, partShares)
-                    }
+                    // buy parts 
+                    let partShares = Math.floor(spendableMoney / ns.stock.getPrice(stock.sym))
+                    ns.stock.buyStock(stock.sym, partShares)
                 }
             }
         }
@@ -174,6 +171,8 @@ export async function main(ns) {
 
         updatePortfolio()
         sellShares()
+
+        updatePortfolio()
         buyShares()
 
     }
