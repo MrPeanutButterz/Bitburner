@@ -10,15 +10,15 @@ export async function main(ns) {
     // incorporate grow to pump stock 
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
+    // ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const FORCAST_BUY_THRESHOLD = 0.65
-    const FORCAST_SELL_THRESHOLD = 0.45
+    const FORCAST_BUY_THRESHOLD = 0.6
+    const FORCAST_SELL_THRESHOLD = 0.5
     const BALANCE_TRIGGER_THRESHOLD = 2e9 // 1b
-    const BALANCE_SPENDABLE = 5e8 // 500m
+    const BALANCE_RESERVE_THRESHOLD = 5e8 // 500m
 
     //\\ FUNCTIONS
     function displayLog(forcast, sym) {
@@ -28,11 +28,8 @@ export async function main(ns) {
         if (ns.stock.getPosition(sym)[0] > 0) {
             colorPrint(ns, "brightGreen", sym + "\t Forcast: " + forcast)
 
-        } else if (forcast > 0.6) {
+        } else if (forcast >= 0.6) {
             colorPrint(ns, "white", sym + "\t Forcast: " + forcast)
-
-        } else {
-            colorPrint(ns, "black", sym + "\t Forcast: " + forcast)
 
         }
 
@@ -98,24 +95,29 @@ export async function main(ns) {
         let availableMoney = ns.getServerMoneyAvailable("home")
 
         if (availableMoney > BALANCE_TRIGGER_THRESHOLD) {
-            colorPrint(ns, "yellow", "BUYING SHARES")
 
-            let spendable = BALANCE_SPENDABLE + (ns.getServerMoneyAvailable("home") - BALANCE_TRIGGER_THRESHOLD)
+            colorPrint(ns, "yellow", "WARNING")
+            
+            let spendable = BALANCE_RESERVE_THRESHOLD + (ns.getServerMoneyAvailable("home") - BALANCE_TRIGGER_THRESHOLD)
             let price = availableShares * ns.stock.getPrice(sym)
-
+            
             if (spendable > price) {
-                ns.stock.buyStock(sym, availableShares)
-
+                
+                // all in
+                if (ns.stock.buyStock(sym, availableShares)) {
+                    
+                    colorPrint(ns, "yellow", "BUYING SHARES")
+                }
+                
             } else {
                 
-                // untested: cauze got to many moneyz 
+                // buy bits
                 let partShares = Math.floor(spendable / ns.stock.getPrice(sym))
-                ns.stock.buyStock(sym, partShares)
+                if (ns.stock.buyStock(sym, partShares)) {
+                    
+                    colorPrint(ns, "yellow", "BUYING SHARES")
+                }
             }
-
-        } else {
-            colorPrint(ns, "red", "LACK OF FUNDS...")
-
         }
     }
 
