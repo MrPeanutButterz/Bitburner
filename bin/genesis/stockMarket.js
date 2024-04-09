@@ -15,156 +15,166 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const FORCAST_BUY_THRESHOLD = 0.6
+    const FORCAST_BUY_THRESHOLD = 0.62
     const FORCAST_SELL_THRESHOLD = 0.5
-    const BALANCE_TRIGGER_THRESHOLD = 2e9 // 1b
-    const BALANCE_RESERVE_THRESHOLD = 5e8 // 500m
+    const BALANCE_TRIGGER_THRESHOLD = 3e9 // 2b
+    const BALANCE_RESERVE_THRESHOLD = 1e9 // 1b
+    
+    let SYMBOLS
+    let PORTFOLIO = []
 
     //\\ FUNCTIONS
-    function displayLog(forcast, sym) {
-
-        // first print stock
-
-        if (ns.stock.getPosition(sym)[0] > 0) {
-            colorPrint(ns, "brightGreen", sym + "\t Forcast: " + forcast)
-
-        } else if (forcast >= 0.6) {
-            colorPrint(ns, "white", sym + "\t Forcast: " + forcast)
-
-        }
-
-        // add additional info if we own the stock
-
-        if (ns.stock.getPosition(sym)[0] > 0) {
-
-            let sharesOwnedProcent = Math.round((ns.stock.getPosition(sym)[0] / ns.stock.getMaxShares(sym)) * 100)
-            let profit = Math.round(ns.stock.getSaleGain(sym, ns.stock.getPosition(sym)[0], "Long") - ns.stock.getPosition(sym)[1] * ns.stock.getPosition(sym)[0])
-
-            if (sharesOwnedProcent === 100) {
-                colorPrint(ns, "green", "shares:  " + sharesOwnedProcent + "%")
-
-            } else {
-                colorPrint(ns, "yellow", "shares:  " + sharesOwnedProcent + "%")
-
-            }
-
-            if (profit > 0) {
-                colorPrint(ns, "green", "profit:  " + profit)
-
-            } else {
-                colorPrint(ns, "red", "profit: " + profit)
-
-            }
-        }
-    }
-
     function getAccounts() {
 
         // get all accounts
 
-        ns.clearLog()
-        if (!ns.stock.hasWSEAccount()) { // buy Wse
-            if (ns.stock.purchaseWseAccount()) { ns.print("WSE account found...") } else { ns.print("No WSE account") }
+        if (!ns.stock.hasWSEAccount()) {                        // buy Wse
+            if (ns.stock.purchaseWseAccount()) {
+                ns.print("WSE account found...")
+            } else { ns.print("No WSE account") }
 
-        } else if (!ns.stock.has4SData()) { // buy 4S data
-            if (ns.stock.purchase4SMarketData()) { ns.print("4S data account found...") } else { ns.print("No 4S data account") }
+        } else if (!ns.stock.has4SData()) {                     // buy 4S data
+            if (ns.stock.purchase4SMarketData()) {
+                ns.print("4S data account found...")
+            } else { ns.print("No 4S data account") }
 
-        } else if (!ns.stock.hasTIXAPIAccess()) { // buy 4s Tix api access
-            if (ns.stock.purchaseTixApi()) { ns.print("Tix Api access account found...") } else { ns.print("No Tix Api access account") }
+        } else if (!ns.stock.hasTIXAPIAccess()) {               // buy 4s Tix api access
+            if (ns.stock.purchaseTixApi()) {
+                ns.print("Tix Api access account found...")
+            } else { ns.print("No Tix Api access account") }
 
-        } else if (!ns.stock.has4SDataTIXAPI()) { // buy Tix api
-            if (ns.stock.purchase4SMarketDataTixApi()) { ns.print("Tix Api account found...") } else { ns.print("No Tix Api account") }
-
+        } else if (!ns.stock.has4SDataTIXAPI()) {               // buy Tix api
+            if (ns.stock.purchase4SMarketDataTixApi()) {
+                ns.print("Tix Api account found...")
+            } else { ns.print("No Tix Api account") }
         }
     }
 
-    function sellAllShares(sym) {
-
-        // sell stock
-         
-        colorPrint(ns, "yellow", "SELLING SHARES")
-        ns.stock.sellStock(sym, ns.stock.getPosition(sym)[0])
+    function isOwnedStock(symbol) {
+        return Boolean(PORTFOLIO.find(portfolio => portfolio.sym === symbol))
     }
 
-    function buyShares(sym) {
+    function updatePortfolio() {
 
-        // get max shares minus owned
-        // buy all or buy in segments
+        // list stock above threshold en sort top
 
-        let availableShares = ns.stock.getMaxShares(sym) - ns.stock.getPosition(sym)[0]
-        let availableMoney = ns.getServerMoneyAvailable("home")
+        for (let sym of SYMBOLS) {
 
-        if (availableMoney > BALANCE_TRIGGER_THRESHOLD) {
+            // add to portfolio based on threshold or position in stock
 
-            colorPrint(ns, "yellow", "WARNING")
-            
-            let spendable = BALANCE_RESERVE_THRESHOLD + (ns.getServerMoneyAvailable("home") - BALANCE_TRIGGER_THRESHOLD)
-            let price = availableShares * ns.stock.getPrice(sym)
-            
-            if (spendable > price) {
-                
-                // all in
-                if (ns.stock.buyStock(sym, availableShares)) {
-                    
-                    colorPrint(ns, "yellow", "BUYING SHARES")
+            let forcast = ns.stock.getForecast(sym)
+            let shares = ns.stock.getPosition(sym)[0]
+
+            if (forcast > FORCAST_BUY_THRESHOLD || shares > 0) {
+
+                if (!isOwnedStock(sym)) {
+
+                    PORTFOLIO.push({
+                        sym: sym,
+                        forcast: forcast.toPrecision(3)
+                    })
                 }
-                
-            } else {
-                
-                // buy bits
-                let partShares = Math.floor(spendable / ns.stock.getPrice(sym))
-                if (ns.stock.buyStock(sym, partShares)) {
-                    
-                    colorPrint(ns, "yellow", "BUYING SHARES")
+
+            } else if (shares === 0) {
+
+                // remove if position is 0
+
+                if (isOwnedStock(sym)) {
+                    PORTFOLIO.splice(PORTFOLIO.findIndex(stock => stock.sym === sym))
+                }
+            }
+        }
+
+        PORTFOLIO.sort(function (a, b) { return a.forcast - b.forcast })
+        PORTFOLIO.reverse()
+    }
+
+    function displayStatus() {
+
+        // print stock info from portfolio
+
+        PORTFOLIO.forEach(stock => {
+
+            let sharesOwnedProcent = Math.round((ns.stock.getPosition(stock.sym)[0] / ns.stock.getMaxShares(stock.sym)) * 100)
+            let profit = Math.round(ns.stock.getSaleGain(stock.sym, ns.stock.getPosition(stock.sym)[0], "Long") - ns.stock.getPosition(stock.sym)[1] * ns.stock.getPosition(stock.sym)[0])
+
+            ns.print(" ")
+            ns.print("\t" + stock.sym)
+            ns.print("forcas\t" + ns.stock.getForecast(stock.sym).toPrecision(3))
+            ns.print("shares \t" + sharesOwnedProcent + "%")
+            profit >= 0 ? ns.print("profit\t" + profit) : colorPrint(ns, "red", "losses\t" + profit)
+        })
+    }
+
+    function sellShares() {
+
+        // sell if below threshold
+        // sell if not in portfolio
+
+        for (let stock of PORTFOLIO) {
+
+            if (ns.stock.getForecast(stock.sym) < FORCAST_SELL_THRESHOLD) {
+
+                let shares = ns.stock.getPosition(stock.sym)[0]
+                if (shares > 0) {
+                    ns.stock.sellStock(stock.sym, shares)
+                }
+            }
+        }
+    }
+
+    function buyShares() {
+
+        // buy 
+        // calculate how many to buy
+        // buy all or in parts 
+
+        for (let stock of PORTFOLIO) {
+
+            let availableShares = ns.stock.getMaxShares(stock.sym) - ns.stock.getPosition(stock.sym)[0]
+            let availableMoney = ns.getServerMoneyAvailable("home")
+            let spendableMoney = availableMoney - BALANCE_RESERVE_THRESHOLD
+            let priceMaxShares = availableShares * ns.stock.getPrice(stock.sym)
+
+            if (availableShares > 0) {
+
+                if (availableMoney > BALANCE_TRIGGER_THRESHOLD) {
+
+                    if (spendableMoney > priceMaxShares) {
+
+                        // buy all 
+                        ns.stock.buyStock(stock.sym, availableShares)
+
+                    } else {
+
+                        // buy parts 
+                        let partShares = Math.floor(spendableMoney / ns.stock.getPrice(stock.sym))
+                        ns.stock.buyStock(stock.sym, partShares)
+                    }
                 }
             }
         }
     }
 
     //\\ MAIN LOGICA
-
-    // check accounts 
-    ns.print("Accounts check...")
-    await ns.sleep(2000)
-
-    while (!ns.stock.hasWSEAccount()
-        || !ns.stock.has4SData()
-        || !ns.stock.hasTIXAPIAccess()
-        || !ns.stock.has4SDataTIXAPI()) {
+    while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
         await ns.sleep(1000)
+        ns.clearLog()
         getAccounts()
     }
 
-    ns.print("Accounts are present")
-    await ns.sleep(2000)
-
-    ns.print("Managing Stocks")
-    await ns.sleep(1000)
+    SYMBOLS = ns.stock.getSymbols()
 
     // managing stocks
-    const symbols = ns.stock.getSymbols()
     while (true) {
 
+        displayStatus()
         await ns.stock.nextUpdate()
         ns.clearLog()
 
-        for (let sym of symbols) {
+        updatePortfolio()
+        sellShares()
+        buyShares()
 
-            let forcast = ns.stock.getForecast(sym).toPrecision(3)
-            displayLog(forcast, sym)
-
-            // buy 
-            if (ns.stock.getForecast(sym) > FORCAST_BUY_THRESHOLD &&
-                ns.stock.getPosition(sym)[0] !== ns.stock.getMaxShares(sym)) {
-                buyShares(sym)
-            }
-
-            // sell
-            if (ns.stock.getForecast(sym) < FORCAST_SELL_THRESHOLD &&
-                ns.stock.getPosition(sym)[0] > 0) {
-                sellAllShares(sym)
-
-            }
-        }
     }
 }
