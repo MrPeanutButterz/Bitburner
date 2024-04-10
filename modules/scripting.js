@@ -10,6 +10,8 @@ export function scriptPath(ns) {
         gwh: "/bin/genesis/sqn_gwh.js",
         wgh: "/bin/genesis/sqn_wgh.js",
         gw: "/bin/genesis/sqn_gw.js",
+        w: "/bin/genesis/sqn_w.js",
+
     }
     return path
 }

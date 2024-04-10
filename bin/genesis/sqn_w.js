@@ -3,7 +3,7 @@ import { NmapMoneyServers } from "modules/network"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // pull in (incremental) out of reach server for collectStage3 
+    // pulls in (incremental) out of reach server for collectStage3 
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
@@ -25,10 +25,10 @@ export async function main(ns) {
         for (let server of servers) {
 
             let chance = ns.hackAnalyzeChance(server)
-            if (chance > HACK_CHANCE_BOTTOM && chance < HACK_CHANCE_TOP ) {
+            if (chance > HACK_CHANCE_BOTTOM && chance <= HACK_CHANCE_TOP) {
 
                 if (ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server)) {
-                    ns.print("Weak range " + HACK_CHANCE_BOTTOM * 10 + "0/" + HACK_CHANCE_TOP * 10  + "0% - " + server)
+                    ns.print("Weak range " + (HACK_CHANCE_BOTTOM * 100).toPrecision(2) + "/" + (HACK_CHANCE_TOP * 100).toPrecision(2) + "% - " + server)
                     await ns.weaken(server)
 
                 } else {
@@ -38,9 +38,7 @@ export async function main(ns) {
             }
         }
 
-        HACK_CHANCE_BOTTOM > 0 ? 
-        HACK_CHANCE_BOTTOM -= 0.1 : 
-        HACK_CHANCE_BOTTOM = 0
+        HACK_CHANCE_BOTTOM > 0 ? HACK_CHANCE_BOTTOM -= 0.1 : ns.exit()
 
     }
 }

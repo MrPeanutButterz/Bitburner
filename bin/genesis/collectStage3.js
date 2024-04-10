@@ -107,6 +107,10 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     NmapClear(ns)
 
+    let availableRam = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
+    let availableThreads = Math.floor(availableRam / ns.getScriptRam(scripts.w))
+    availableThreads > 6000 ? ns.exec(scripts.w, "home", 6000) : ns.exec(scripts.w, "home", availableThreads)
+
     while (true) {
 
         await ns.sleep(1000)
