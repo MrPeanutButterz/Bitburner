@@ -6,7 +6,7 @@ export async function main(ns) {
     // create a list sorted by cost 
     // add pre-requisities to list before the augmentation
     // buy most expensive first
-    // spend remaining money on neuroflux
+    // spend remaining money on neuroflux of favor
     // install & boot system
 
     //\\ SCRIPT SETTINGS
@@ -60,13 +60,14 @@ export async function main(ns) {
                     }
                 })
             }
+
+            // add actual augmentation
             sortedWithPreReq.push(el.aug)
         })
         return sortedWithPreReq
     }
 
     //\\ MAIN LOGIC
-
     // augmentations
     let shoppingList = createSortedShoppingList(FACTION)
 
@@ -92,7 +93,9 @@ export async function main(ns) {
     // neuroflux++
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
+
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
+            
             ns.print("NeuroFlux Governor")
             await ns.sleep(1000)
         }

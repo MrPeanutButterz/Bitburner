@@ -105,6 +105,7 @@ export async function main(ns) {
                 timeToAugmentation++
 
             } else {
+                
                 ns.singularity.workForFaction(faction, task, false)
                 timeToAugmentation--
 

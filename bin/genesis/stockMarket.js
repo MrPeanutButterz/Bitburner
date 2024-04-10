@@ -4,10 +4,8 @@ import { colorPrint } from "modules/scripting";
 export async function main(ns) {
 
     // buy all accounts
-    // make list of active stocks
+    // fill / remove portfolio with intresting stocks 
     // buy en sell stocks based on forcast
-
-    // incorporate grow to pump stock 
 
     //\\ SCRIPT SETTINGS
     // ns.tprint("Active")
@@ -15,7 +13,7 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const FORCAST_BUY_THRESHOLD = 0.62
+    const FORCAST_BUY_THRESHOLD = 0.61
     const FORCAST_SELL_THRESHOLD = 0.5
     const BALANCE_TRIGGER_THRESHOLD = 6e9 // 6b spend 
     const BALANCE_RESERVE_THRESHOLD = 1e9 // 1b keep
@@ -101,6 +99,7 @@ export async function main(ns) {
             ns.print(" ")
             ns.print("\t" + stock.sym)
             ns.print("forcas\t" + ns.stock.getForecast(stock.sym).toPrecision(3))
+            ns.print("volati\t" + (ns.stock.getVolatility(stock.sym) * 100).toPrecision(3) + "%")
             ns.print("shares \t" + sharesOwnedProcent + "%")
             profit >= 0 ? ns.print("profit\t" + profit) : colorPrint(ns, "red", "losses\t" + profit)
         })
