@@ -62,6 +62,15 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 `args required`
 > run pck_grow.js sigma-cosmetics 2000
 
+## Singularity
+
+### gym.js
+
+Working out at the gym. If you are not in Sector-12, the script will first take you there. Afterwards, it will check if you are working on creating a .exe program or building reputation; in this case, the script will wait until you're finished. If this isn't the case, it will work on stats such as strength, defense, dexterity, and agility. Once all stats have been reached, the script will close itself. The script is initiated with 4 arguments.
+
+`args required`
+> run gym.js 50 50 50 50
+
 ## Purchase
 
 ### hacknet.js
