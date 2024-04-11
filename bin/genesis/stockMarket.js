@@ -26,25 +26,17 @@ export async function main(ns) {
 
         // get all accounts
 
-        if (!ns.stock.hasWSEAccount()) {                        // buy Wse
-            if (ns.stock.purchaseWseAccount()) {
-                ns.print("WSE account found...")
-            } else { ns.print("No WSE account") }
+        if (!ns.stock.hasWSEAccount()) {
+            ns.stock.purchaseWseAccount() ? ns.print("WSE account active") : ns.print("WSE account missing")
 
-        } else if (!ns.stock.has4SData()) {                     // buy 4S data
-            if (ns.stock.purchase4SMarketData()) {
-                ns.print("4S data account found...")
-            } else { ns.print("No 4S data account") }
+        } else if (!ns.stock.has4SData()) {
+            ns.stock.purchase4SMarketData() ? ns.print("4S data account active") : ns.print("4S data account missing")
 
-        } else if (!ns.stock.hasTIXAPIAccess()) {               // buy 4s Tix api access
-            if (ns.stock.purchaseTixApi()) {
-                ns.print("Tix Api access account found...")
-            } else { ns.print("No Tix Api access account") }
+        } else if (!ns.stock.hasTIXAPIAccess()) {
+            ns.stock.hasTIXAPIAccess() ? ns.print("TIX API active") : ns.print("TIX API missing")
 
-        } else if (!ns.stock.has4SDataTIXAPI()) {               // buy Tix api
-            if (ns.stock.purchase4SMarketDataTixApi()) {
-                ns.print("Tix Api account found...")
-            } else { ns.print("No Tix Api account") }
+        } else if (!ns.stock.has4SDataTIXAPI()) {
+            ns.stock.has4SDataTIXAPI() ? ns.print("TIX API 4S active") : ns.print("TIX API 4S missing")
         }
     }
 
@@ -154,7 +146,7 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
     while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
-        await ns.sleep(1000)
+        await ns.stock.nextUpdate()
         ns.clearLog()
         getAccounts()
     }
