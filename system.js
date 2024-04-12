@@ -23,28 +23,28 @@ export async function main(ns) {
   await ns.sleep(1000)
 
   // // hacknet
-  // while (!calculateHomeRam("purchase/hacknet.js")) { await ns.sleep(1000) }
-  // ns.run("purchase/hacknet.js", 1, 10, 100, 4, 1)
+  // while (!calculateHomeRam("bin/genesis/hacknet.js")) { await ns.sleep(1000) }
+  // ns.run("bin/genesis/hacknet.js", 1, 10, 100, 4, 1)
   // await ns.sleep(1000)
 
   // servers limited 32Gb
-  while (!calculateHomeRam("purchase/servers.js")) { await ns.sleep(1000) }
-  ns.run("purchase/servers.js", 1, 32)
+  while (!calculateHomeRam("bin/genesis/servers.js")) { await ns.sleep(1000) }
+  ns.run("bin/genesis/servers.js", 1, 32)
   await ns.sleep(1000)
 
   // ram
-  while (!calculateHomeRam("purchase/ram.js")) { await ns.sleep(1000) }
-  ns.run("purchase/ram.js", 1)
+  while (!calculateHomeRam("bin/singularity/ram.js")) { await ns.sleep(1000) }
+  ns.run("bin/singularity/ram.js", 1)
   await ns.sleep(1000)
 
   // programs
-  while (!calculateHomeRam("purchase/programs.js")) { await ns.sleep(1000) }
-  ns.run("purchase/programs.js", 1)
+  while (!calculateHomeRam("bin/singularity/programs.js")) { await ns.sleep(1000) }
+  ns.run("bin/singularity/programs.js", 1)
   await ns.sleep(1000)
 
   // servers 
-  while (!calculateHomeRam("purchase/servers.js") || ns.isRunning("purchase/servers.js", "home", 32)) { await ns.sleep(1000) }
-  ns.run("purchase/servers.js", 1)
+  while (!calculateHomeRam("bin/genesis/servers.js") || ns.isRunning("bin/genesis/servers.js", "home", 32)) { await ns.sleep(1000) }
+  ns.run("bin/genesis/servers.js", 1)
   await ns.sleep(1000)
 
   if (ns.getServerMaxRam("home") > 1024) {
@@ -55,8 +55,13 @@ export async function main(ns) {
     await ns.sleep(1000)
     
     // core
-    while (!calculateHomeRam("purchase/core.js")) { await ns.sleep(1000) }
-    ns.run("purchase/core.js", 1)
+    while (!calculateHomeRam("bin/singularity/core.js")) { await ns.sleep(1000) }
+    ns.run("bin/singularity/core.js", 1)
+    await ns.sleep(1000)
+    
+    // faction
+    while (!calculateHomeRam("bin/singularity/faction.js")) { await ns.sleep(1000) }
+    ns.run("bin/singularity/faction.js", 1)
     await ns.sleep(1000)
 
   }
