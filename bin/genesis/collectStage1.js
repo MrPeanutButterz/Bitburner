@@ -23,7 +23,7 @@ export async function main(ns) {
     if (TARGET === undefined) { TARGET = "n00dles" }
     NmapClear(ns)
 
-    let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
+    let ramAvailable = (ns.getServerMaxRam("home") - 200) - ns.getServerUsedRam("home")
     let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT.gw))
     ns.exec(SCRIPT.gw, "home", threadsAvailable, 0.7)
 
