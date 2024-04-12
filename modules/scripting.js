@@ -1,4 +1,18 @@
 /** @param {NS} ns */
+export function scriptStart(ns) {
+    ns.tprint("Active")
+    ns.disableLog("ALL")
+    ns.clearLog()
+}
+
+/** @param {NS} ns */
+export function scriptExit(ns) {
+    ns.tprint("Exit 0")
+    ns.closeTail()
+    ns.exit()
+}
+
+/** @param {NS} ns */
 export function scriptPath(ns) {
 
     // returns path to any script used in operation (string array)

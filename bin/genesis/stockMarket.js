@@ -1,3 +1,4 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { colorPrint } from "modules/scripting";
 
 /** @param {NS} ns */
@@ -8,9 +9,7 @@ export async function main(ns) {
     // buy en sell stocks based on forcast
 
     //\\ SCRIPT SETTINGS
-    // ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     const FORCAST_BUY_THRESHOLD = 0.61

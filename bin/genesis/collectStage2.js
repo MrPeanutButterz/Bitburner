@@ -1,3 +1,4 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { NmapTotalRam, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
@@ -14,9 +15,7 @@ export async function main(ns) {
     // script is not using threads effectivly, but still generates a lot of money
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)

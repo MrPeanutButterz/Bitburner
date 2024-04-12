@@ -1,3 +1,4 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers } from "modules/network"
 import { scriptPath } from "/modules/scripting"
 
@@ -11,9 +12,7 @@ export async function main(ns) {
     // repeat process 
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     let TARGET = ns.args[0]

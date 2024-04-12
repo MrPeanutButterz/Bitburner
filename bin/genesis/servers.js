@@ -1,12 +1,11 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { NmapTotalRam, NmapFreeRam } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.tprint("Active")
-	ns.disableLog("ALL")
-	ns.clearLog()
+	scriptStart(ns)
 
 	//\\ GENERAL DATA
 	const PURCHASE_LIMIT = ns.getPurchasedServerLimit()
@@ -97,5 +96,5 @@ export async function main(ns) {
 		}
 		LEVEL_RAM_BASE += LEVEL_RAM_BASE
 	}
-	ns.tprint("Server auto purchase completed")
+	scriptExit(ns)
 }

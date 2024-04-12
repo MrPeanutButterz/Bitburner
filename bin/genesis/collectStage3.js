@@ -1,3 +1,4 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
@@ -12,9 +13,7 @@ export async function main(ns) {
     // threads are efficient timing is not
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     const scripts = scriptPath(ns)

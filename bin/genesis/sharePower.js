@@ -1,12 +1,11 @@
+import { scriptStart, scriptExit } from "modules/scripting"
 import { NmapClear, NmapRamServers } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     const SCRIPT = "helpers/share.js"
@@ -27,4 +26,5 @@ export async function main(ns) {
             }
         }
     })
+    scriptExit(ns)
 } 

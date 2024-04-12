@@ -1,10 +1,10 @@
+import { scriptStart, scriptExit } from "modules/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
 	//\\ SCRIPT SETTINGS
-	ns.tprint("Active")
-	ns.disableLog("ALL")
-	ns.clearLog()
+	scriptStart(ns)
 
 	//\\ GENERAL DATA
 	let maxNode = ns.args[0]
@@ -66,8 +66,7 @@ export async function main(ns) {
 				if (ns.hacknet.getNodeStats(maxNode - 1).level >= maxLevel
 					&& ns.hacknet.getNodeStats(maxNode - 1).ram >= maxRam
 					&& ns.hacknet.getNodeStats(maxNode - 1).cores >= maxCore) {
-					ns.tprint("Hacknet auto purchase completed")
-					ns.exit()
+					scriptExit(ns)
 				}
 			}
 		}
