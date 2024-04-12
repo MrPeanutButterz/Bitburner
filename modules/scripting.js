@@ -1,13 +1,13 @@
 /** @param {NS} ns */
 export function scriptStart(ns) {
-    ns.tprint("Active")
+    ns.tprint("Run")
     ns.disableLog("ALL")
     ns.clearLog()
 }
 
 /** @param {NS} ns */
 export function scriptExit(ns) {
-    ns.tprint("Exit 0")
+    ns.tprint("Exit")
     ns.closeTail()
     ns.exit()
 }
@@ -28,16 +28,6 @@ export function scriptPath(ns) {
 
     }
     return path
-}
-
-/** @param {NS} ns */
-export function getLocalTimeDate(inDate) {
-
-    // returns time.now
-
-    var date = new Date();
-    date.setTime(inDate.valueOf() + 1000 + 7200000);
-    return date;
 }
 
 /** @param {NS} ns */

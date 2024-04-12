@@ -79,7 +79,7 @@ export function getFactionServer(ns, faction) {
 		case "OmniTek Incorporated": { return "omnitek" }
 		case "Bachman & Associates": { return "b-and-a" }
 		case "Clarke Incorporated": { return "clarkinc" }
-		case "Fulcrum Secret Technologies": { return "fulcrumtech" }
+		case "Fulcrum Secret Technologies": { return "fulcrumassets" }
 		default: { return "Unknown" }
 	}
 }
