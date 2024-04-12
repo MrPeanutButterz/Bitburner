@@ -90,6 +90,16 @@ The stock market script is designed to gather information on all stocks that exc
 `args non`
 > run stockmarket.js
 
-## Singularity
+## Singularity Next update...
 
-Next update...
+### company.js
+### core.js
+### crime.js
+### faction.js
+### gym.js
+### install.js
+### programs.js
+### ram.js
+### reputation.js
+### requirement.js
+### school.js

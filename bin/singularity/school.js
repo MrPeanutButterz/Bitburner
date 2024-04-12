@@ -3,7 +3,7 @@ import { scriptStart, scriptExit } from "modules/scripting"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // bleuprint version
+    // studie at university
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
@@ -11,41 +11,12 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const FOCUS = false
     const TRAVEL_COST = 2e5
-    const GYM = "Iron Gym"
-    const GYM_LOCATION = ns.enums.CityName.Sector12
-
-    const STRENGHT = ns.args[0]
-    const DEFENCE = ns.args[1]
-    const DEXTERITY = ns.args[2]
-    const AGILITY = ns.args[3]
+    const CHARISMA = ns.args[0]
+    const UNIVERSITY = "Rothman University"
+    const UNIVERSITY_LOCATION = ns.enums.CityName.Sector12
+    const LEADERSHIP_COURSE = ns.enums.UniversityClassType.leadership
 
     //\\ FUNCTIONS 
-    function workout() {
-
-        let player = ns.getPlayer()
-
-        if (player.skills.strength < STRENGHT) {
-
-            ns.singularity.gymWorkout(GYM, ns.enums.GymType.strength, FOCUS)
-
-        } else if (player.skills.defense < DEFENCE) {
-
-            ns.singularity.gymWorkout(GYM, ns.enums.GymType.defense, FOCUS)
-
-        } else if (player.skills.dexterity < DEXTERITY) {
-
-            ns.singularity.gymWorkout(GYM, ns.enums.GymType.dexterity, FOCUS)
-
-        } else if (player.skills.agility < AGILITY) {
-
-            ns.singularity.gymWorkout(GYM, ns.enums.GymType.agility, FOCUS)
-
-        } else {
-
-            ns.singularity.stopAction()
-            scriptExit(ns)
-        }
-    }
     //\\ MAIN LOGIC
     ns.resizeTail(500, 160)
     while (true) {
@@ -61,25 +32,40 @@ export async function main(ns) {
 
             if (work.type === "CREATE_PROGRAM") {
 
+                // programs before faction en uni 
                 ns.print("Creating " + work.programName)
 
             } else if (work.type === "FACTION") {
 
+                // faction work before uni 
                 ns.print("Working with " + work.factionName)
 
             } else if (work.type === "CLASS") {
 
-                ns.print("Taking a class at " + work.location)
+                // travel to sector 12 
+                // take class
 
-                workout()
+                ns.print("Taking a class at " + work.location)
+                if (player.skills.charisma > CHARISMA) {
+
+                    ns.singularity.stopAction()
+                    scriptExit(ns)
+
+                } else {
+
+                    ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
+
+                }
 
             } else if (work.type === "COMPANY") {
 
+                // stop company work 
                 ns.print("Working a job at " + work.companyName)
                 ns.singularity.stopAction()
 
             } else if (work.type === "CRIME") {
 
+                // stop crime work 
                 ns.print("Attempting to " + work.crimeType)
                 ns.singularity.stopAction()
 
@@ -87,14 +73,16 @@ export async function main(ns) {
 
         } else {
 
-            if (player.city !== GYM_LOCATION && player.money > TRAVEL_COST) {
+            // if nothing to do start uni
+            if (player.city !== UNIVERSITY_LOCATION && player.money > TRAVEL_COST) {
 
                 ns.print("Traveling to " + UNIVERSITY_LOCATION)
                 ns.singularity.travelToCity(UNIVERSITY_LOCATION)
 
             } else {
 
-                workout()
+                ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
+
             }
         }
     }

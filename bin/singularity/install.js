@@ -1,3 +1,5 @@
+import { scriptStart, scriptExit } from "modules/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -10,8 +12,7 @@ export async function main(ns) {
     // install & boot system
 
     //\\ SCRIPT SETTINGS
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
     ns.tail()
 
     //\\ GENERAL DATA
@@ -22,6 +23,10 @@ export async function main(ns) {
 
         // return true if its owned
         return Boolean(ns.singularity.getOwnedAugmentations(true).find(e => e === augmentation))
+    }
+
+    function onlyUnique(value, index, array) {
+        return array.indexOf(value) === index;
     }
 
     function createSortedShoppingList(faction) {
@@ -64,16 +69,23 @@ export async function main(ns) {
             // add actual augmentation
             sortedWithPreReq.push(el.aug)
         })
-        return sortedWithPreReq
+
+        // return unique list 
+        return sortedWithPreReq.filter(onlyUnique)
     }
 
     //\\ MAIN LOGIC
     // augmentations
     let shoppingList = createSortedShoppingList(FACTION)
 
+    ns.print("Shopping list")
+    ns.print(shoppingList)
+    ns.print(" ")
+
     for (let i = 0; i < shoppingList.length;) {
 
         let augmentation = shoppingList[i]
+
         if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(augmentation) &&
             ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq(augmentation)) {
 
@@ -82,25 +94,43 @@ export async function main(ns) {
                 i++
                 ns.print(augmentation)
                 await ns.sleep(1000)
+
+            } else {
+
+                ns.print("Eh")
+                ns.print(augmentation)
+                await ns.sleep(1000)
+
             }
 
         } else {
+
             ns.print("LACK OF FUNDS...")
             await ns.sleep(1000)
+
         }
     }
+
+    ns.print("NeuroFlux...")
 
     // neuroflux++
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
+
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
-            
-            ns.print("NeuroFlux Governor")
+
+            ns.print("NeuroFlux Governor ++")
             await ns.sleep(1000)
+
+        } else {
+
+            await ns.sleep(1000)
+
         }
     }
 
     // install & boot 
+    ns.closeTail()
     ns.singularity.installAugmentations("system.js")
 }

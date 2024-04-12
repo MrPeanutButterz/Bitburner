@@ -1,10 +1,10 @@
+import { scriptStart, scriptExit } from "modules/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
     ns.tail()
 
     //\\ GENERAL DATA
@@ -18,6 +18,7 @@ export async function main(ns) {
     if (faction === "Slum Snakes" || faction === "Tetrads") { task = "Field work" }
 
     // get initial reputation
+    ns.resizeTail(500, 160)
     let initialReputation = ns.singularity.getFactionRep(faction)
 
     // start run
@@ -40,6 +41,7 @@ export async function main(ns) {
     ns.print(" ")
     ns.print("Speed run completed...")
     await ns.sleep(3000)
+    ns.closeTail()
 
     //\\ SCRIPT SPECIFIC FUNCTIONS
     function msToTime(duration) {
@@ -68,7 +70,7 @@ export async function main(ns) {
 
         let listSorted = []
         ns.singularity.getAugmentationsFromFaction(faction).forEach(aug => {
-            
+
             // push not owned to list 
             if (!isOwnedAugmentation(aug)) {
                 listSorted.push({
@@ -77,7 +79,7 @@ export async function main(ns) {
                 })
             }
         })
-        
+
         // sort by reputation 
         listSorted.sort(function (a, b) { return a.rep - b.rep })
         listSorted.reverse()
@@ -105,7 +107,7 @@ export async function main(ns) {
                 timeToAugmentation++
 
             } else {
-                
+
                 ns.singularity.workForFaction(faction, task, false)
                 timeToAugmentation--
 
@@ -117,9 +119,9 @@ export async function main(ns) {
 
         }
     }
-
-    //restart findFactions 
+    
+    //restart factions 
     ns.singularity.stopAction()
-    // ns.run(script.findFaction, 1)
     ns.closeTail()
+    ns.spawn("bin/singularity/faction.js", { threads: 1, spawnDelay: 500 })
 }

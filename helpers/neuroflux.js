@@ -4,12 +4,12 @@ export async function main(ns) {
     // auto buy neuroflux
 
     //\\ SCRIPT SETTINGS
+    ns.tprint("Active")
     ns.disableLog("ALL")
     ns.clearLog()
-    ns.tail()
 
     //\\ GENERAL DATA
-    const BALANCE_TRIGGER_THRESHOLD = 5e12 // 4t
+    const BALANCE_TRIGGER_THRESHOLD = 8e12 // 8t
     const DONATION = 1e10
     const NEUROFLUX = "NeuroFlux Governor"
     const FACTION = "Daedalus"
@@ -20,21 +20,22 @@ export async function main(ns) {
     while (true) {
 
         await ns.sleep(1000)
+        ns.clearLog()
 
         if (ns.singularity.getFactionFavor(FACTION) >= 150) {
 
             if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(NEUROFLUX) &&
                 ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq(NEUROFLUX)) {
 
-                ns.singularity.purchaseAugmentation(FACTION, NEUROFLUX) ? ns.print("Bought Neuroflux") : ns.print("No money")
+                ns.singularity.purchaseAugmentation(FACTION, NEUROFLUX) ? ns.print("Bought some of that Flux") : ns.print("Got no money to buy Neuro")
 
             } else if (ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
 
-                ns.singularity.donateToFaction(FACTION, DONATION) ? ns.print("Donations++") : ns.print("Nonations")
+                ns.singularity.donateToFaction(FACTION, DONATION) ? ns.print("Best nation in the world? Donation") : ns.print("Nations that love citizens? Nonation")
 
             } else {
 
-                ns.print("Where the money at?")
+                ns.print("Biggy Smalls: More money, more problems")
             }
 
 

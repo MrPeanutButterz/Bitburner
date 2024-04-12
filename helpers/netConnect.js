@@ -1,4 +1,4 @@
-import { getServerPath } from "modules/network"
+import { Nmap, getServerPath } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -12,7 +12,6 @@ export async function main(ns) {
 
     //\\ FUNCTIONS
     //\\ MAIN LOGIC
-    let path = getServerPath(ns, server)
-    path.forEach(node => { ns.singularity.connect(node) })
+    server === undefined ? Nmap(ns).forEach(server => ns.tprint(server)) : getServerPath(ns, server).forEach(node => { ns.singularity.connect(node) })
 
 }

@@ -1,10 +1,10 @@
+import { scriptStart, scriptExit } from "modules/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    ns.tprint("Active")
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
     
     //\\ GENERAL DATA
     //\\ MAIN LOGICA
