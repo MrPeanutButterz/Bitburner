@@ -19,7 +19,7 @@ export async function main(ns) {
 
   // collect
   while (!calculateHomeRam("bin/genesis/collectStage1.js")) { await ns.sleep(1000) }
-  ns.run("bin/genesis/collectStage1.js", 1, "foodnstuff")
+  ns.run("bin/genesis/collectStage1.js", 1)
   await ns.sleep(1000)
 
   // // hacknet
@@ -48,17 +48,17 @@ export async function main(ns) {
   await ns.sleep(1000)
 
   if (ns.getServerMaxRam("home") > 1024) {
-    
+
     // stockmarket
     while (!calculateHomeRam("bin/genesis/stockMarket.js") && ns.isRunning("bin/genesis/collectStage3.js", "home")) { await ns.sleep(1000) }
     ns.run("bin/genesis/stockMarket.js", 1)
     await ns.sleep(1000)
-    
+
     // core
     while (!calculateHomeRam("bin/singularity/core.js")) { await ns.sleep(1000) }
     ns.run("bin/singularity/core.js", 1)
     await ns.sleep(1000)
-    
+
     // faction
     while (!calculateHomeRam("bin/singularity/faction.js")) { await ns.sleep(1000) }
     ns.run("bin/singularity/faction.js", 1)

@@ -1,11 +1,10 @@
+import { scriptStart, scriptExit } from "modules/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // bleuprint version
-
     //\\ SCRIPT SETTINGS
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
     ns.tail()
 
     //\\ GENERAL DATA
@@ -31,7 +30,10 @@ export async function main(ns) {
 
                 ns.print("Working with " + work.factionName)
 
-                
+                // figure out the reputation needed
+                // use share power
+                // work for faction 
+                // calculate remaining time on the fly
                 
             } else if (work.type === "CLASS") {
                 
@@ -53,7 +55,6 @@ export async function main(ns) {
         } else {
 
             // start 
-            ns.print("Nothing going on here...")
 
         }
     }

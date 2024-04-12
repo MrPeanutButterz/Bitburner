@@ -1,6 +1,5 @@
-import { scriptStart, scriptExit } from "modules/scripting"
-import { NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers } from "modules/network"
-import { scriptPath } from "/modules/scripting"
+import { scriptStart, scriptPath } from "modules/scripting"
+import { NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers, NmapMoneyServers } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -8,52 +7,120 @@ export async function main(ns) {
     // get root access to all servers
     // find servers with free ram
     // copy hack scripts to severs with ram
-    // start hacking servers n00dles
-    // repeat process 
+    // start hacking 1 server
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    let TARGET = ns.args[0]
     const SCRIPT = scriptPath(ns)
+    const SECURITY_PATCH = 5
+    const HACK_PROCENT = 0.5
 
-    //\\ MAIN LOGICA
+    let TARGET = ns.args[0]
     if (TARGET === undefined) { TARGET = "n00dles" }
-    NmapClear(ns)
 
-    let ramAvailable = (ns.getServerMaxRam("home") - 200) - ns.getServerUsedRam("home")
-    let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT.gw))
-    ns.exec(SCRIPT.gw, "home", threadsAvailable, 0.7)
-
-    while (true) {
-
-        await ns.sleep(1000)
-        watchForNewServer(ns)
-        let servers
-
-        // todo: finetune switch point 
-        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) { 
-            ns.scriptKill(SCRIPT.gw, "home")
-            ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 }) 
+    //\\ FUNCTIONS
+    function switchScript() {
+        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) {
+            ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 })
         }
+    }
 
-        servers = NmapRamServers(ns)
-        servers.forEach(server => {
+    function growCondition(server) {
+        return ns.getServerMoneyAvailable(server) !== ns.getServerMaxMoney(server)
+    }
 
-            // (get server max ram > subtract server used ram) > devide by script ram
-            // run script on server with thread pointed at target
+    function weakCondition(server) {
+        return ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server) + SECURITY_PATCH
+    }
 
-            if (ns.hasRootAccess(server) && !ns.isRunning(SCRIPT.gwh, server)) {
+    function checkRunningScript(script, target) {
 
-                let serverMaxRam = ns.getServerMaxRam(server)
-                let serverUsedRam = ns.getServerUsedRam(server)
-                let threads = Math.floor((serverMaxRam - serverUsedRam) / ns.getScriptRam(SCRIPT.gwh))
+        let isRunning = false
+        const ramServers = NmapRamServers(ns)
+        ramServers.forEach(server => { if (ns.isRunning(script, server, target, 0)) { isRunning = true } })
+        return isRunning
+    }
 
-                if (threads >= 1 && threads < 9999999999) {
-                    ns.exec(SCRIPT.gwh, server, threads, TARGET)
+    function calculateWeakThreads(server) {
+
+        // caculates number of threads for weak
+        let serverSecutityDiff = Math.ceil(ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server) + 2)
+        return serverSecutityDiff / ns.weakenAnalyze(1)
+    }
+
+    function calculateGrowThreads(server) {
+
+        // caculates number of threads for grow
+        let serverMoneyAvailable = ns.getServerMoneyAvailable(server) ? ns.getServerMoneyAvailable(server) : 1
+        let serverMoneyMax = ns.getServerMaxMoney(server)
+        let mulitplier = (serverMoneyAvailable / serverMoneyMax) * 100
+        return Math.ceil(ns.growthAnalyze(server, Math.ceil(100 - mulitplier)))
+    }
+
+    function calculateHackThreads(server) {
+
+        // caculates number of threads for hack
+        return Math.ceil(ns.hackAnalyzeThreads(server, ns.getServerMaxMoney(server) * HACK_PROCENT))
+    }
+
+    function distributeAcrossNetwork(script, threads, target) {
+
+        //installs scripts on the purchased servers
+        for (let server of NmapRamServers(ns)) {
+
+            let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
+            let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(script))
+
+            if (threadsAvailable >= 1) {
+
+                if (threadsAvailable > threads) {
+                    ns.exec(script, server, threads, target, 0)
+                    break
+
+                } else {
+                    ns.exec(script, server, threadsAvailable, target, 0)
+                    threads -= threadsAvailable
                 }
             }
-        })
+        }
     }
-} 
+
+    //\\ MAIN LOGICA
+    NmapClear(ns)
+    while (true) {
+
+        await ns.sleep(1500)
+        ns.clearLog()
+
+        watchForNewServer(ns)
+        switchScript()
+
+        if (weakCondition(TARGET)) {
+
+            ns.print("WEAK - " + TARGET)
+            if (!checkRunningScript(SCRIPT.weak, TARGET)) {
+
+                distributeAcrossNetwork(SCRIPT.weak, calculateWeakThreads(TARGET), TARGET)
+            }
+
+        } else if (growCondition(TARGET)) {
+
+            ns.print("GROW - " + TARGET)
+            if (!checkRunningScript(SCRIPT.grow, TARGET)) {
+
+                distributeAcrossNetwork(SCRIPT.grow, calculateGrowThreads(TARGET), TARGET)
+            }
+
+        } else {
+
+            ns.print("HACK - " + TARGET)
+            if (!checkRunningScript(SCRIPT.hack, TARGET)) {
+
+                distributeAcrossNetwork(SCRIPT.hack, calculateHackThreads(TARGET), TARGET)
+            }
+
+        }
+    }
+}

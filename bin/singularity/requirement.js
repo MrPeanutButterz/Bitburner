@@ -27,6 +27,8 @@ export async function main(ns) {
 
     function checkInvites() {
 
+        displayLog("Checking invites...")
+
         if (ns.singularity.checkFactionInvitations().find(i => i === FACTION)) {
             if (ns.singularity.joinFaction(FACTION)) {
 
@@ -158,7 +160,7 @@ export async function main(ns) {
                     if (ramAvailable > ns.getScriptRam("bin/singularity/company.js", "home")) {
 
                         FACTION === "Fulcrum Secret Technologies" ?
-                            ns.run("bin/singularity/company.js", 1, FACTION, 4e5) :
+                            ns.run("bin/singularity/company.js", 1, "Fulcrum Technologies", 4e5) :
                             ns.run("bin/singularity/company.js", 1, FACTION, 3e5)
 
                     }

@@ -88,7 +88,7 @@ export async function main(ns) {
         // remove with no augmentations
         candidates = candidates.filter((item) => item.isDone !== true)
         candidates.sort((a, b) => a.rep - b.rep)
-        return candidates.length > 0 ? candidates[0] : undefined
+        return candidates.length > 0 ? candidates[0] : {name: "RedPillTime"}
     }
 
     function accepted(f) {
@@ -97,9 +97,10 @@ export async function main(ns) {
 
     //\\ MAIN LOGIC
     let topCandidate = getTopCandidate()
-    let factionRep = ns.singularity.getFactionRep(topCandidate.name)
-
-    if (topCandidate.name !== undefined) {
+    
+    if (topCandidate.name !== "RedPillTime") {
+        
+        let factionRep = ns.singularity.getFactionRep(topCandidate.name)
 
         if (!accepted(topCandidate.name)) {
 
@@ -125,6 +126,8 @@ export async function main(ns) {
         }
 
     } else {
+
+        ns.tprint("End of the road...")
 
         // kill bitnode 
 

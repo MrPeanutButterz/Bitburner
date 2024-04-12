@@ -1,9 +1,8 @@
 import { scriptStart, scriptExit } from "modules/scripting"
+import { installBackdoor } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
-
-    // bleuprint version
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
@@ -46,8 +45,13 @@ export async function main(ns) {
             scriptExit(ns)
         }
     }
+
     //\\ MAIN LOGIC
-    ns.resizeTail(500, 160)
+
+    // backdoor
+    // powerhouse-fitness 
+    // iron-gym
+
     while (true) {
 
         await ns.sleep(1000)
