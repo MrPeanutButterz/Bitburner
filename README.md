@@ -79,8 +79,7 @@ The sqn_gw.js script increases the account balance and reduces security based on
 
 The sqn_w.js script operates based on probability. It initiates within a range of 70% to 80% and traverses through all servers to lower their security. Once all servers within this range have been addressed, the range expands to 60% to 80%. This process continues until all servers are completely open, at 0% security. At this point, the script self-terminates. The purpose of this script is to bring servers with a probability lower than 70% into this range. Once achieved, collectStage3.js takes over further actions.
 
-`parent: collectStage3.js`
-`parent: collectStage2.js`
+`parent: collectStage3.js collectStage2.js`
 `args optional`
 > run sqn_w.js 0.5 0.8
 
@@ -91,16 +90,54 @@ The stock market script is designed to gather information on all stocks that exc
 `args non`
 > run stockmarket.js
 
-## Singularity Next update...
+## Singularity
 
 ### company.js
+
+Bij het starten moet je opgeven bij welk bedrijf je wil werken en hoeveel reputatie je daar maximaal wil verdienen. als je dat gedaan hebt zal het script voor aan het werk gaan tot je de opgegeven gegevens hebt berijkt. als je geen argumenten mee geeft bij het starten zal het script gaan werken bij 4sigma tot het de status van CEO, CFO, CTO heeft berijkt. Dit moet genoeg zijn voor Silhouette waarvan het een van de voorwaarde is om voor de gang te mogen werken. 
+
+`args optional`
+> run company.js ECorp 400000
+
 ### core.js
-### crime.js
-### faction.js
-### gym.js
-### install.js
+
+core.js will keep buying as long as the script is running.
+
+`args non`
+> run core.js
+
+### crime.js Next update...
+### faction.js Next update...
+### gym.js 
+
+When starting this script, you are required to specify via the arguments how much skills you want to acquire. Upon starting the script, it will first attempt to install a backdoor on the gym server for a small discount. Then, you will be directed to the correct location. Afterward, you will begin building up your skills to the point you have specified. Once the goal is reached, the script will automatically close itself.
+
+skills: str, def, dex, agi
+
+`args required`
+> run gym.js 20 20 20 20
+
+### install.js Next update...
 ### programs.js
+
+During its focus, Programs will always take precedence over any of its similar scripts. This script contains a list of essential programs that will either be purchased or created. Once all the programs are acquired, the script will close to free up space for other scripts.
+
+`cousins: company, crime, gym, programs, reputation, school`
+`args non`
+> run programs.js
+
 ### ram.js
-### reputation.js
-### requirement.js
+ 
+Ram.js will keep buying as long as the script is running.
+
+`args non`
+> run ram.js
+
+### reputation.js Next update...
+### requirement.js Next update...
 ### school.js
+
+When starting this script, you are required to specify via the arguments how much charisma you want to acquire. Upon starting the script, it will first attempt to install a backdoor on the school server for a small discount. Then, you will be directed to the correct location. Afterward, you will begin building up your charisma to the point you have specified. Once the goal is reached, the script will automatically close itself.
+
+`args required`
+> run school.js 375
