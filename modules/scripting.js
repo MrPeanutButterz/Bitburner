@@ -1,6 +1,6 @@
 /** @param {NS} ns */
 export function scriptStart(ns) {
-    ns.tprint("Run")
+    ns.tprint("Init")
     ns.disableLog("ALL")
     ns.clearLog()
 }
@@ -37,13 +37,13 @@ export function colorPrint(ns, color, msg) {
 
     const colors = {
         black: "\u001b[30m",
-        red: "\u001b[31m",
+        white: "\u001b[37m",
         green: "\u001b[32m",
-        yellow: "\u001b[33m",
+        cyan: "\u001b[36m",
         blue: "\u001b[34m",
         magenta: "\u001b[35m",
-        cyan: "\u001b[36m",
-        white: "\u001b[37m",
+        yellow: "\u001b[33m",
+        red: "\u001b[31m",
         brightBlack: "\u001b[30;1m",
         brightRed: "\u001b[31;1m",
         brightGreen: "\u001b[32;1m",

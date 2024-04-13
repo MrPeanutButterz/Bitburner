@@ -27,9 +27,9 @@ export async function main(ns) {
   // ns.run("bin/genesis/hacknet.js", 1, 10, 100, 4, 1)
   // await ns.sleep(1000)
 
-  // servers limited 32Gb
-  while (!calculateHomeRam("bin/genesis/servers.js")) { await ns.sleep(1000) }
-  ns.run("bin/genesis/servers.js", 1, 32)
+  // programs
+  while (!calculateHomeRam("bin/singularity/programs.js")) { await ns.sleep(1000) }
+  ns.run("bin/singularity/programs.js", 1)
   await ns.sleep(1000)
 
   // ram
@@ -37,31 +37,29 @@ export async function main(ns) {
   ns.run("bin/singularity/ram.js", 1)
   await ns.sleep(1000)
 
-  // programs
-  while (!calculateHomeRam("bin/singularity/programs.js")) { await ns.sleep(1000) }
-  ns.run("bin/singularity/programs.js", 1)
-  await ns.sleep(1000)
-
-  // servers 
-  while (!calculateHomeRam("bin/genesis/servers.js") || ns.isRunning("bin/genesis/servers.js", "home", 32)) { await ns.sleep(1000) }
+  while (!calculateHomeRam("bin/genesis/servers.js")) { await ns.sleep(1000) }
   ns.run("bin/genesis/servers.js", 1)
   await ns.sleep(1000)
 
   if (ns.getServerMaxRam("home") > 1024) {
+
+    // faction
+    while (!calculateHomeRam("bin/singularity/faction.js")) { await ns.sleep(1000) }
+    ns.run("bin/singularity/faction.js", 1)
+    await ns.sleep(1000)
 
     // stockmarket
     while (!calculateHomeRam("bin/genesis/stockMarket.js") && ns.isRunning("bin/genesis/collectStage3.js", "home")) { await ns.sleep(1000) }
     ns.run("bin/genesis/stockMarket.js", 1)
     await ns.sleep(1000)
 
+  }
+
+  if (ns.getServerMaxRam("home") > 8000) {
+
     // core
     while (!calculateHomeRam("bin/singularity/core.js")) { await ns.sleep(1000) }
     ns.run("bin/singularity/core.js", 1)
-    await ns.sleep(1000)
-
-    // faction
-    while (!calculateHomeRam("bin/singularity/faction.js")) { await ns.sleep(1000) }
-    ns.run("bin/singularity/faction.js", 1)
     await ns.sleep(1000)
 
   }

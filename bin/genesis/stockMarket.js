@@ -145,7 +145,7 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
     while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
-        await ns.stock.nextUpdate()
+        await ns.sleep(5000)
         ns.clearLog()
         getAccounts()
     }
