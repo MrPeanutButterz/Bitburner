@@ -29,13 +29,13 @@ export async function main(ns) {
             ns.stock.purchaseWseAccount() ? ns.print("WSE account active") : ns.print("WSE account missing")
 
         } else if (!ns.stock.has4SData()) {
-            ns.stock.purchase4SMarketData() ? ns.print("4S data account active") : ns.print("4S data account missing")
+            ns.stock.purchase4SMarketData() ? ns.print("4S markt data account active") : ns.print("4S markt data account missing")
 
         } else if (!ns.stock.hasTIXAPIAccess()) {
-            ns.stock.hasTIXAPIAccess() ? ns.print("TIX API active") : ns.print("TIX API missing")
+            ns.stock.purchaseTixApi() ? ns.print("TIX API access active") : ns.print("TIX API acccess missing")
 
         } else if (!ns.stock.has4SDataTIXAPI()) {
-            ns.stock.has4SDataTIXAPI() ? ns.print("TIX API 4S active") : ns.print("TIX API 4S missing")
+            ns.stock.purchase4SMarketDataTixApi() ? ns.print("4S markt data TIX API active") : ns.print("4S markt data TIX API missing")
         }
     }
 
