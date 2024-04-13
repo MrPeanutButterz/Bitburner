@@ -69,10 +69,12 @@ export async function main(ns) {
 	}
 
 	//\\ MAIN LOGICA
+	if (ns.serverExists("NDX_00")) { PUR_BASE_RAM = ns.getServerMaxRam("NDX_00") }
+
+
 	while (poolRam() < SERVER_LIMIT * SERVER_GB_LIMIT) {
 
 		await ns.sleep(100)
-		if (ns.serverExists("NDX_00")) { PUR_BASE_RAM = ns.getServerMaxRam("NDX_00") }
 
 		for (let i = 0; i < SERVER_LIMIT;) {
 
