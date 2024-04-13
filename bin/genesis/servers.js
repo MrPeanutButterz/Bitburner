@@ -8,93 +8,101 @@ export async function main(ns) {
 	scriptStart(ns)
 
 	//\\ GENERAL DATA
-	const PURCHASE_LIMIT = ns.getPurchasedServerLimit()
-	const FREE_NET_RAM = 10
+	const NET_GB_BASE = 10
+	const POOL_GB_BASE = 64
+	const SERVER_LIMIT = ns.getPurchasedServerLimit()
+	const SERVER_GB_LIMIT = ns.getPurchasedServerMaxRam()
 
-	let LEVEL_RAM_BASE = 4
-	let LEVEL_RAM_MAX = ns.getPurchasedServerMaxRam()
-	let GB_LIMIT = ns.args[0]
+	let PUR_BASE_RAM = 4
 
-	//\\ SCRIPT SPECIFIC FUNCTIONS
-	function serverPoolSizeGB() {
+	//\\ FUNCTIONS
+	function poolRam() {
 
-		//returns total server
-
-		let totalRam = 0
-		let servers = ns.getPurchasedServers()
-
-		for (let server of servers) {
-
-			let ram = ns.getServerMaxRam(server)
-			totalRam = totalRam + ram
+		// calculate purchased server pool ram
+		let poolRam = 0
+		for (let server of ns.getPurchasedServers()) {
+			poolRam += ns.getServerMaxRam(server)
 		}
-		return totalRam
+		return poolRam
 	}
 
-	function displayStatus(s, r, price, action) {
+	function buyUpgradeServer(server, i, ram) {
 
-		// display current status
+		// buy if not exist, upgrade, continue
+		let credit = ns.getServerMoneyAvailable("home")
+		ns.print(server)
 
-		ns.clearLog()
-		ns.print("Server: \t" + s)
-		ns.print("Ram: \t\t" + r + "GB")
-		ns.print("Price: \t\t" + "$" + Math.round(price))
-		ns.print("Action: \t" + action)
+		if (!ns.serverExists(server)) {
+
+			if (credit > ns.getPurchasedServerCost(ram)) {
+
+				// buy ++
+				ns.purchaseServer(server, ram)
+				ns.print("Purchased " + ram + "gb ")
+				return i += 1
+
+			} else {
+
+				return i
+			}
+
+		} else if (ns.getServerMaxRam(server) < ram) {
+
+			if (credit > ns.getPurchasedServerUpgradeCost(server, ram)) {
+
+				// upgrade ++
+				ns.upgradePurchasedServer(server, ram)
+				ns.print("Upgrade to " + ram + "gb ")
+				return i += 1
+
+			} else {
+
+				return i
+			}
+
+		} else {
+
+			// next server
+			ns.print("Running on " + ram + "gb ")
+			return i += 1
+		}
 	}
 
 	//\\ MAIN LOGICA
-	if (GB_LIMIT !== undefined) { LEVEL_RAM_MAX = GB_LIMIT }
+	while (poolRam() < SERVER_LIMIT * SERVER_GB_LIMIT) {
 
-	while (serverPoolSizeGB() < LEVEL_RAM_MAX * PURCHASE_LIMIT) {
-		await ns.sleep(1000)
+		await ns.sleep(100)
+		if (ns.serverExists("NDX_00")) { PUR_BASE_RAM = ns.getServerMaxRam("NDX_00") }
 
-		for (let i = 0; i < PURCHASE_LIMIT;) {
+		for (let i = 0; i < SERVER_LIMIT;) {
 
-			await ns.sleep(250)
+			await ns.sleep(1000)
+			ns.clearLog()
 
-			let server = "NDX_" + i
+			let server = i < 10 ? "NDX_0" + i : "NDX_" + i
+			let netUsage = Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100)
 
-			if (Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100) >= FREE_NET_RAM && GB_LIMIT === undefined) {
+			if (poolRam() < SERVER_LIMIT * POOL_GB_BASE) {
 
-				displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "network load " + (100 - Math.ceil(NmapFreeRam(ns) / NmapTotalRam(ns) * 100)) + "%")
+				// keep buying as long as the pool < 25 * 64
+				i = buyUpgradeServer(server, i, PUR_BASE_RAM)
 
-			} else if (!ns.serverExists(server)) {
+			} else if (netUsage < NET_GB_BASE) {
 
-				if (ns.getPlayer().money > ns.getPurchasedServerCost(LEVEL_RAM_BASE)) {
+				// only buy if network usage > 90%
+				i = buyUpgradeServer(server, i, PUR_BASE_RAM)
 
-					ns.purchaseServer(server, LEVEL_RAM_BASE)
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "purchased server")
-					i++
+			} else {
 
-				} else {
-
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "LACK OF FUNDS...")
-					await ns.sleep(250)
-
-				}
-
-			} else if (ns.getServerMaxRam(server) >= LEVEL_RAM_BASE) {
-
-				displayStatus(server, LEVEL_RAM_BASE, 0, "is running equal or more ram")
-				i++
-
-			} else if (ns.getServerMaxRam(server) < LEVEL_RAM_MAX) {
-
-				if (ns.getPlayer().money > ns.getPurchasedServerUpgradeCost(server, LEVEL_RAM_BASE)) {
-
-					ns.upgradePurchasedServer(server, LEVEL_RAM_BASE)
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "purchased ram upgrade")
-					i++
-
-				} else {
-
-					displayStatus(server, LEVEL_RAM_BASE, ns.getPurchasedServerCost(LEVEL_RAM_BASE), "LACK OF FUNDS...")
-					await ns.sleep(250)
-
-				}
+				// display log
+				ns.print("Next purchase is below 10%")
+				ns.print("Current network free ram is " + netUsage + "%")
 			}
 		}
-		LEVEL_RAM_BASE += LEVEL_RAM_BASE
+
+		// log 2 
+		PUR_BASE_RAM += PUR_BASE_RAM
+
 	}
 	scriptExit(ns)
 }
