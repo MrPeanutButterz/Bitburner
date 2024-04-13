@@ -1,5 +1,5 @@
 import { scriptStart, scriptPath } from "modules/scripting"
-import { getServerPath } from "modules/network"
+import { installBackdoor } from "modules/network"
 import { getFactionServer, getFactionStats } from "modules/factions"
 
 /** @param {NS} ns */
@@ -15,7 +15,6 @@ export async function main(ns) {
     let FACTION = ns.args[0]
     let FACTION_STATS = getFactionStats(ns, FACTION)
     let SERVER = getFactionServer(ns, FACTION)
-    let INIT = true
 
     ns.resizeTail(500, 160)
 
@@ -27,15 +26,18 @@ export async function main(ns) {
     }
 
     function checkInvites() {
-
-        displayLog("Checking invites...")
-
         if (ns.singularity.checkFactionInvitations().find(i => i === FACTION)) {
             if (ns.singularity.joinFaction(FACTION)) {
 
                 ns.closeTail()
                 ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
             }
+        }
+    }
+
+    function moveToCity(city) {
+        if (ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
+            ns.singularity.travelToCity(city)
         }
     }
 
@@ -71,18 +73,7 @@ export async function main(ns) {
             // "The Black Hand"				    //Install a backdoor on the I.I.I.I server
             // "BitRunners"					    //Install a backdoor on the run4theh111z server
 
-            if (ns.hasRootAccess(SERVER) && INIT) {
-
-                getServerPath(ns, SERVER).forEach(node => { ns.singularity.connect(node) })
-                await ns.singularity.installBackdoor()
-                ns.singularity.connect("home")
-                INIT = false
-
-            } else {
-
-                displayLog("Awaiting hack level to install a backdoor")
-
-            }
+            await installBackdoor(ns, SERVER)
 
         } else if (
             FACTION === "Tian Di Hui" ||
@@ -101,21 +92,19 @@ export async function main(ns) {
             // "Aevum"						    //Be in Aevum & $40m
             // "Volhaven"						//Be in Volhaven & $50m
 
-            if (ns.getPlayer().city !== FACTION_STATS.city && ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
+            if (ns.getServerMoneyAvailable("home") < FACTION_STATS.money) {
+
+                displayLog("Awaiting money > " + FACTION_STATS.money)
+
+            } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
+
+                displayLog("Awaiting hack skill > " + FACTION_STATS.hacklvl)
+
+            } else if (ns.getPlayer().city !== FACTION_STATS.city) {
 
                 displayLog("Traveling")
-                ns.singularity.travelToCity(FACTION_STATS.city)
+                moveToCity(FACTION_STATS.city)
 
-            } else if (ns.getServerMoneyAvailable("home") < FACTION_STATS.money) {
-
-                displayLog("Awaiting money to be more than " + FACTION_STATS.money)
-
-            } else if (FACTION === "Tian Di Hui") {
-
-                if (ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
-
-                    displayLog("Awaiting hack skill to be more than " + FACTION_STATS.hacklvl)
-                }
             }
 
         } else if (
@@ -141,30 +130,17 @@ export async function main(ns) {
             // "Clarke Incorporated"			//Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "Fulcrum Secret Technologies" 	//Have 500K reputation, Backdooring company server reduces faction requirement to 400K
 
-            // backdoor server
-            // run company.js 3e5 reputation
+            await installBackdoor(ns, SERVER)
 
-            if (ns.hasRootAccess(SERVER) && INIT) {
+            displayLog("Runnig the company")
+            if (!ns.scriptRunning(SCRIPT.company, "home")) {
 
-                displayLog("Installing backdoor")
-                getServerPath(ns, SERVER).forEach(node => { ns.singularity.connect(node) })
-                await ns.singularity.installBackdoor()
-                ns.singularity.connect("home")
-                INIT = false
+                let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+                if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
 
-            } else {
-
-                displayLog("Runnig the company")
-                if (!ns.scriptRunning(SCRIPT.company, "home")) {
-
-                    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
-
-                        FACTION === "Fulcrum Secret Technologies" ?
-                            ns.run(SCRIPT.company, 1, "Fulcrum Technologies", 4e5) :
-                            ns.run(SCRIPT.company, 1, FACTION, 3e5)
-
-                    }
+                    FACTION === "Fulcrum Secret Technologies" ?
+                        ns.run(SCRIPT.company, 1, "Fulcrum Technologies", 4e5) :
+                        ns.run(SCRIPT.company, 1, FACTION, 3e5)
                 }
             }
 
@@ -182,14 +158,6 @@ export async function main(ns) {
             // "Speakers for the Dead"		    //Hacking lvl 100, All Combat Stats of 300, 30 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Dark Army"				    //Hacking lvl 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Syndicate"				    ///Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
-
-            // combat
-            // kill
-            // karma
-            // hacklevel
-            // money
-            // travel
-            // CEO (Silhouette only)
 
             if (ns.getPlayer().skills.strength < FACTION_STATS.strength ||
                 ns.getPlayer().skills.defense < FACTION_STATS.defense ||
@@ -250,12 +218,6 @@ export async function main(ns) {
             // "The Covenant"					//20 Augmentations, $75b, Hacking lvl of 850, All Combat Stats of 850
             // "Daedalus"						//30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
             // "Illuminati"					    //30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
-
-            // let augmentations = ns.singularity.getOwnedAugmentations()
-
-            // stats
-            // hack lvl
-            // money
 
             if (ns.getPlayer().skills.strength < FACTION_STATS.strength ||
                 ns.getPlayer().skills.defense < FACTION_STATS.defense ||
