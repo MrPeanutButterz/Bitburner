@@ -92,7 +92,7 @@ export async function main(ns) {
             ns.print("forcas\t" + ns.stock.getForecast(stock.sym).toPrecision(3))
             ns.print("volati\t" + (ns.stock.getVolatility(stock.sym) * 100).toPrecision(3) + "%")
             ns.print("shares \t" + sharesOwnedProcent + "%")
-            profit >= 0 ? ns.print("profit\t" + profit) : colorPrint(ns, "red", "losses\t" + profit)
+            profit >= 0 ? ns.print("profit\t" + ns.formatNumber(profit)) : colorPrint(ns, "red", "losses\t" + ns.formatNumber(profit))
         })
     }
 
@@ -144,7 +144,10 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGICA
-    while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
+    while (!ns.stock.hasWSEAccount() ||
+        !ns.stock.has4SData() ||
+        !ns.stock.hasTIXAPIAccess() ||
+        !ns.stock.has4SDataTIXAPI()) {
         await ns.sleep(5000)
         ns.clearLog()
         getAccounts()

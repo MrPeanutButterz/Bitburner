@@ -4,7 +4,6 @@ import { scriptStart, scriptPath } from "modules/scripting"
 export async function main(ns) {
 
     // stop all scripts that cost money (ram, core, stockmarket, programs, hacknet, servers)
-    // checkout stocks when in profit 
     // create a list sorted by cost 
     // add pre-requisities to list before the augmentation
     // buy most expensive first
@@ -76,8 +75,36 @@ export async function main(ns) {
         return sortedWithPreReq.filter(onlyUnique)
     }
 
+    function killScript(script) {
+        if (!ns.scriptRunning(SCRIPT.stockmarket, "home")) {
+            ns.scriptKill(SCRIPT.stockmarket, "home")
+        }
+    }
+
     //\\ MAIN LOGIC
-    // augmentations
+    killScript(SCRIPT.stockmarket)
+    killScript(SCRIPT.programs)
+    killScript(SCRIPT.hacknet)
+    killScript(SCRIPT.servers)
+    killScript(SCRIPT.ram)
+    killScript(SCRIPT.core)
+
+    if (ns.stock.hasWSEAccount() &&
+        ns.stock.has4SData() &&
+        ns.stock.hasTIXAPIAccess() &&
+        ns.stock.has4SDataTIXAPI()) {
+
+        let symbols = ns.stock.getSymbols()
+
+        symbols.forEach(sym => {
+            let shares = ns.stock.getPosition(sym)[0]
+            if (shares > 0) {
+                ns.stock.sellStock(sym, shares)
+            }
+        })
+    }
+
+
     let shoppingList = createSortedShoppingList(FACTION)
 
     ns.print("Shopping list")
