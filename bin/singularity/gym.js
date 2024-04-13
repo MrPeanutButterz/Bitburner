@@ -95,8 +95,8 @@ export async function main(ns) {
 
             if (player.city !== GYM_LOCATION && player.money > TRAVEL_COST) {
 
-                ns.print("Traveling to " + UNIVERSITY_LOCATION)
-                ns.singularity.travelToCity(UNIVERSITY_LOCATION)
+                ns.print("Traveling to " + GYM_LOCATION)
+                ns.singularity.travelToCity(GYM_LOCATION)
 
             } else {
 

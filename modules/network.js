@@ -175,7 +175,7 @@ export function getServerPath(ns, server) {
 /** @param {NS} ns */
 export async function installBackdoor(ns, server) {
 
-	if (!ns.getServer(server).backdoorInstalled && ns.hasRootAccess(server)) {
+	if (!ns.getServer(server).backdoorInstalled && ns.getHackingLevel() > ns.getServerRequiredHackingLevel(server)) {
 
 		getServerPath(ns, server).forEach(node => { ns.singularity.connect(node) })
 		await ns.singularity.installBackdoor()

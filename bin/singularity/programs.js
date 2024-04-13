@@ -67,17 +67,17 @@ export async function main(ns) {
 				} else if (work.type === "CLASS") {
 
 					ns.print("Taking a class at " + work.location)
-					ns.singularity.stopAction()
+					// ns.singularity.stopAction()
 
 				} else if (work.type === "COMPANY") {
 
 					ns.print("Working a job at " + work.companyName)
-					ns.singularity.stopAction()
+					// ns.singularity.stopAction()
 
 				} else if (work.type === "CRIME") {
 
 					ns.print("Attempting to " + work.crimeType)
-					ns.singularity.stopAction()
+					// ns.singularity.stopAction()
 
 				}
 
