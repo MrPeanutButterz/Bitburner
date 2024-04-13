@@ -175,9 +175,11 @@ export function getServerPath(ns, server) {
 /** @param {NS} ns */
 export async function installBackdoor(ns, server) {
 
-	if (!ns.getServer(server).backdoorInstalled && ns.getServer(server).hasRootAccess) {
+	if (!ns.getServer(server).backdoorInstalled && ns.hasRootAccess(server)) {
+
 		getServerPath(ns, server).forEach(node => { ns.singularity.connect(node) })
 		await ns.singularity.installBackdoor()
+		ns.tprint("Backdoor installed on " + server)
 		ns.singularity.connect("home")
 	}
 }
