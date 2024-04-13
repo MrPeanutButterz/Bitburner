@@ -75,8 +75,7 @@ export async function main(ns) {
 
 			} else if (work.type === "FACTION") {
 
-				ns.print("Working with " + work.factionName)
-				ns.singularity.stopAction()
+				ns.print("Working with " + work.factionName + " will buy only")
 
 			} else if (work.type === "CLASS") {
 
