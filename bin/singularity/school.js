@@ -1,4 +1,5 @@
 import { scriptStart, scriptExit } from "modules/scripting"
+import { installBackdoor } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -12,6 +13,7 @@ export async function main(ns) {
     const FOCUS = false
     const TRAVEL_COST = 2e5
     const CHARISMA = ns.args[0]
+    const SERVER = "rothman-uni"
     const UNIVERSITY = "Rothman University"
     const UNIVERSITY_LOCATION = ns.enums.CityName.Sector12
     const LEADERSHIP_COURSE = ns.enums.UniversityClassType.leadership
@@ -25,6 +27,7 @@ export async function main(ns) {
         ns.clearLog()
 
         let player = ns.getPlayer()
+        await installBackdoor(ns, SERVER)
 
         if (ns.singularity.isBusy()) {
 

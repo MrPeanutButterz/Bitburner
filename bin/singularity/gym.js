@@ -11,6 +11,7 @@ export async function main(ns) {
     const FOCUS = false
     const TRAVEL_COST = 2e5
     const GYM = "Iron Gym"
+    const SERVER = "iron-gym"
     const GYM_LOCATION = ns.enums.CityName.Sector12
 
     const STRENGHT = ns.args[0]
@@ -58,6 +59,7 @@ export async function main(ns) {
         ns.clearLog()
 
         let player = ns.getPlayer()
+        await installBackdoor(ns, SERVER)
 
         if (ns.singularity.isBusy()) {
 
