@@ -26,8 +26,11 @@ export async function main(ns) {
             // red 0% chance
 
             // server name en hackchance 
-            if (ns.hackAnalyzeChance(server) > 0.8) {
+            if (ns.hackAnalyzeChance(server) > 0.9) {
                 colorPrint(ns, "green", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                
+            } else if (ns.hackAnalyzeChance(server) > 0.7) {
+                colorPrint(ns, "cyan", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
                 
             } else if (ns.hackAnalyzeChance(server) > 0.5) {
                 colorPrint(ns, "yellow", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
