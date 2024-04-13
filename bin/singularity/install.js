@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -16,6 +16,8 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
+    const SCRIPT = scriptPath(ns)
+
     let FACTION = ns.args[0]
 
     //\\ FUNCTIONS 
@@ -132,5 +134,5 @@ export async function main(ns) {
 
     // install & boot 
     ns.closeTail()
-    ns.singularity.installAugmentations("system.js")
+    ns.singularity.installAugmentations(SCRIPT.system)
 }

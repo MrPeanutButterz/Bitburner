@@ -9,6 +9,8 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const SCRIPT = scriptPath(ns)
+
     const FOCUS = false
     const COMPANY_NAME = ns.args[0]
     const COMPANY_REPUTATION = ns.args[1]
@@ -16,12 +18,12 @@ export async function main(ns) {
     //\\ FUNCTIONS 
     function goToUniversity(learn) {
 
-        if (!ns.scriptRunning("bin/singularity/school.js", "home")) {
+        if (!ns.scriptRunning(SCRIPT.school, "home")) {
 
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam("bin/singularity/school.js", "home")) {
+            if (ramAvailable > ns.getScriptRam(SCRIPT.school, "home")) {
 
-                ns.run("bin/singularity/school.js", 1, learn)
+                ns.run(SCRIPT.school, 1, learn)
             }
 
         }
@@ -29,12 +31,12 @@ export async function main(ns) {
 
     function goToGym(a, b, c, d) {
 
-        if (!ns.scriptRunning("bin/singularity/gym.js", "home")) {
+        if (!ns.scriptRunning(SCRIPT.gym, "home")) {
 
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam("bin/singularity/gy,.js", "home")) {
+            if (ramAvailable > ns.getScriptRam(SCRIPT.gym, "home")) {
 
-                ns.run("bin/singularity/gym.js", 1, a, b, c, d)
+                ns.run(SCRIPT.gym, 1, a, b, c, d)
             }
 
         }

@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart, scriptPath, scriptExit } from "modules/scripting"
 import { NmapTotalRam, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 import { scriptPath } from "modules/scripting"
 
@@ -18,7 +18,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const scripts = scriptPath(ns)
+    const SCRIPT = scriptPath(ns)
     const hackChance = 0.9
 
     let init = 1000
@@ -32,7 +32,7 @@ export async function main(ns) {
         await ns.sleep(500)
         watchForNewServer(ns)
 
-        if (NmapTotalRam(ns) > 5500) { ns.spawn("bin/genesis/collectStage3.js", { spawnDelay: 200 }) }
+        if (NmapTotalRam(ns) > 5500) { ns.spawn(SCRIPT.collectStage3, { spawnDelay: 200 }) }
 
         // run gw script on all servers
 
@@ -45,9 +45,9 @@ export async function main(ns) {
             // run script on server with thread
 
             if (ns.hasRootAccess(server)) {
-                let threads = Math.floor((ns.getServerMaxRam(server) - ns.getServerUsedRam(server)) / ns.getScriptRam(scripts.gw))
+                let threads = Math.floor((ns.getServerMaxRam(server) - ns.getServerUsedRam(server)) / ns.getScriptRam(SCRIPT.gw))
                 if (threads >= 1 && threads < 9999999999) {
-                    ns.exec(scripts.gw, server, threads, hackChance)
+                    ns.exec(SCRIPT.gw, server, threads, hackChance)
                 }
             }
         }
@@ -72,20 +72,20 @@ export async function main(ns) {
                     // check home for space to run script 
 
                     let hackThreads = Math.floor(ns.hackAnalyzeThreads(server, serverMoneyMax / 10))
-                    let threadsAvailable = Math.floor((ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) / ns.getScriptRam(scripts.gw))
+                    let threadsAvailable = Math.floor((ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) / ns.getScriptRam(SCRIPT.gw))
 
                     if (threadsAvailable >= 1) {
 
                         if (threadsAvailable > hackThreads) {
-                            if (!ns.isRunning(scripts.hack, "home", server, 0)) {
-                                ns.exec(scripts.hack, "home", hackThreads, server, 0)
+                            if (!ns.isRunning(SCRIPT.hack, "home", server, 0)) {
+                                ns.exec(SCRIPT.hack, "home", hackThreads, server, 0)
                             }
 
                         }
 
                         if (threadsAvailable < hackThreads) {
-                            if (!ns.isRunning(scripts.hack, "home", server, 0)) {
-                                ns.exec(scripts.hack, "home", threadsAvailable, server, 0)
+                            if (!ns.isRunning(SCRIPT.hack, "home", server, 0)) {
+                                ns.exec(SCRIPT.hack, "home", threadsAvailable, server, 0)
 
                             }
                         }

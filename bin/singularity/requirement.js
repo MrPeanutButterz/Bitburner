@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart, scriptPath } from "modules/scripting"
 import { getServerPath } from "modules/network"
 import { getFactionServer, getFactionStats } from "modules/factions"
 
@@ -9,6 +9,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const SCRIPT = scriptPath(ns)
     const TRAVEL_COST = 2e5
 
     let FACTION = ns.args[0]
@@ -33,7 +34,7 @@ export async function main(ns) {
             if (ns.singularity.joinFaction(FACTION)) {
 
                 ns.closeTail()
-                ns.spawn("bin/singularity/faction.js", { threads: 1, spawnDelay: 500 })
+                ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
             }
         }
     }
@@ -48,10 +49,10 @@ export async function main(ns) {
 
             // "Netburners" Hacking lvl 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
 
-            if (ns.hacknet.numNodes() < 4 && !ns.scriptRunning("purchase/hacknet.js", "home")) {
+            if (!ns.scriptRunning(SCRIPT.hacknet, "home")) {
 
                 let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
-                ramAvailable > ns.getScriptRam("purchase/hacknet.js", "home") ? ns.run("purchase/hacknet.js", 1) : await ns.sleep(1000)
+                ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home") ? ns.run(SCRIPT.hacknet, 1) : await ns.sleep(1000)
 
             } else {
 
@@ -154,14 +155,14 @@ export async function main(ns) {
             } else {
 
                 displayLog("Runnig the company")
-                if (!ns.scriptRunning("bin/singularity/company.js", "home")) {
+                if (!ns.scriptRunning(SCRIPT.company, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    if (ramAvailable > ns.getScriptRam("bin/singularity/company.js", "home")) {
+                    if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
 
                         FACTION === "Fulcrum Secret Technologies" ?
-                            ns.run("bin/singularity/company.js", 1, "Fulcrum Technologies", 4e5) :
-                            ns.run("bin/singularity/company.js", 1, FACTION, 3e5)
+                            ns.run(SCRIPT.company, 1, "Fulcrum Technologies", 4e5) :
+                            ns.run(SCRIPT.company, 1, FACTION, 3e5)
 
                     }
                 }
@@ -197,11 +198,11 @@ export async function main(ns) {
 
                 displayLog("Pumping at the gym brb...")
 
-                if (!ns.scriptRunning("bin/singularity/gym.js", "home")) {
+                if (!ns.scriptRunning(SCRIPT.gym, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam("bin/singularity/gym.js", "home") ?
-                        ns.run("bin/singularity/gym.js", 1,
+                    ramAvailable > ns.getScriptRam(SCRIPT.gym, "home") ?
+                        ns.run(SCRIPT.gym, 1,
                             FACTION_STATS.strength,
                             FACTION_STATS.defense,
                             FACTION_STATS.dexterity,
@@ -212,11 +213,11 @@ export async function main(ns) {
 
             } else if (ns.getPlayer().numPeopleKilled < FACTION_STATS.skills || ns.getPlayer().karma > FACTION_STATS.karma) {
 
-                if (!ns.scriptRunning("bin/singularity/crime.js", "home")) {
+                if (!ns.scriptRunning(SCRIPT.crime, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam("bin/singularity/crime.js", "home") ?
-                        ns.run("bin/singularity/crime.js", 1, FACTION_STATS.skills, FACTION_STATS.karma) : await ns.sleep(1000)
+                    ramAvailable > ns.getScriptRam(SCRIPT.crime, "home") ?
+                        ns.run(SCRIPT.crime, 1, FACTION_STATS.skills, FACTION_STATS.karma) : await ns.sleep(1000)
 
                 }
 
@@ -230,11 +231,11 @@ export async function main(ns) {
 
                 displayLog("CEO in the making")
 
-                if (!ns.scriptRunning("bin/singularity/job.js", "home")) {
+                if (!ns.scriptRunning(SCRIPT.company, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam("bin/singularity/job.js", "home") ?
-                        ns.run("bin/singularity/job.js", 1, 32e6 + 1000) : await ns.sleep(1000)
+                    ramAvailable > ns.getScriptRam(SCRIPT.company, "home") ?
+                        ns.run(SCRIPT.company, 1, 32e6 + 1000) : await ns.sleep(1000)
 
                 }
 
@@ -263,11 +264,11 @@ export async function main(ns) {
 
                 displayLog("Pumping at the gym brb...")
 
-                if (!ns.scriptRunning("bin/singularity/gym.js", "home")) {
+                if (!ns.scriptRunning(SCRIPT.gym, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam("bin/singularity/gym.js", "home") ?
-                        ns.run("bin/singularity/gym.js", 1,
+                    ramAvailable > ns.getScriptRam(SCRIPT.gym, "home") ?
+                        ns.run(SCRIPT.gym, 1,
                             FACTION_STATS.strength,
                             FACTION_STATS.defense,
                             FACTION_STATS.dexterity,

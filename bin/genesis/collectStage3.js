@@ -15,7 +15,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const scripts = scriptPath(ns)
+    const SCRIPT = scriptPath(ns)
     const HACKCHANCE = 0.8
     const HACKPROCENT = 0.8
 
@@ -106,8 +106,8 @@ export async function main(ns) {
     NmapClear(ns)
 
     let availableRam = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
-    let availableThreads = Math.floor(availableRam / ns.getScriptRam(scripts.w))
-    availableThreads > 6000 ? ns.exec(scripts.w, "home", 6000) : ns.exec(scripts.w, "home", availableThreads)
+    let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.w))
+    availableThreads > 6000 ? ns.exec(SCRIPT.w, "home", 6000) : ns.exec(SCRIPT.w, "home", availableThreads)
 
     while (true) {
 
@@ -128,30 +128,30 @@ export async function main(ns) {
                 if (weakCondition(target)) {
 
                     ns.print("WEAK - " + target)
-                    if (!checkRunningScript(scripts.weak, target)) {
+                    if (!checkRunningScript(SCRIPT.weak, target)) {
 
                         let weakThreads = calculateWeakThreads(target)
-                        distributeAcrossNetwork(scripts.weak, weakThreads, target)
+                        distributeAcrossNetwork(SCRIPT.weak, weakThreads, target)
 
                     } else continue
 
                 } else if (growCondition(target)) {
 
                     ns.print("GROW - " + target)
-                    if (!checkRunningScript(scripts.grow, target)) {
+                    if (!checkRunningScript(SCRIPT.grow, target)) {
 
                         let growThreads = calculateGrowThreads(target)
-                        distributeAcrossNetwork(scripts.grow, growThreads, target)
+                        distributeAcrossNetwork(SCRIPT.grow, growThreads, target)
 
                     } else continue
 
                 } else {
 
                     ns.print("HACK - " + target)
-                    if (!checkRunningScript(scripts.hack, target)) {
+                    if (!checkRunningScript(SCRIPT.hack, target)) {
 
                         let hackThreads = calculateHackThreads(target)
-                        distributeAcrossNetwork(scripts.hack, hackThreads, target)
+                        distributeAcrossNetwork(SCRIPT.hack, hackThreads, target)
 
                     } else continue
 

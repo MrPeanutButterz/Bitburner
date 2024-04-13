@@ -8,7 +8,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const SCRIPT = "bin/genesis/share.js"
+    const SCRIPT = scriptPath(ns)
 
     //\\ MAIN LOGICA
     NmapClear(ns)
@@ -18,12 +18,12 @@ export async function main(ns) {
         NmapRamServers(ns).forEach(server => {
 
             if (ns.hasRootAccess(server)) {
-                if (ns.scp(SCRIPT, server, "home")) {
+                if (ns.scp(SCRIPT.share, server, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
-                    let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT))
+                    let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(SCRIPT.share))
                     if (threadsAvailable > 1) {
-                        ns.exec(SCRIPT, server, threadsAvailable)
+                        ns.exec(SCRIPT.share, server, threadsAvailable)
                     }
 
                 }

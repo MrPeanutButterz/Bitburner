@@ -37,6 +37,8 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const SCRIPT = scriptPath(ns)
+
     //\\ FUNCTIONS 
     function calculateTopRep(f) {
 
@@ -88,7 +90,7 @@ export async function main(ns) {
         // remove with no augmentations
         candidates = candidates.filter((item) => item.isDone !== true)
         candidates.sort((a, b) => a.rep - b.rep)
-        return candidates.length > 0 ? candidates[0] : {name: "RedPillTime"}
+        return candidates.length > 0 ? candidates[0] : { name: "RedPillTime" }
     }
 
     function accepted(f) {
@@ -97,9 +99,9 @@ export async function main(ns) {
 
     //\\ MAIN LOGIC
     let topCandidate = getTopCandidate()
-    
+
     if (topCandidate.name !== "RedPillTime") {
-        
+
         let factionRep = ns.singularity.getFactionRep(topCandidate.name)
 
         if (!accepted(topCandidate.name)) {
@@ -107,21 +109,21 @@ export async function main(ns) {
             // requirements
             ns.closeTail()
             ns.tprint("Working on requirements for " + topCandidate.name)
-            ns.spawn("bin/singularity/requirement.js", { threads: 1, spawnDelay: 500 }, topCandidate.name)
+            ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name)
 
         } else if (factionRep < topCandidate.rep) {
 
             // reputation 
             ns.closeTail()
             ns.tprint("Acquiring reputation at " + topCandidate.name)
-            ns.spawn("bin/singularity/reputation.js", { threads: 1, spawnDelay: 500 }, topCandidate.name)
+            ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name)
 
         } else {
 
             // install
             ns.closeTail()
             ns.tprint("Installing augmentations from " + topCandidate.name)
-            ns.spawn("bin/singularity/install.js", { threads: 1, spawnDelay: 500 }, topCandidate.name)
+            ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, topCandidate.name)
 
         }
 

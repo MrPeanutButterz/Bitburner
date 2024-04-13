@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -8,7 +8,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    // let script = getScriptsPath(ns)
+    const SCRIPT = scriptPath(ns)
 
     let faction = ns.args[0]
     let reputation = getMaxReputation()
@@ -123,5 +123,5 @@ export async function main(ns) {
     //restart factions 
     ns.singularity.stopAction()
     ns.closeTail()
-    ns.spawn("bin/singularity/faction.js", { threads: 1, spawnDelay: 500 })
+    ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
 }

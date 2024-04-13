@@ -23,7 +23,7 @@ export async function main(ns) {
     //\\ FUNCTIONS
     function switchScript() {
         if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) {
-            ns.spawn("bin/genesis/collectStage2.js", { spawnDelay: 200 })
+            ns.spawn(SCRIPT.collectStage1, { spawnDelay: 200 })
         }
     }
 
