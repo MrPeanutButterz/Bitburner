@@ -94,7 +94,7 @@ The stock market script is designed to gather information on all stocks that exc
 
 ### company.js
 
-Bij het starten moet je opgeven bij welk bedrijf je wil werken en hoeveel reputatie je daar maximaal wil verdienen. als je dat gedaan hebt zal het script voor aan het werk gaan tot je de opgegeven gegevens hebt berijkt. als je geen argumenten mee geeft bij het starten zal het script gaan werken bij 4sigma tot het de status van CEO, CFO, CTO heeft berijkt. Dit moet genoeg zijn voor Silhouette waarvan het een van de voorwaarde is om voor de gang te mogen werken. 
+Upon starting, you must specify the company you wish to work for and the maximum reputation you aim to achieve there. Once you've provided this information, the script will begin working towards the specified goals. If no arguments are provided upon startup, the script will work at 4sigma until reaching the status of CEO, CFO, or CTO. This should suffice for Silhouette, as it is one of the requirements to work for the gang.
 
 `args optional`
 > run company.js ECorp 400000
