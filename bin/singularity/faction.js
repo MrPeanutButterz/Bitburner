@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart, scriptPath } from "modules/scripting"
 import { getFactionNames } from "modules/factions"
 
 /** @param {NS} ns */

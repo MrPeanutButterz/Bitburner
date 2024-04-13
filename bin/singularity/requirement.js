@@ -49,7 +49,7 @@ export async function main(ns) {
 
             // "Netburners" Hacking lvl 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
 
-            if (!ns.scriptRunning(SCRIPT.hacknet, "home")) {
+            if (ns.hacknet.numNodes() < 4 && !ns.scriptRunning(SCRIPT.hacknet, "home")) {
 
                 let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
                 ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home") ? ns.run(SCRIPT.hacknet, 1) : await ns.sleep(1000)

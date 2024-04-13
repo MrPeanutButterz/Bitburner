@@ -1,4 +1,4 @@
-import { scriptStart } from "modules/scripting"
+import { scriptStart, scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -119,7 +119,7 @@ export async function main(ns) {
 
         }
     }
-    
+
     //restart factions 
     ns.singularity.stopAction()
     ns.closeTail()

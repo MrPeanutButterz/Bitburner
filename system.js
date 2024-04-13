@@ -41,6 +41,7 @@ export async function main(ns) {
   ns.run(SCRIPT.ram, 1)
   await ns.sleep(1000)
 
+  // servers
   while (!calculateHomeRam(SCRIPT.servers)) { await ns.sleep(1000) }
   ns.run(SCRIPT.servers, 1)
   await ns.sleep(1000)

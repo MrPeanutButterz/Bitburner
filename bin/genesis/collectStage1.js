@@ -23,7 +23,7 @@ export async function main(ns) {
     //\\ FUNCTIONS
     function switchScript() {
         if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) {
-            ns.spawn(SCRIPT.collectStage1, { spawnDelay: 200 })
+            ns.spawn(SCRIPT.collectStage2, { spawnDelay: 200 })
         }
     }
 
@@ -73,7 +73,7 @@ export async function main(ns) {
             let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
             let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(script))
 
-            if (threadsAvailable >= 1) {
+            if (threadsAvailable > 0 && threads > 0) {
 
                 if (threadsAvailable > threads) {
                     ns.exec(script, server, threads, target, 0)
