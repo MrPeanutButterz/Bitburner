@@ -136,7 +136,7 @@ export function getFactionStats(ns, faction) {
 		case "Slum Snakes": {
 			return {
 				money: 1000000,
-				city: ns.getPlayer().location,
+				city: ns.getPlayer().city,
 				hacklvl: 0,
 				strength: 30,
 				defense: 30,
