@@ -45,9 +45,9 @@ The script accepts the following arguments:
 
 These scripts have the same functions as sqn_gwh.js buy are seperated for more control on timing en threads. The arguments are provided bij collectStage3.js
 
-- Weakens the security of a server, use arg to define target server with a delay
-- Grows the money of a server, use arg to define target server with a delay
-- Hacks the money available of a server, use arg to define target server with a delay
+- Weak the security of a server, use arg to define target server with a delay
+- Grow the money of a server, use arg to define target server with a delay
+- Hack the money available of a server, use arg to define target server with a delay
 
 `parent: collectStage3.js`
 `args required`
@@ -55,9 +55,9 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 
 ### server.js
 
-This script will continuously purchase servers until argument conditions are met. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the args amount of RAM is reached. Additionally if no args are provided, the script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase new servers or upgrades.
+This script will continuously purchase servers until 32GB. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the 32GB amount of RAM is reached. The script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase new servers or upgrades.
 
-`args: optional`
+`args: non`
 > run servers.js 128
 
 ### sharePower.js
@@ -67,14 +67,6 @@ When all is said and done, and all you're waiting for is the reputation of a fac
 `args: non`
 > run sharePower.js
 
-### sqn_gwh.js
-
-The sqn_gwh.js weakens the security, grows the balance, hacks the money available. Grows server money incremental on every hack + 1%. The arguments are provided bij collectStage1.js but can also be run manualy. If no argument is given it will hack n00dles by default.
-
-`parent: collectStage1.js`
-`args optional`
-> run sqn_gwh.js n00dles
-
 ### sqn_gw.js
 
 The sqn_gw.js script increases the account balance and reduces security based on the chance. The hacking process is carried out by either collectStage2.js or collectStage3.js. Initially, the arguments are provided by parents, but they can also be manually specified. If no argument is provided, the default hack chance is set to 80% (in decimal form).
@@ -82,6 +74,15 @@ The sqn_gw.js script increases the account balance and reduces security based on
 `parent: collectStage2.js`
 `args: optional`
 > run sqn_gw.js 0.7
+
+### sqn_w.js
+
+The sqn_w.js script operates based on probability. It initiates within a range of 70% to 80% and traverses through all servers to lower their security. Once all servers within this range have been addressed, the range expands to 60% to 80%. This process continues until all servers are completely open, at 0% security. At this point, the script self-terminates. The purpose of this script is to bring servers with a probability lower than 70% into this range. Once achieved, collectStage3.js takes over further actions.
+
+`parent: collectStage3.js`
+`parent: collectStage2.js`
+`args optional`
+> run sqn_w.js 0.5 0.8
 
 ### stockmarket.js
 
