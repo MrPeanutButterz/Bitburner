@@ -36,7 +36,7 @@ export function scriptPath(ns) {
         sharePower: genesis + "sharePower.js",
         gw: genesis + "sqn_gw.js",
         w: genesis + "sqn_w.js",
-        stockmarket: genesis + "stockmarket.js",
+        stockmarket: genesis + "stockMarket.js",
 
         // singularity
         company: singularity + "company.js",

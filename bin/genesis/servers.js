@@ -30,7 +30,10 @@ export async function main(ns) {
 
 		// buy if not exist, upgrade, continue
 		let credit = ns.getServerMoneyAvailable("home")
+		
 		ns.print(server)
+		ns.print("Ram \t" + ns.formatRam(ram))
+		ns.print("Cost \t" + ns.formatNumber(ns.getPurchasedServerCost(ram)))
 
 		if (!ns.serverExists(server)) {
 
@@ -38,7 +41,7 @@ export async function main(ns) {
 
 				// buy ++
 				ns.purchaseServer(server, ram)
-				ns.print("Purchased " + ram + "gb ")
+				ns.print("Purchased " + ns.formatRam(ram))
 				return i += 1
 
 			} else {
@@ -52,7 +55,7 @@ export async function main(ns) {
 
 				// upgrade ++
 				ns.upgradePurchasedServer(server, ram)
-				ns.print("Upgrade to " + ram + "gb ")
+				ns.print("Upgrade to " + ns.formatRam(ram))
 				return i += 1
 
 			} else {
@@ -63,7 +66,7 @@ export async function main(ns) {
 		} else {
 
 			// next server
-			ns.print("Running on " + ram + "gb ")
+			ns.print("Running on " + ns.formatRam(ram))
 			return i += 1
 		}
 	}

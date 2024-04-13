@@ -54,7 +54,7 @@ export async function main(ns) {
     await ns.sleep(1000)
 
     // stockmarket
-    while (!calculateHomeRam(SCRIPT.stockmarket) && ns.isRunning(SCRIPT.collectStage3, "home")) { await ns.sleep(1000) }
+    while (!calculateHomeRam(SCRIPT.stockmarket)) { await ns.sleep(1000) }
     ns.run(SCRIPT.stockmarket, 1)
     await ns.sleep(1000)
 
