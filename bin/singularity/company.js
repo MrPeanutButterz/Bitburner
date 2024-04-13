@@ -61,15 +61,15 @@ export async function main(ns) {
 
             if (work.type === "CREATE_PROGRAM") {
 
-                ns.print("Creating " + work.programName)
+                ns.print("Creating " + work.programName + " can't work a job")
 
             } else if (work.type === "FACTION") {
 
-                ns.print("Working with " + work.factionName)
+                ns.print("Working with " + work.factionName + " can't work a job")
 
             } else if (work.type === "CLASS") {
 
-                ns.print("Taking a class at " + work.location)
+                ns.print("Taking a class at " + work.location + " can't work a job")
 
             } else if (work.type === "COMPANY") {
 

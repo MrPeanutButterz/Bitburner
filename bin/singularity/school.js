@@ -36,12 +36,12 @@ export async function main(ns) {
             if (work.type === "CREATE_PROGRAM") {
 
                 // programs before faction en uni 
-                ns.print("Creating " + work.programName)
+                ns.print("Creating " + work.programName + " can't follow class")
 
             } else if (work.type === "FACTION") {
 
                 // faction work before uni 
-                ns.print("Working with " + work.factionName)
+                ns.print("Working with " + work.factionName + " can't follow class")
 
             } else if (work.type === "CLASS") {
 

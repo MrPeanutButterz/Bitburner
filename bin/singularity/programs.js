@@ -66,18 +66,18 @@ export async function main(ns) {
 
 				} else if (work.type === "CLASS") {
 
-					ns.print("Taking a class at " + work.location)
-					// ns.singularity.stopAction()
+					ns.print("Taking a class at " + work.location + " will buy only")
+					buyPrograms(ESSENTIAL[i])
 
 				} else if (work.type === "COMPANY") {
 
-					ns.print("Working a job at " + work.companyName)
-					// ns.singularity.stopAction()
+					ns.print("Working a job at " + work.companyName + " will buy only")
+					buyPrograms(ESSENTIAL[i])
 
 				} else if (work.type === "CRIME") {
 
-					ns.print("Attempting to " + work.crimeType)
-					// ns.singularity.stopAction()
+					ns.print("Attempting to " + work.crimeType + " will buy only")
+					buyPrograms(ESSENTIAL[i])
 
 				}
 

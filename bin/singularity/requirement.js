@@ -41,6 +41,24 @@ export async function main(ns) {
         }
     }
 
+    function goToGym(str, def, dex, agi) {
+        if (!ns.scriptRunning(SCRIPT.gym, "home")) {
+            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+            if (ramAvailable > ns.getScriptRam(SCRIPT.gym, "home")) {
+                ns.run(SCRIPT.gym, 1, str, def, dex, agi)
+            }
+        }
+    }
+
+    function doSomeCrime(kill, karma) {
+        if (!ns.scriptRunning(SCRIPT.crime, "home")) {
+            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+            if (ramAvailable > ns.getScriptRam(SCRIPT.crime, "home")) {
+                ns.run(SCRIPT.crime, 1, kill, karma)
+            }
+        }
+    }
+
     //\\ MAIN LOGIC
     while (true) {
 
@@ -165,35 +183,18 @@ export async function main(ns) {
                 ns.getPlayer().skills.agility < FACTION_STATS.agility) {
 
                 displayLog("Pumping at the gym brb...")
+                goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
+                
+            } else if (ns.getPlayer().numPeopleKilled < FACTION_STATS.skills ||
+            ns.getPlayer().karma > FACTION_STATS.karma) {
+                
+                displayLog("Doing some crime...")
+                doSomeCrime(FACTION_STATS.kills, FACTION_STATS.karma)
 
-                if (!ns.scriptRunning(SCRIPT.gym, "home")) {
-
-                    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam(SCRIPT.gym, "home") ?
-                        ns.run(SCRIPT.gym, 1,
-                            FACTION_STATS.strength,
-                            FACTION_STATS.defense,
-                            FACTION_STATS.dexterity,
-                            FACTION_STATS.agility) :
-                        await ns.sleep(1000)
-
-                }
-
-            } else if (ns.getPlayer().numPeopleKilled < FACTION_STATS.skills || ns.getPlayer().karma > FACTION_STATS.karma) {
-
-                if (!ns.scriptRunning(SCRIPT.crime, "home")) {
-
-                    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam(SCRIPT.crime, "home") ?
-                        ns.run(SCRIPT.crime, 1, FACTION_STATS.skills, FACTION_STATS.karma) : await ns.sleep(1000)
-
-                }
-
-            } else if (ns.getPlayer().city !== FACTION_STATS.city &&
-                ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
+            } else if (ns.getPlayer().city !== FACTION_STATS.city) {
 
                 displayLog("Traveling " + FACTION_STATS.city)
-                ns.singularity.travelToCity(FACTION_STATS.city)
+                moveToCity(FACTION_STATS.city)
 
             } else if (FACTION === "Silhouette") {
 
@@ -203,7 +204,7 @@ export async function main(ns) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
                     ramAvailable > ns.getScriptRam(SCRIPT.company, "home") ?
-                        ns.run(SCRIPT.company, 1, 32e6 + 1000) : await ns.sleep(1000)
+                        ns.run(SCRIPT.company, 1) : await ns.sleep(1000)
 
                 }
 
@@ -225,18 +226,7 @@ export async function main(ns) {
                 ns.getPlayer().skills.agility < FACTION_STATS.agility) {
 
                 displayLog("Pumping at the gym brb...")
-
-                if (!ns.scriptRunning(SCRIPT.gym, "home")) {
-
-                    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam(SCRIPT.gym, "home") ?
-                        ns.run(SCRIPT.gym, 1,
-                            FACTION_STATS.strength,
-                            FACTION_STATS.defense,
-                            FACTION_STATS.dexterity,
-                            FACTION_STATS.agility) :
-                        await ns.sleep(1000)
-                }
+                goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
 
             } else if (ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
 

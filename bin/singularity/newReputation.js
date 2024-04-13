@@ -24,7 +24,7 @@ export async function main(ns) {
 
             if (work.type === "CREATE_PROGRAM") {
 
-                ns.print("Creating " + work.programName)
+                ns.print("Creating " + work.programName + " can't build reputation")
 
             } else if (work.type === "FACTION") {
 
@@ -34,19 +34,19 @@ export async function main(ns) {
                 // use share power
                 // work for faction 
                 // calculate remaining time on the fly
-                
+
             } else if (work.type === "CLASS") {
-                
+
                 ns.print("Taking a class at " + work.location)
                 ns.singularity.stopAction()
-                
+
             } else if (work.type === "COMPANY") {
-                
+
                 ns.print("Working a job at " + work.companyName)
                 ns.singularity.stopAction()
-                
+
             } else if (work.type === "CRIME") {
-                
+
                 ns.print("Attempting to " + work.crimeType)
                 ns.singularity.stopAction()
 
