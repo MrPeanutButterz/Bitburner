@@ -85,16 +85,21 @@ export async function main(ns) {
     //\\ MAIN LOGIC
     killScript(SCRIPT.stockmarket)
     await ns.sleep(1000)
+
     killScript(SCRIPT.programs)
     await ns.sleep(1000)
     killScript(SCRIPT.hacknet)
     await ns.sleep(1000)
+
     killScript(SCRIPT.servers)
     await ns.sleep(1000)
+
     killScript(SCRIPT.ram)
     await ns.sleep(1000)
+
     killScript(SCRIPT.core)
     await ns.sleep(1000)
+
     ns.print(" ")
 
     if (ns.stock.hasWSEAccount() &&
@@ -113,14 +118,14 @@ export async function main(ns) {
         })
     }
 
-
-
     ns.print(" ")
     ns.print("Shopping list")
+
     let shoppingList = createSortedShoppingList(FACTION)
     shoppingList.forEach(item => {
         ns.print(item)
     })
+
     ns.print(" ")
 
     for (let i = 0; i < shoppingList.length;) {
@@ -153,15 +158,12 @@ export async function main(ns) {
     }
 
     ns.print("NeuroFlux...")
-
-    // neuroflux++
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
-
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
-            ns.print("NeuroFlux Governor ++")
+            ns.print("NeuroFlux Governor added...")
             await ns.sleep(3000)
 
         } else {

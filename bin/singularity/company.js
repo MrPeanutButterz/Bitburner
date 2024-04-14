@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "modules/scripting"
+import { scriptStart, scriptExit, scriptPath } from "modules/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -12,8 +12,8 @@ export async function main(ns) {
     const SCRIPT = scriptPath(ns)
 
     const FOCUS = false
-    const COMPANY_NAME = ns.args[0]
-    const COMPANY_REPUTATION = ns.args[1]
+    let COMPANY_NAME = ns.args[0]
+    let COMPANY_REPUTATION = ns.args[1]
 
     //\\ FUNCTIONS 
     function goToUniversity(learn) {
@@ -25,7 +25,6 @@ export async function main(ns) {
 
                 ns.run(SCRIPT.school, 1, learn)
             }
-
         }
     }
 
@@ -38,14 +37,13 @@ export async function main(ns) {
 
                 ns.run(SCRIPT.gym, 1, a, b, c, d)
             }
-
         }
     }
 
     //\\ MAIN LOGIC
     ns.resizeTail(500, 160)
 
-    if (COMPANY_NAME === undefined) { COMPANY_REPUTATION = ns.enums.CompanyName.FourSigma }
+    if (COMPANY_NAME === undefined) { COMPANY_NAME = ns.enums.CompanyName.FourSigma }
     if (COMPANY_REPUTATION === undefined) { COMPANY_REPUTATION = 8e5 + 100 }
 
     while (true) {
@@ -74,14 +72,6 @@ export async function main(ns) {
             } else if (work.type === "COMPANY") {
 
                 ns.print("Working a job at " + work.companyName)
-
-                // get next position
-                // hacking level
-                // company reputation
-                // str def dex agi
-                // charisma
-                // apply next position
-                // company reputation > exit
 
                 let positionNow = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.getPlayer().jobs[COMPANY_NAME])
                 let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
@@ -131,16 +121,11 @@ export async function main(ns) {
 
         } else {
 
-            // hack level 
-            // charisma 
-            // apply job
-            // start working
-
             let businessIntern = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.enums.JobName.business0)
 
             if (player.skills.hacking < businessIntern.requiredSkills.hacking) {
 
-                ns.tprint("Hacking level is to low")
+                ns.print("Hacking level is to low")
 
             } else if (player.skills.charisma < businessIntern.requiredSkills.charisma) {
 

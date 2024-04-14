@@ -45,19 +45,19 @@ export async function main(ns) {
 
             } else if (work.type === "CLASS") {
 
-                // travel to sector 12 
-                // take class
+                if (!work.classType === ns.enums.UniversityClassType.leadership) {
 
-                ns.print("Taking a class at " + work.location)
-                if (player.skills.charisma > CHARISMA) {
+                    ns.print("Taking a class at " + work.location)
+                    if (player.skills.charisma > CHARISMA) {
 
-                    ns.singularity.stopAction()
-                    scriptExit(ns)
+                        ns.singularity.stopAction()
+                        scriptExit(ns)
 
-                } else {
+                    } else {
 
-                    ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
+                        ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
 
+                    }
                 }
 
             } else if (work.type === "COMPANY") {

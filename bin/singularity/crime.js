@@ -62,7 +62,6 @@ export async function main(ns) {
         await ns.sleep(T + 200)
         ns.clearLog()
 
-
         if (ns.singularity.isBusy()) {
 
             let work = ns.singularity.getCurrentWork()

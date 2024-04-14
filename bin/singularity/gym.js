@@ -48,11 +48,6 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
-
-    // backdoor
-    // powerhouse-fitness 
-    // iron-gym
-
     while (true) {
 
         await ns.sleep(1000)
@@ -76,7 +71,6 @@ export async function main(ns) {
             } else if (work.type === "CLASS") {
 
                 ns.print("Taking a class at " + work.location)
-
                 workout()
 
             } else if (work.type === "COMPANY") {

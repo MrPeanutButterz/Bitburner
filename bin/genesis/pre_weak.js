@@ -3,7 +3,7 @@ import { NmapMoneyServers } from "modules/network"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // pulls in (incremental) out of reach server for collectStage3 
+    // incrementaly pulls in out of reach server for collectStage2
 
     //\\ SCRIPT SETTINGS
     ns.disableLog("ALL")
