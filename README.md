@@ -42,13 +42,13 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 - Grow the money of a server, use arg to define target server with a delay
 - Hack the money available of a server, use arg to define target server with a delay
 
-`parent: collectStage3.js`
+`parent: collectStage1.js collectStage2.js`
 `args required`
 > run pck_grow.js sigma-cosmetics 2000
 
 ### server.js
 
-This script will continuously purchase servers until 32GB. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the 32GB amount of RAM is reached. The script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase new servers or upgrades.
+This script will continuously purchase servers until 32GB. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the 32GB amount of RAM is reached. The script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase upgrades.
 
 `args: non`
 > run servers.js 128
