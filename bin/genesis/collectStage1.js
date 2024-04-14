@@ -33,18 +33,10 @@ export async function main(ns) {
         return ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server) + SECURITY_PATCH
     }
 
-    function checkRunningScript(script, target) {
-
-        let isRunning = false
-        const ramServers = NmapRamServers(ns)
-        ramServers.forEach(server => { if (ns.isRunning(script, server, target, 0)) { isRunning = true } })
-        return isRunning
-    }
-
     function calculateWeakThreads(server) {
 
         // caculates number of threads for weak
-        let serverSecutityDiff = Math.ceil(ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server) + 2)
+        let serverSecutityDiff = Math.ceil(ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server))
         return serverSecutityDiff / ns.weakenAnalyze(1)
     }
 
