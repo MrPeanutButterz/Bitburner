@@ -1,95 +1,162 @@
-import { scriptStart, scriptPath, scriptExit } from "modules/scripting"
-import { NmapTotalRam, NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
-import { scriptPath } from "modules/scripting"
+import { scriptStart, scriptPath } from "modules/scripting"
+import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // get root access to all servers
-    // find servers with free ram
-    // copy hack scripts to severs with ram
-    // run grow en weak on net servers
-    // run hack on home server
-    // repeat process 
+    // run list money servers
+    // if not working on it, grow money to 100%
+    // if not working on it, weak security al low as posible
+    // if not working on it, hack the server 
 
-    // script is not using threads effectivly, but still generates a lot of money
+    // threads are efficient timing is not
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const hackChance = 0.9
+    const HACKCHANCE = 0.8
+    const HACKPROCENT = 0.8
 
-    let init = 1000
-    let servers
+    //\\ FUNCTIONS
+    function growCondition(target) {
+        return ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
+    }
+
+    function weakCondition(target) {
+        return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + 2 &&
+            ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
+    }
+
+    function checkRunningScript(script, target) {
+
+        let isRunning = false
+        const ramServers = NmapRamServers(ns)
+
+        ramServers.forEach(server => {
+
+            if (ns.isRunning(script, server, target, 0)) {
+                isRunning = true
+            }
+
+        })
+        return isRunning
+    }
+
+    function calculateWeakThreads(target) {
+
+        // caculates number of threads for weak
+
+        let serverSecurityMin = ns.getServerMinSecurityLevel(target) + 2
+        let serverSecurityNow = ns.getServerSecurityLevel(target)
+        let serverSecutityDiff = Math.ceil(serverSecurityNow - serverSecurityMin)
+        let weakThreads = serverSecutityDiff / ns.weakenAnalyze(1)
+        return weakThreads
+    }
+
+    function calculateGrowThreads(target) {
+
+        // caculates number of threads for grow
+
+        let serverMoneyAvailable = ns.getServerMoneyAvailable(target) ? ns.getServerMoneyAvailable(target) : 1
+        let serverMoneyMax = ns.getServerMaxMoney(target)
+        let mulitplier = serverMoneyMax / serverMoneyAvailable
+
+        let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
+        return growThreads
+    }
+
+    function calculateHackThreads(target) {
+
+        // caculates number of threads for hack
+
+        let hackAmount = ns.getServerMaxMoney(target) * HACKPROCENT
+        let hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, hackAmount))
+        return hackThreads
+    }
+
+    function distributeAcrossNetwork(script, threads, target) {
+
+        //installs scripts on the purchased servers
+
+        const ramServers = NmapRamServers(ns)
+
+        for (let server of ramServers) {
+
+            let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
+            let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(script))
+
+            if (threadsAvailable >= 1) {
+
+                if (threadsAvailable > threads) {
+                    ns.exec(script, server, threads, target, 0)
+                    break
+                }
+
+                if (threadsAvailable < threads) {
+                    ns.exec(script, server, threadsAvailable, target, 0)
+                    threads -= threadsAvailable
+                }
+            }
+        }
+    }
 
     //\\ MAIN LOGICA
     NmapClear(ns)
 
+    let availableRam = (ns.getServerMaxRam("home") / 1.5) - ns.getServerUsedRam("home")
+    let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.preweak))
+    if (availableThreads > 1) {
+        availableThreads > 6000 ? ns.exec(SCRIPT.preweak, "home", 6000) : ns.exec(SCRIPT.preweak, "home", availableThreads)
+    }
+
     while (true) {
 
-        await ns.sleep(500)
+        await ns.sleep(1000)
+
+        ns.clearLog()
         watchForNewServer(ns)
 
-        if (NmapTotalRam(ns) > 5500) { ns.spawn(SCRIPT.collectStage3, { spawnDelay: 200 }) }
+        let targets = NmapMoneyServers(ns)
+        for (let target of targets) {
 
-        // run gw script on all servers
+            if (ns.hackAnalyzeChance(target) > HACKCHANCE) {
 
-        servers = NmapRamServers(ns)
-        for (let server of servers) {
-            
-            await ns.sleep(init)
+                // check in network no script is running with this target
+                // calculate threads
+                // distribute across network
 
-            // (get server max ram > subtract server used ram) > devide by script ram
-            // run script on server with thread
+                if (weakCondition(target)) {
 
-            if (ns.hasRootAccess(server)) {
-                let threads = Math.floor((ns.getServerMaxRam(server) - ns.getServerUsedRam(server)) / ns.getScriptRam(SCRIPT.gw))
-                if (threads >= 1 && threads < 9999999999) {
-                    ns.exec(SCRIPT.gw, server, threads, hackChance)
-                }
-            }
-        }
-        init = 100
+                    ns.print("WEAK - " + target)
+                    if (!checkRunningScript(SCRIPT.weak, target)) {
 
-        // collect my money
+                        let weakThreads = calculateWeakThreads(target)
+                        distributeAcrossNetwork(SCRIPT.weak, weakThreads, target)
 
-        servers = NmapMoneyServers(ns)
-        for (let server of servers) {
+                    } else continue
 
-            // hack servers at 50% money max
-            // keep balance above 40% money avaliable
+                } else if (growCondition(target)) {
 
-            if (ns.hackAnalyzeChance(server) > hackChance) {
+                    ns.print("GROW - " + target)
+                    if (!checkRunningScript(SCRIPT.grow, target)) {
 
-                let serverMoneyMax = ns.getServerMaxMoney(server)
-                let serverMoneyAva = ns.getServerMoneyAvailable(server)
-                let moneyProcent = (serverMoneyAva / serverMoneyMax) * 100
+                        let growThreads = calculateGrowThreads(target)
+                        distributeAcrossNetwork(SCRIPT.grow, growThreads, target)
 
-                if (moneyProcent > 40) {
+                    } else continue
 
-                    // check home for space to run script 
+                } else {
 
-                    let hackThreads = Math.floor(ns.hackAnalyzeThreads(server, serverMoneyMax / 10))
-                    let threadsAvailable = Math.floor((ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) / ns.getScriptRam(SCRIPT.gw))
+                    ns.print("HACK - " + target)
+                    if (!checkRunningScript(SCRIPT.hack, target)) {
 
-                    if (threadsAvailable >= 1) {
+                        let hackThreads = calculateHackThreads(target)
+                        distributeAcrossNetwork(SCRIPT.hack, hackThreads, target)
 
-                        if (threadsAvailable > hackThreads) {
-                            if (!ns.isRunning(SCRIPT.hack, "home", server, 0)) {
-                                ns.exec(SCRIPT.hack, "home", hackThreads, server, 0)
-                            }
+                    } else continue
 
-                        }
-
-                        if (threadsAvailable < hackThreads) {
-                            if (!ns.isRunning(SCRIPT.hack, "home", server, 0)) {
-                                ns.exec(SCRIPT.hack, "home", threadsAvailable, server, 0)
-
-                            }
-                        }
-                    }
                 }
             }
         }

@@ -116,12 +116,11 @@ export function copyHackScripts(ns, server) {
 	//copy the scripts to the destination server
 
 	const path = scriptPath(ns)
-	const files = [path.grow, path.weak, path.hack, path.gw]
+	const files = [path.grow, path.weak, path.hack]
 
 	if (!ns.fileExists(path.grow, server)
 		|| !ns.fileExists(path.weak, server)
-		|| !ns.fileExists(path.hack, server)
-		|| !ns.fileExists(path.gw, server)) {
+		|| !ns.fileExists(path.hack, server)) {
 		ns.scp(files, server, "home")
 	}
 }

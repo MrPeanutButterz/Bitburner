@@ -1,5 +1,5 @@
 import { scriptStart, scriptPath } from "modules/scripting"
-import { NmapClear, watchForNewServer, NmapTotalRam, NmapRamServers, NmapMoneyServers } from "modules/network"
+import { NmapClear, watchForNewServer, NmapFreeRam, NmapTotalRam, NmapRamServers, NmapMoneyServers } from "modules/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -8,21 +8,19 @@ export async function main(ns) {
     // find servers with free ram
     // copy hack scripts to severs with ram
     // start hacking 1 server
+    // any ram in the network left can be spend on server 2
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const SECURITY_PATCH = 5
-    const HACK_PROCENT = 0.5
-
-    let TARGET = ns.args[0]
-    if (TARGET === undefined) { TARGET = "n00dles" }
+    const SECURITY_PATCH = 3
+    const HACK_PROCENT = 0.7
 
     //\\ FUNCTIONS
     function switchScript() {
-        if (NmapTotalRam(ns) > 2500 && ns.getServerMaxRam("home") >= 128) {
+        if (NmapTotalRam(ns) > 1e4 && ns.getServerMaxRam("home") >= 128) {
             ns.spawn(SCRIPT.collectStage2, { spawnDelay: 200 })
         }
     }
@@ -65,9 +63,34 @@ export async function main(ns) {
         return Math.ceil(ns.hackAnalyzeThreads(server, ns.getServerMaxMoney(server) * HACK_PROCENT))
     }
 
+    function createServerList() {
+
+        let list = []
+        let servers = NmapMoneyServers(ns)
+
+        for (let server of servers) {
+
+            if (ns.getWeakenTime(server) < ns.getWeakenTime("n00dles") * 2) {
+
+                if (weakCondition(server)) {
+                    list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
+
+                } else if (growCondition(server)) {
+                    list.push({ hostname: server, action: "grow", threads: calculateGrowThreads(server) })
+
+                } else {
+                    list.push({ hostname: server, action: "hack", threads: calculateHackThreads(server) })
+                }
+            }
+        }
+        list.sort(function (a, b) { return a.threads - b.threads })
+        return list
+    }
+
     function distributeAcrossNetwork(script, threads, target) {
 
         //installs scripts on the purchased servers
+        let fullInstall = false
         for (let server of NmapRamServers(ns)) {
 
             let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
@@ -77,7 +100,8 @@ export async function main(ns) {
 
                 if (threadsAvailable > threads) {
                     ns.exec(script, server, threads, target, 0)
-                    break
+                    fullInstall = true
+                    return fullInstall
 
                 } else {
                     ns.exec(script, server, threadsAvailable, target, 0)
@@ -85,42 +109,38 @@ export async function main(ns) {
                 }
             }
         }
+        return fullInstall
     }
 
     //\\ MAIN LOGICA
     NmapClear(ns)
+    distributeAcrossNetwork(SCRIPT.grow, 250, "n00dles")
+
     while (true) {
 
-        await ns.sleep(1500)
-        ns.clearLog()
-
-        watchForNewServer(ns)
+        let list = []
         switchScript()
+        await ns.sleep(1000)
+        watchForNewServer(ns)
 
-        if (weakCondition(TARGET)) {
+        if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
 
-            ns.print("WEAK - " + TARGET)
-            if (!checkRunningScript(SCRIPT.weak, TARGET)) {
+            list = createServerList()
+            ns.clearLog()
 
-                distributeAcrossNetwork(SCRIPT.weak, calculateWeakThreads(TARGET), TARGET)
+            for (let i of list) {
+
+                if (i.action === "weak") {
+                    if (!distributeAcrossNetwork(SCRIPT.weak, i.threads, i.hostname)) { break } else { ns.print("WEAK - " + i.hostname) }
+
+                } else if (i.action === "grow") {
+                    if (!distributeAcrossNetwork(SCRIPT.grow, i.threads, i.hostname)) { break } else { ns.print("GROW - " + i.hostname) }
+
+                } else if (i.action === "hack") {
+                    if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) { break } else { ns.print("HACK - " + i.hostname) }
+                }
+
             }
-
-        } else if (growCondition(TARGET)) {
-
-            ns.print("GROW - " + TARGET)
-            if (!checkRunningScript(SCRIPT.grow, TARGET)) {
-
-                distributeAcrossNetwork(SCRIPT.grow, calculateGrowThreads(TARGET), TARGET)
-            }
-
-        } else {
-
-            ns.print("HACK - " + TARGET)
-            if (!checkRunningScript(SCRIPT.hack, TARGET)) {
-
-                distributeAcrossNetwork(SCRIPT.hack, calculateHackThreads(TARGET), TARGET)
-            }
-
         }
     }
 }

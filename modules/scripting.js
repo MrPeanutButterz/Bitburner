@@ -26,16 +26,14 @@ export function scriptPath(ns) {
         // genesis
         collectStage1: genesis + "collectStage1.js",
         collectStage2: genesis + "collectStage2.js",
-        collectStage3: genesis + "collectStage3.js",
         hacknet: genesis + "hacknet.js",
         grow: genesis + "pck_grow.js",
         weak: genesis + "pck_weak.js",
         hack: genesis + "pck_hack.js",
+        preweak: genesis + "pre_weak.js",
         servers: genesis + "servers.js",
         share: genesis + "share.js",
         sharePower: genesis + "sharePower.js",
-        gw: genesis + "sqn_gw.js",
-        w: genesis + "sqn_w.js",
         stockmarket: genesis + "stockMarket.js",
 
         // singularity
