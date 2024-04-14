@@ -8,24 +8,17 @@ Bitburner is a programming-based incremental game that revolves around hacking a
 
 ### collectStage1.js
 
-With this script, you can execute a ‘grow weak’ hack on servers that are easy to manipulate. Arguments are optional, if you run this script without any arguments, it will target n00dles.
+This script generates a list of all servers with short processing times. It records necessary details such as hostname, required action (weak, grow, hack), and the threads needed for each action. Once the list is complete, it is sorted based on thread count, and then all entries in the network are installed. If any entry fails to install completely, the script halts and waits until the network is empty again before proceeding with the next installation round.
 
-`args optional`
-> run collectStage1.js joesguns
+`args non`
+> run collectStage1.js
 
 ### collectStage2.js
 
-This script floods the entire network with the sqn_gw.js script, thereby increasing the funds on each server and lowering security. If the money on a server exceeds 40% of its maximum capacity, the script will initiate a hacking action on the home server. To limit RAM usage, only one hack per server will be executed at all times.
+Collectstage2 operates in a similar fashion to collectstage1. Just as collectstage1 operates based on short turnaround times, collectstage2 operates based on probability. In this process, the script will iterate through the server list, and if there's more than an 80% probability, it will calculate the necessary steps to launch an attack on the server. This, in turn, is installed within the network. Unlike collectstage1, the script doesn't verify whether the installation was successful; thus, it adopts a somewhat more aggressive approach. It will never utilize more threads than necessary to keep the network available for running as many scripts as possible. Additionally, alongside focusing on the 80% probability, another script called pre_weak.js is initiated on the home server. This script assists in bringing servers that fall outside the probability threshold back within the 80% range.
 
 `args non`
 > run collectStage2.js
-
-### collectStage3.js
-
-collectStage3 handles threads very efficiently. When it installs an action in the network, it will only create one instance of it distributed across multiple servers. Although this is efficient with threads, the script struggles with time management because all instances are executed sequentially.
-
-`args non`
-> run collectStage3.js
 
 ### hacknet.js
 
@@ -67,21 +60,13 @@ When all is said and done, and all you're waiting for is the reputation of a fac
 `args: non`
 > run sharePower.js
 
-### sqn_gw.js
+### pre_weak.js
 
-The sqn_gw.js script increases the account balance and reduces security based on the chance. The hacking process is carried out by either collectStage2.js or collectStage3.js. Initially, the arguments are provided by parents, but they can also be manually specified. If no argument is provided, the default hack chance is set to 80% (in decimal form).
+The pre_weak.js script operates based on probability. It initiates within a range of 70% to 80% and traverses through all servers to lower their security. Once all servers within this range have been addressed, the range expands to 60% to 80%. This process continues until all servers are completely open, at 0% security. At this point, the script self-terminates. The purpose of this script is to bring servers with a probability lower than 70% into this range. Once achieved, collectStage2.js takes over further actions.
 
 `parent: collectStage2.js`
-`args: optional`
-> run sqn_gw.js 0.7
-
-### sqn_w.js
-
-The sqn_w.js script operates based on probability. It initiates within a range of 70% to 80% and traverses through all servers to lower their security. Once all servers within this range have been addressed, the range expands to 60% to 80%. This process continues until all servers are completely open, at 0% security. At this point, the script self-terminates. The purpose of this script is to bring servers with a probability lower than 70% into this range. Once achieved, collectStage3.js takes over further actions.
-
-`parent: collectStage3.js collectStage2.js`
 `args optional`
-> run sqn_w.js 0.5 0.8
+> run pre_weak.js 0.5 0.8
 
 ### stockmarket.js
 
