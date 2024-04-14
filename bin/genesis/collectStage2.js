@@ -16,8 +16,8 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const HACKCHANCE = 0.8
-    const HACKPROCENT = 0.8
+    const HACK_CHANCE = 0.8
+    const HACK_PROCENT = 0.8
 
     //\\ FUNCTIONS
     function growCondition(target) {
@@ -44,36 +44,26 @@ export async function main(ns) {
         return isRunning
     }
 
-    function calculateWeakThreads(target) {
+    function calculateWeakThreads(server) {
 
         // caculates number of threads for weak
-
-        let serverSecurityMin = ns.getServerMinSecurityLevel(target) + 2
-        let serverSecurityNow = ns.getServerSecurityLevel(target)
-        let serverSecutityDiff = Math.ceil(serverSecurityNow - serverSecurityMin)
-        let weakThreads = serverSecutityDiff / ns.weakenAnalyze(1)
-        return weakThreads
+        let serverSecutityDiff = Math.ceil(ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server))
+        return serverSecutityDiff / ns.weakenAnalyze(1)
     }
 
-    function calculateGrowThreads(target) {
+    function calculateGrowThreads(server) {
 
         // caculates number of threads for grow
-
-        let serverMoneyAvailable = ns.getServerMoneyAvailable(target) ? ns.getServerMoneyAvailable(target) : 1
-        let serverMoneyMax = ns.getServerMaxMoney(target)
-        let mulitplier = serverMoneyMax / serverMoneyAvailable
-
-        let growThreads = Math.ceil(ns.growthAnalyze(target, (mulitplier * ns.getPlayer().mults.hacking_grow)))
-        return growThreads
+        let serverMoneyAvailable = ns.getServerMoneyAvailable(server) > 0 ? ns.getServerMoneyAvailable(server) : 1
+        let serverMoneyMax = ns.getServerMaxMoney(server)
+        let mulitplier = (serverMoneyAvailable / serverMoneyMax) * 100
+        return Math.ceil(ns.growthAnalyze(server, Math.ceil(100 - mulitplier)))
     }
 
-    function calculateHackThreads(target) {
+    function calculateHackThreads(server) {
 
         // caculates number of threads for hack
-
-        let hackAmount = ns.getServerMaxMoney(target) * HACKPROCENT
-        let hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, hackAmount))
-        return hackThreads
+        return Math.ceil(ns.hackAnalyzeThreads(server, ns.getServerMaxMoney(server) * HACK_PROCENT))
     }
 
     function distributeAcrossNetwork(script, threads, target) {
@@ -121,7 +111,7 @@ export async function main(ns) {
         let targets = NmapMoneyServers(ns)
         for (let target of targets) {
 
-            if (ns.hackAnalyzeChance(target) > HACKCHANCE) {
+            if (ns.hackAnalyzeChance(target) > HACK_CHANCE) {
 
                 // check in network no script is running with this target
                 // calculate threads
