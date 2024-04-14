@@ -35,6 +35,19 @@ export async function main(ns) {
         }
     }
 
+    function moneyCondition(req) {
+        return ns.getServerMoneyAvailable("home") < req ? true : false
+    }
+
+    function skillCondition(str, def, dex, agi) {
+        return ns.getPlayer().skills.strength < str || ns.getPlayer().skills.defense < def ||
+            ns.getPlayer().skills.dexterity < dex || ns.getPlayer().skills.agility < agi
+    }
+
+    function locationCondition(location) {
+        return ns.getPlayer().city !== location
+    }
+
     function moveToCity(city) {
         if (ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
             ns.singularity.travelToCity(city)
@@ -68,16 +81,6 @@ export async function main(ns) {
                 ns.run(SCRIPT.company, 1, corp, rep)
             }
         }
-    }
-
-    function moneyCondition(req) {
-        return ns.getServerMoneyAvailable("home") < req ? true : false
-    }
-
-    function skillCondition(str, def, dex, agi) {
-        return ns.getPlayer().skills.strength < str || ns.getPlayer().skills.defense < def ||
-            ns.getPlayer().skills.dexterity < dex || ns.getPlayer().skills.agility < agi ?
-            true : false
     }
 
     //\\ MAIN LOGIC
@@ -139,7 +142,7 @@ export async function main(ns) {
 
                 displayLog("Awaiting hack skill > " + FACTION_STATS.hacklvl)
 
-            } else if (ns.getPlayer().city !== FACTION_STATS.city) {
+            } else if (locationCondition(FACTION_STATS.city)) {
 
                 displayLog("Traveling")
                 moveToCity(FACTION_STATS.city)
@@ -188,6 +191,7 @@ export async function main(ns) {
             // "The Syndicate"				    // Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
 
 
+
             if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
 
                 displayLog("Pumping at the gym brb...")
@@ -199,7 +203,7 @@ export async function main(ns) {
                 displayLog("Doing some crime...")
                 doSomeCrime(FACTION_STATS.kills, FACTION_STATS.karma)
 
-            } else if (ns.getPlayer().city !== FACTION_STATS.city) {
+            } else if (locationCondition(FACTION_STATS.city)) {
 
                 displayLog("Traveling " + FACTION_STATS.city)
                 moveToCity(FACTION_STATS.city)
