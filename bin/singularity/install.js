@@ -76,18 +76,26 @@ export async function main(ns) {
     }
 
     function killScript(script) {
-        if (!ns.scriptRunning(SCRIPT.stockmarket, "home")) {
-            ns.scriptKill(SCRIPT.stockmarket, "home")
+        if (ns.scriptRunning(script, "home")) {
+            ns.print("Script kill: " + script)
+            ns.scriptKill(script, "home")
         }
     }
 
     //\\ MAIN LOGIC
     killScript(SCRIPT.stockmarket)
+    await ns.sleep(1000)
     killScript(SCRIPT.programs)
+    await ns.sleep(1000)
     killScript(SCRIPT.hacknet)
+    await ns.sleep(1000)
     killScript(SCRIPT.servers)
+    await ns.sleep(1000)
     killScript(SCRIPT.ram)
+    await ns.sleep(1000)
     killScript(SCRIPT.core)
+    await ns.sleep(1000)
+    ns.print(" ")
 
     if (ns.stock.hasWSEAccount() &&
         ns.stock.has4SData() &&
@@ -100,15 +108,19 @@ export async function main(ns) {
             let shares = ns.stock.getPosition(sym)[0]
             if (shares > 0) {
                 ns.stock.sellStock(sym, shares)
+                ns.print("Sold " + sym + " " + shares + " shares")
             }
         })
     }
 
 
-    let shoppingList = createSortedShoppingList(FACTION)
 
+    ns.print(" ")
     ns.print("Shopping list")
-    ns.print(shoppingList)
+    let shoppingList = createSortedShoppingList(FACTION)
+    shoppingList.forEach(item => {
+        ns.print(item)
+    })
     ns.print(" ")
 
     for (let i = 0; i < shoppingList.length;) {
@@ -122,7 +134,7 @@ export async function main(ns) {
 
                 i++
                 ns.print(augmentation)
-                await ns.sleep(1000)
+                await ns.sleep(3000)
 
             } else {
 
@@ -150,11 +162,11 @@ export async function main(ns) {
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
             ns.print("NeuroFlux Governor ++")
-            await ns.sleep(1000)
+            await ns.sleep(3000)
 
         } else {
 
-            await ns.sleep(1000)
+            await ns.sleep(3000)
 
         }
     }

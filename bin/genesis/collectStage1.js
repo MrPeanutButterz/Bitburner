@@ -123,13 +123,13 @@ export async function main(ns) {
             for (let i of list) {
 
                 if (i.action === "weak") {
-                    if (!distributeAcrossNetwork(SCRIPT.weak, i.threads, i.hostname)) { break } else { ns.print("WEAK - " + i.hostname) }
+                    if (!distributeAcrossNetwork(SCRIPT.weak, i.threads, i.hostname)) { ns.print("WEAK - " + i.hostname); break } else { ns.print("WEAK - " + i.hostname) }
 
                 } else if (i.action === "grow") {
-                    if (!distributeAcrossNetwork(SCRIPT.grow, i.threads, i.hostname)) { break } else { ns.print("GROW - " + i.hostname) }
+                    if (!distributeAcrossNetwork(SCRIPT.grow, i.threads, i.hostname)) { ns.print("GROW - " + i.hostname); break } else { ns.print("GROW - " + i.hostname) }
 
                 } else if (i.action === "hack") {
-                    if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) { break } else { ns.print("HACK - " + i.hostname) }
+                    if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) { ns.print("HACK - " + i.hostname); break } else { ns.print("HACK - " + i.hostname) }
                 }
 
             }

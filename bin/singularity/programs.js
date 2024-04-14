@@ -61,21 +61,25 @@ export async function main(ns) {
 
 				} else if (work.type === "FACTION") {
 
+					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Working with " + work.factionName + " will buy only")
 					buyPrograms(ESSENTIAL[i])
-
+					
 				} else if (work.type === "CLASS") {
-
+					
+					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Taking a class at " + work.location + " will buy only")
 					buyPrograms(ESSENTIAL[i])
 
 				} else if (work.type === "COMPANY") {
 
+					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Working a job at " + work.companyName + " will buy only")
 					buyPrograms(ESSENTIAL[i])
 
 				} else if (work.type === "CRIME") {
 
+					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Attempting to " + work.crimeType + " will buy only")
 					buyPrograms(ESSENTIAL[i])
 

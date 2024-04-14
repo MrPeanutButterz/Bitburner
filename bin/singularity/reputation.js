@@ -40,7 +40,7 @@ export async function main(ns) {
     ns.print("Time estimate: \t\t" + msToTime(timeToAugmentation * 1000))
     ns.print(" ")
     ns.print("Speed run completed...")
-    await ns.sleep(3000)
+    await ns.sleep(6000)
     ns.closeTail()
 
     //\\ SCRIPT SPECIFIC FUNCTIONS

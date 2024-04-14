@@ -80,12 +80,12 @@ export async function main(ns) {
 
             if (threadsAvailable >= 1) {
 
-                if (threadsAvailable > threads) {
+                if (threadsAvailable > threads && threads > 0) {
                     ns.exec(script, server, threads, target, 0)
                     break
                 }
 
-                if (threadsAvailable < threads) {
+                if (threadsAvailable < threads && threads > 0) {
                     ns.exec(script, server, threadsAvailable, target, 0)
                     threads -= threadsAvailable
                 }

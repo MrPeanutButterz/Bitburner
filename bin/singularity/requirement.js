@@ -70,6 +70,16 @@ export async function main(ns) {
         }
     }
 
+    function moneyCondition(req) {
+        return ns.getServerMoneyAvailable("home") < req ? true : false
+    }
+
+    function skillCondition(str, def, dex, agi) {
+        return ns.getPlayer().skills.strength < str || ns.getPlayer().skills.defense < def ||
+            ns.getPlayer().skills.dexterity < dex || ns.getPlayer().skills.agility < agi ?
+            true : false
+    }
+
     //\\ MAIN LOGIC
     while (true) {
 
@@ -121,7 +131,7 @@ export async function main(ns) {
             // "Aevum"						    // Be in Aevum & $40m
             // "Volhaven"						// Be in Volhaven & $50m
 
-            if (ns.getServerMoneyAvailable("home") < FACTION_STATS.money) {
+            if (moneyCondition(FACTION_STATS.money)) {
 
                 displayLog("Awaiting money > " + FACTION_STATS.money)
 
@@ -133,7 +143,6 @@ export async function main(ns) {
 
                 displayLog("Traveling")
                 moveToCity(FACTION_STATS.city)
-
             }
 
         } else if (
@@ -159,17 +168,9 @@ export async function main(ns) {
             // "Clarke Incorporated"			// Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "Fulcrum Secret Technologies" 	// Have 500K reputation, Backdooring company server reduces faction requirement to 400K
 
-            await installBackdoor(ns, SERVER)
-
             displayLog("Runnig the company")
-            if (FACTION === "Fulcrum Secret Technologies") {
-
-                runTheCompany("Fulcrum Technologies", 4e5)
-
-            } else {
-
-                runTheCompany(FACTION, 3e5)
-            }
+            await installBackdoor(ns, SERVER)
+            FACTION === "Fulcrum Secret Technologies" ? runTheCompany("Fulcrum Technologies", 4e5) : runTheCompany(FACTION, 3e5)
 
         } else if (
             FACTION === "Slum Snakes" ||
@@ -186,10 +187,8 @@ export async function main(ns) {
             // "The Dark Army"				    // Hacking lvl 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Syndicate"				    // Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
 
-            if (ns.getPlayer().skills.strength < FACTION_STATS.strength ||
-                ns.getPlayer().skills.defense < FACTION_STATS.defense ||
-                ns.getPlayer().skills.dexterity < FACTION_STATS.dexterity ||
-                ns.getPlayer().skills.agility < FACTION_STATS.agility) {
+
+            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
 
                 displayLog("Pumping at the gym brb...")
                 goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
@@ -214,11 +213,8 @@ export async function main(ns) {
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
                     ramAvailable > ns.getScriptRam(SCRIPT.company, "home") ?
                         ns.run(SCRIPT.company, 1) : await ns.sleep(1000)
-
                 }
-
             }
-
 
         } else if (
             FACTION === "The Covenant" ||
@@ -229,10 +225,7 @@ export async function main(ns) {
             // "Daedalus"						// 30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
             // "Illuminati"					    // 30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
 
-            if (ns.getPlayer().skills.strength < FACTION_STATS.strength ||
-                ns.getPlayer().skills.defense < FACTION_STATS.defense ||
-                ns.getPlayer().skills.dexterity < FACTION_STATS.dexterity ||
-                ns.getPlayer().skills.agility < FACTION_STATS.agility) {
+            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
 
                 displayLog("Pumping at the gym brb...")
                 goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
@@ -241,7 +234,7 @@ export async function main(ns) {
 
                 displayLog("Awaiting hack skill to be more than " + FACTION_STATS.hacklvl)
 
-            } else if (ns.getServerMoneyAvailable("home") < FACTION_STATS.money) {
+            } else if (moneyCondition(FACTION_STATS.money)) {
 
                 displayLog("Awaiting money to be more than " + FACTION_STATS.money)
 
