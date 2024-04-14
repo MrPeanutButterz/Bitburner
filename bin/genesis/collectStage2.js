@@ -18,6 +18,7 @@ export async function main(ns) {
     const SCRIPT = scriptPath(ns)
     const HACK_CHANCE = 0.8
     const HACK_PROCENT = 0.8
+    const SECURITY_PATCH = 3
 
     //\\ FUNCTIONS
     function growCondition(target) {
@@ -25,7 +26,7 @@ export async function main(ns) {
     }
 
     function weakCondition(target) {
-        return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + 2 &&
+        return ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target) + SECURITY_PATCH &&
             ns.getServerMoneyAvailable(target) !== ns.getServerMaxMoney(target)
     }
 
