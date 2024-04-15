@@ -21,6 +21,7 @@ export async function main(ns) {
     //\\ FUNCTIONS
     function switchScript() {
         if (NmapTotalRam(ns) > 1e4 && ns.getServerMaxRam("home") >= 128) {
+            ns.closeTail()
             ns.spawn(SCRIPT.collectStage2, { spawnDelay: 200 })
         }
     }
@@ -58,11 +59,9 @@ export async function main(ns) {
     function createServerList() {
 
         let list = []
-        let servers = NmapMoneyServers(ns)
+        for (let server of NmapMoneyServers(ns)) {
 
-        for (let server of servers) {
-
-            if (ns.getWeakenTime(server) < ns.getWeakenTime("n00dles") * 2) {
+            if (ns.getWeakenTime(server) < ns.getWeakenTime("n00dles") * 2.5) {
 
                 if (weakCondition(server)) {
                     list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
@@ -82,7 +81,6 @@ export async function main(ns) {
     function distributeAcrossNetwork(script, threads, target) {
 
         //installs scripts on the purchased servers
-        let fullInstall = false
         for (let server of NmapRamServers(ns)) {
 
             let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
@@ -92,8 +90,7 @@ export async function main(ns) {
 
                 if (threadsAvailable > threads) {
                     ns.exec(script, server, threads, target, 0)
-                    fullInstall = true
-                    return fullInstall
+                    return true
 
                 } else {
                     ns.exec(script, server, threadsAvailable, target, 0)
@@ -101,7 +98,7 @@ export async function main(ns) {
                 }
             }
         }
-        return fullInstall
+        return false
     }
 
     //\\ MAIN LOGICA
@@ -116,6 +113,7 @@ export async function main(ns) {
         watchForNewServer(ns)
 
         if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
+            await ns.sleep(200)
 
             list = createServerList()
             ns.clearLog()

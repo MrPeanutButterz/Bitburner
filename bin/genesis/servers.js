@@ -30,10 +30,10 @@ export async function main(ns) {
 
 		// buy if not exist, upgrade, continue
 		let credit = ns.getServerMoneyAvailable("home")
-		
-		ns.print(server)
-		ns.print("Ram \t" + ns.formatRam(ram))
+
+		ns.print(server + "\t" + ns.formatRam(ram))
 		ns.print("Cost \t" + ns.formatNumber(ns.getPurchasedServerCost(ram)))
+		ns.print("Pool \t" + ns.formatRam(poolRam()))
 
 		if (!ns.serverExists(server)) {
 
@@ -55,7 +55,7 @@ export async function main(ns) {
 
 				// upgrade ++
 				ns.upgradePurchasedServer(server, ram)
-				ns.print("Upgrade to " + ns.formatRam(ram))
+				ns.print("Upgraded " + ns.formatRam(ram))
 				return i += 1
 
 			} else {
@@ -66,7 +66,7 @@ export async function main(ns) {
 		} else {
 
 			// next server
-			ns.print("Running on " + ns.formatRam(ram))
+			ns.print("Running " + ns.formatRam(ram))
 			return i += 1
 		}
 	}
@@ -100,8 +100,10 @@ export async function main(ns) {
 			} else {
 
 				// display log
-				ns.print("Next purchase is below 10%")
-				ns.print("Current network free ram is " + netUsage + "%")
+				ns.print(server + "\t" + ns.formatRam(PUR_BASE_RAM))
+				ns.print("Cost \t" + ns.formatNumber(ns.getPurchasedServerCost(PUR_BASE_RAM)))
+				ns.print("Pool \t" + ns.formatRam(poolRam()))
+				ns.print("Fram \t" + netUsage + "%, buy below 10%")
 			}
 		}
 
