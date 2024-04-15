@@ -45,32 +45,29 @@ export async function main(ns) {
 
             } else if (work.type === "CLASS") {
 
-                if (!work.classType === ns.enums.UniversityClassType.leadership) {
+                ns.print("Taking a class at " + work.location)
+                if (player.skills.charisma > CHARISMA) {
 
-                    ns.print("Taking a class at " + work.location)
-                    if (player.skills.charisma > CHARISMA) {
+                    ns.singularity.stopAction()
+                    scriptExit(ns)
 
-                        ns.singularity.stopAction()
-                        scriptExit(ns)
+                } else {
 
-                    } else {
+                    ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
 
-                        ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
-
-                    }
                 }
 
             } else if (work.type === "COMPANY") {
 
                 // stop company work 
                 ns.print("Working a job at " + work.companyName)
-                ns.singularity.stopAction()
+                ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
 
             } else if (work.type === "CRIME") {
 
                 // stop crime work 
                 ns.print("Attempting to " + work.crimeType)
-                ns.singularity.stopAction()
+                ns.singularity.universityCourse(UNIVERSITY, LEADERSHIP_COURSE, FOCUS)
 
             }
 

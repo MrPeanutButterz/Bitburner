@@ -3,8 +3,6 @@ import { scriptStart, scriptExit, scriptPath } from "modules/scripting"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // bleuprint version
-
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
