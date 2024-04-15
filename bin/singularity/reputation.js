@@ -5,122 +5,97 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
-    ns.tail()
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
+    const FOCUS = false
 
-    let faction = ns.args[0]
-    let reputation = getMaxReputation()
+    let FACTION = ns.args[0]
+    let REPUTATION_START = ns.singularity.getFactionRep(FACTION)
+    let REPUTATION_GOAL = calculateRepGoal(FACTION)
 
-    let testRunTime = 10
-    let task = "Hacking contracts"
-    if (faction === "Slum Snakes" || faction === "Tetrads") { task = "Field work" }
+    let TIME = 0
+    let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = "Field work" : "Hacking contracts"
 
-    // get initial reputation
-    ns.resizeTail(500, 160)
-    let initialReputation = ns.singularity.getFactionRep(faction)
+    //\\ FUNCTIONS 
+    function calculateRepGoal(f) {
 
-    // start run
-    ns.singularity.stopAction()
-    ns.print("Test run duration: \t" + testRunTime + " sec")
-    ns.singularity.workForFaction(faction, task, false);
-
-    // finish run
-    await ns.asleep((testRunTime) * 1000)
-    ns.singularity.stopAction()
-
-    // calculate result rep/time
-    let newReputation = ns.singularity.getFactionRep(faction)
-    let reputationPerSecond = (newReputation - initialReputation) / testRunTime
-    let timeToAugmentation = reputation / reputationPerSecond
-
-    // display
-    ns.print("Rate: \t\t\t" + reputationPerSecond.toPrecision(5) + "/" + testRunTime + " sec")
-    ns.print("Time estimate: \t\t" + msToTime(timeToAugmentation * 1000))
-    ns.print(" ")
-    ns.print("Speed run completed...")
-    await ns.sleep(6000)
-    ns.closeTail()
-
-    //\\ SCRIPT SPECIFIC FUNCTIONS
-    function msToTime(duration) {
-
-        //converts miliseconds to time format
-
-        let milliseconds = parseInt((duration % 1000) / 100),
-            seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return hours + ":" + minutes + ":" + seconds;
-    }
-
-    function isOwnedAugmentation(augmentation) {
-
-        // return true if its owned
-        return Boolean(ns.singularity.getOwnedAugmentations(true).find(e => e === augmentation))
-    }
-
-    function getMaxReputation() {
-
-        let listSorted = []
-        ns.singularity.getAugmentationsFromFaction(faction).forEach(aug => {
-
-            // push not owned to list 
-            if (!isOwnedAugmentation(aug)) {
-                listSorted.push({
-                    aug: aug,
-                    rep: ns.singularity.getAugmentationRepReq(aug)
-                })
+        let rep = 0
+        ns.singularity.getAugmentationsFromFaction(f).forEach(a => {
+            if (ns.singularity.getAugmentationRepReq(a) > rep) {
+                rep = ns.singularity.getAugmentationRepReq(a)
             }
         })
-
-        // sort by reputation 
-        listSorted.sort(function (a, b) { return a.rep - b.rep })
-        listSorted.reverse()
-        return listSorted[0].rep
+        return rep
     }
 
-    //\\ MAIN LOGICA
-    while (ns.singularity.getFactionRep(faction) < reputation) {
+    function calculateCompletionTime(f) {
+
+        let reputationNow = ns.singularity.getFactionRep(f)
+        let reputationPerSecond = (reputationNow - REPUTATION_START) / TIME
+
+        let reputaitonLeft = REPUTATION_GOAL - reputationNow
+        let ticks = reputaitonLeft / reputationPerSecond
+
+        var hh = Math.floor(ticks / 3600)
+        var mm = Math.floor((ticks % 3600) / 60)
+        var ss = Math.round(ticks % 60)
+
+        let hours = hh < 10 ? "0" + `${hh}` : hh
+        let minutes = mm < 10 ? "0" + `${mm}` : mm
+        let seconds = ss < 10 ? "0" + `${ss}` : ss
+
+        return hours + ":" + minutes + ":" + seconds
+
+    }
+
+    //\\ MAIN LOGIC
+    while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
         await ns.sleep(1000)
         ns.clearLog()
 
-        // display
-        ns.print("Faction \t" + faction)
-        ns.print("Reputation \t" + Math.round(ns.singularity.getFactionRep(faction)) + "/" + Math.round(reputation))
-        ns.print("A.T.A. \t\t" + msToTime(timeToAugmentation * 1000))
-        ns.print("Completed \t" + (ns.singularity.getFactionRep(faction) / reputation * 100).toPrecision(4) + "%")
+        if (TIME === 60) { ns.tprint(FACTION + " completion time estimation in " + calculateCompletionTime(FACTION)) }
 
         if (ns.singularity.isBusy()) {
 
             let work = ns.singularity.getCurrentWork()
+
             if (work.type === "CREATE_PROGRAM") {
 
-                ns.print("PENDING \t" + work.programName + " completion")
-                timeToAugmentation++
+                ns.print("Creating " + work.programName + " can't build reputation")
 
-            } else {
+            } else if (work.type === "FACTION") {
 
-                ns.singularity.workForFaction(faction, task, false)
-                timeToAugmentation--
+                ns.print("Working with " + work.factionName)
+                ns.print("Completion time est\t" + calculateCompletionTime(FACTION))
+                ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
+                ns.print("Completed \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
+
+                ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+                TIME++
+
+            } else if (work.type === "CLASS") {
+
+                ns.print("Taking a class at " + work.location + " can't build reputation")
+
+            } else if (work.type === "COMPANY") {
+
+                ns.print("Working a job at " + work.companyName + " can't build reputation")
+
+            } else if (work.type === "CRIME") {
+
+                ns.print("Attempting to " + work.crimeType + " can't build reputation")
 
             }
 
         } else {
-            ns.singularity.workForFaction(faction, task, false)
-            timeToAugmentation--
+
+            ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
         }
     }
 
-    //restart factions 
     ns.singularity.stopAction()
     ns.closeTail()
     ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
