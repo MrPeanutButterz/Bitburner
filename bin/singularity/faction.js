@@ -20,18 +20,8 @@ export async function main(ns) {
     Must have one more in order to get 30 augmentations
     */
 
-    // make script run with flags --path
-    // script will loop back at self between requirements, reputation, install
-
-    // get all factions
-    // get augmentations with most reputation
-    // sort factions on that 
-    // pick faction with least work
-    // if not member check open invites 
-    // run requirements
-    // run reputation 
-    // run install 
-    // take red pill
+    //\\ FLAGS
+    const flags = ns.flags([["story", false]])
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
@@ -74,11 +64,9 @@ export async function main(ns) {
         return augmentationLeft
     }
 
-    function getTopCandidate() {
+    function getTopCandidate(factions) {
 
-        let factions = getFactionNames(ns)
         let candidates = []
-
         factions.forEach(faction => {
             candidates.push({
                 name: faction,
@@ -98,7 +86,11 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
-    let topCandidate = getTopCandidate()
+    let topCandidate
+
+    flags.story ?
+        topCandidate = getTopCandidate(["Netburners", "Sector-12", "CyberSec", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
+        topCandidate = getTopCandidate(getFactionNames(ns))
 
     if (topCandidate.name !== "RedPillTime") {
 
