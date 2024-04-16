@@ -9,10 +9,10 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
-    const FOCUS = false
     const DONATION = 1e9 // 
     const BALANCE_TRIGGER_THRESHOLD = 1e12 // 1t
 
+    let FOCUS = false
     let FACTION = ns.args[0]
     let REPUTATION_START = ns.singularity.getFactionRep(FACTION)
     let REPUTATION_GOAL = calculateRepGoal(FACTION)
@@ -58,6 +58,8 @@ export async function main(ns) {
         ns.clearLog()
 
         if (TIME === 60) { ns.tprint(FACTION + " completion time estimation in " + calculateCompletionTime(FACTION)) }
+
+        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
 
         if (ns.singularity.isBusy()) {
 

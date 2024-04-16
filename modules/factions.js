@@ -71,50 +71,50 @@ export function getFactionStats(ns, faction) {
 	switch (faction) {
 		case "Tian Di Hui": {
 			return {
-				money: 1000000,
+				money: 1e6,
 				city: "Chongqing",
 				hacklvl: 50
 			}
 		}
 		case "Sector-12": {
 			return {
-				money: 15000000,
+				money: 15e6,
 				city: "Sector-12"
 			}
 		}
 		case "Chongqing": {
 			return {
-				money: 20000000,
+				money: 20e6,
 				city: "Chongqing"
 			}
 		}
 		case "New Tokyo": {
 			return {
-				money: 20000000,
+				money: 20e6,
 				city: "New Tokyo"
 			}
 		}
 		case "Ishima": {
 			return {
-				money: 30000000,
+				money: 30e6,
 				city: "Ishima"
 			}
 		}
 		case "Aevum": {
 			return {
-				money: 40000000,
+				money: 40e6,
 				city: "Aevum"
 			}
 		}
 		case "Volhaven": {
 			return {
-				money: 50000000,
+				money: 50e6,
 				city: "Volhaven"
 			}
 		}
 		case "Slum Snakes": {
 			return {
-				money: 1000000,
+				money: 1e6,
 				city: ns.getPlayer().city,
 				hacklvl: 0,
 				strength: 30,
@@ -142,7 +142,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "Silhouette": {
 			return {
-				money: 15000000,
+				money: 16e6,
 				city: ns.getPlayer().city,
 				hacklvl: 0,
 				strength: 0,
@@ -156,7 +156,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "Speakers for the Dead": {
 			return {
-				money: 15000000,
+				money: 0,
 				city: ns.getPlayer().city,
 				hacklvl: 100,
 				strength: 300,
@@ -184,7 +184,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "The Syndicate": {
 			return {
-				money: 10000000,
+				money: 10e6,
 				city: "Sector-12",
 				hacklvl: 300,
 				strength: 200,
@@ -198,7 +198,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "The Covenant": {
 			return {
-				money: 75000000,
+				money: 75e9,
 				city: ns.getPlayer().city,
 				hacklvl: 850,
 				strength: 850,
@@ -213,7 +213,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "Daedalus": {
 			return {
-				money: 100000000,
+				money: 100e9,
 				city: ns.getPlayer().city,
 				hacklvl: 2500,
 				strength: 1500,
@@ -228,7 +228,7 @@ export function getFactionStats(ns, faction) {
 		}
 		case "Illuminati": {
 			return {
-				money: 1500000000,
+				money: 150e9,
 				city: ns.getPlayer().city,
 				hacklvl: 1500,
 				strength: 1200,

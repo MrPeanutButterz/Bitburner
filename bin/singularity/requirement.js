@@ -43,7 +43,7 @@ export async function main(ns) {
     }
 
     function moneyCondition(req) {
-        return ns.getServerMoneyAvailable("home") < req ? true : false
+        return !ns.getServerMoneyAvailable("home") < req
     }
 
     function skillCondition(str, def, dex, agi) {
@@ -90,8 +90,6 @@ export async function main(ns) {
         if (!ns.scriptRunning(SCRIPT.company, "home")) {
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
             if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
-
-
                 ns.run(SCRIPT.company, 1, corp, rep)
             }
         }
@@ -149,7 +147,7 @@ export async function main(ns) {
 
             if (moneyCondition(FACTION_STATS.money)) {
 
-                displayLog("Awaiting money > " + FACTION_STATS.money)
+                displayLog("Awaiting money > " + ns.formatNumber(FACTION_STATS.money))
 
             } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
 
@@ -242,7 +240,8 @@ export async function main(ns) {
             // "Daedalus"						// 30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
             // "Illuminati"					    // 30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
 
-            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
+            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility) &&
+                FACTION != "Daedalus") {
 
                 displayLog("Pumping at the gym brb...")
                 goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
@@ -253,7 +252,7 @@ export async function main(ns) {
 
             } else if (moneyCondition(FACTION_STATS.money)) {
 
-                displayLog("Awaiting money to be more than " + FACTION_STATS.money)
+                displayLog("Awaiting money to be more than " + ns.formatNumber(FACTION_STATS.money))
 
             }
         }
