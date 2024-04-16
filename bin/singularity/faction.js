@@ -85,6 +85,18 @@ export async function main(ns) {
         return Boolean(ns.getPlayer().factions.find(i => i === f))
     }
 
+    function followUpScript(script, candidate) {
+
+        if (flags.story) {
+
+            ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate, "--story")
+
+        } else {
+
+            ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate)
+        }
+    }
+
     //\\ MAIN LOGIC
     let topCandidate
 
@@ -101,38 +113,21 @@ export async function main(ns) {
             // requirements
             ns.closeTail()
             ns.tprint("Working on requirements for " + topCandidate.name)
-
-            if (flags.story) {
-
-                ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name, "--story")
-
-            } else {
-
-                ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name)
-            }
+            followUpScript(SCRIPT.requirement, topCandidate.name)
 
         } else if (factionRep < topCandidate.rep) {
 
             // reputation 
             ns.closeTail()
             ns.tprint("Acquiring reputation at " + topCandidate.name)
-
-            if (flags.story) {
-
-                ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name, "--story")
-
-            } else {
-
-                ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name)
-
-            }
+            followUpScript(SCRIPT.reputation, topCandidate.name)
 
         } else {
 
             // install
             ns.closeTail()
             ns.tprint("Installing augmentations from " + topCandidate.name)
-            ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, topCandidate.name)
+            followUpScript(SCRIPT.install, topCandidate.name)
 
         }
 
