@@ -9,6 +9,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const TRAVEL_COST = 2e5
 
@@ -29,8 +30,14 @@ export async function main(ns) {
         if (ns.singularity.checkFactionInvitations().find(i => i === FACTION)) {
             if (ns.singularity.joinFaction(FACTION)) {
 
-                ns.closeTail()
-                ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+                if (flags.story) {
+
+                    ns.closeTail(); ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story")
+
+                } else {
+
+                    ns.closeTail(); ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+                }
             }
         }
     }
@@ -51,6 +58,13 @@ export async function main(ns) {
     function moveToCity(city) {
         if (ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
             ns.singularity.travelToCity(city)
+        }
+    }
+
+    function getHacknet() {
+        let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
+        if (ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home")) {
+            ns.run(SCRIPT.hacknet, 1)
         }
     }
 
@@ -95,8 +109,7 @@ export async function main(ns) {
 
             if (ns.hacknet.numNodes() < 4 && !ns.scriptRunning(SCRIPT.hacknet, "home")) {
 
-                let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
-                ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home") ? ns.run(SCRIPT.hacknet, 1) : await ns.sleep(1000)
+                getHacknet()
 
             } else {
 

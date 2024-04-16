@@ -7,6 +7,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const FOCUS = false
 
@@ -98,5 +99,14 @@ export async function main(ns) {
 
     ns.singularity.stopAction()
     ns.closeTail()
-    ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+
+    if (flags.story) {
+
+        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story")
+
+    } else {
+
+        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+
+    }
 }

@@ -101,14 +101,31 @@ export async function main(ns) {
             // requirements
             ns.closeTail()
             ns.tprint("Working on requirements for " + topCandidate.name)
-            ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name)
+
+            if (flags.story) {
+
+                ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name, "--story")
+
+            } else {
+
+                ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, topCandidate.name)
+            }
 
         } else if (factionRep < topCandidate.rep) {
 
             // reputation 
             ns.closeTail()
             ns.tprint("Acquiring reputation at " + topCandidate.name)
-            ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name)
+
+            if (flags.story) {
+
+                ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name, "--story")
+
+            } else {
+
+                ns.spawn(SCRIPT.reputation, { threads: 1, spawnDelay: 500 }, topCandidate.name)
+
+            }
 
         } else {
 

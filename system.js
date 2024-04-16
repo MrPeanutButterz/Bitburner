@@ -50,7 +50,7 @@ export async function main(ns) {
 
     // faction
     while (!calculateHomeRam(SCRIPT.faction)) { await ns.sleep(1000) }
-    ns.run(SCRIPT.faction, 1)
+    ns.run(SCRIPT.faction, 1, "--story")
     await ns.sleep(1000)
 
     // stockmarket
