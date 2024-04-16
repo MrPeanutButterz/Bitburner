@@ -82,6 +82,7 @@ export async function main(ns) {
 
         //installs scripts on the purchased servers
 
+        if (threads === 0) { threads = 5 }
         let servers = NmapRamServers(ns)
 
         for (let server of servers) {
