@@ -61,7 +61,7 @@ export async function main(ns) {
         let list = []
         for (let server of NmapMoneyServers(ns)) {
 
-            if (ns.getServerNumPortsRequired(server) === 0) {
+            if (ns.getServerNumPortsRequired(server) === 0 && ns.hackAnalyzeChance(server) > 0.95) {
 
                 if (weakCondition(server)) {
                     list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
@@ -81,29 +81,37 @@ export async function main(ns) {
     function distributeAcrossNetwork(script, threads, target) {
 
         //installs scripts on the purchased servers
-        for (let server of NmapRamServers(ns)) {
 
-            let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
-            let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(script))
+        let servers = NmapRamServers(ns)
 
-            if (threadsAvailable > 0 && threads > 0) {
+        for (let server of servers) {
 
-                if (threadsAvailable > threads) {
-                    ns.exec(script, server, threads, target, 0)
-                    return true
+            if (threads > 0 && ns.hasRootAccess(server)) {
 
-                } else {
-                    ns.exec(script, server, threadsAvailable, target, 0)
-                    threads -= threadsAvailable
+                let ramAvailable = ns.getServerMaxRam(server) - ns.getServerUsedRam(server)
+                let threadsAvailable = Math.floor(ramAvailable / ns.getScriptRam(script))
+
+                if (threadsAvailable > 0) {
+
+                    if (threadsAvailable > threads) {
+
+                        ns.exec(script, server, threads, target, 0)
+                        threads -= threads
+
+                    } else {
+
+                        ns.exec(script, server, threadsAvailable, target, 0)
+                        threads -= threadsAvailable
+                    }
                 }
             }
         }
-        return false
+        return threads === 0
     }
 
     //\\ MAIN LOGICA
     NmapClear(ns)
-    distributeAcrossNetwork(SCRIPT.grow, 250, "n00dles")
+    distributeAcrossNetwork(SCRIPT.weak, 250, "n00dles")
 
     while (true) {
 
@@ -113,7 +121,7 @@ export async function main(ns) {
         watchForNewServer(ns)
 
         if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
-            await ns.sleep(200)
+            await ns.sleep(500)
 
             list = createServerList()
             ns.clearLog()
@@ -121,13 +129,34 @@ export async function main(ns) {
             for (let i of list) {
 
                 if (i.action === "weak") {
-                    if (!distributeAcrossNetwork(SCRIPT.weak, i.threads, i.hostname)) { ns.print("W... - " + i.hostname); break } else { ns.print("WEAK - " + i.hostname) }
+
+                    if (!distributeAcrossNetwork(SCRIPT.weak, i.threads, i.hostname)) {
+                        ns.print("W... - " + i.hostname)
+                        break
+
+                    } else {
+                        ns.print("WEAK - " + i.hostname)
+                    }
 
                 } else if (i.action === "grow") {
-                    if (!distributeAcrossNetwork(SCRIPT.grow, i.threads, i.hostname)) { ns.print("G... - " + i.hostname); break } else { ns.print("GROW - " + i.hostname) }
+
+                    if (!distributeAcrossNetwork(SCRIPT.grow, i.threads, i.hostname)) {
+                        ns.print("G... - " + i.hostname)
+                        break
+
+                    } else {
+                        ns.print("GROW - " + i.hostname)
+                    }
 
                 } else if (i.action === "hack") {
-                    if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) { ns.print("H... - " + i.hostname); break } else { ns.print("HACK - " + i.hostname) }
+
+                    if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) {
+                        ns.print("H... - " + i.hostname)
+                        break
+
+                    } else {
+                        ns.print("HACK - " + i.hostname)
+                    }
                 }
 
             }
