@@ -61,7 +61,7 @@ export async function main(ns) {
         let list = []
         for (let server of NmapMoneyServers(ns)) {
 
-            if (ns.getServerRequiredHackingLevel(server) <= ns.getServerRequiredHackingLevel("iron-gym")) {
+            if (ns.getServerNumPortsRequired(server) === 0) {
 
                 if (weakCondition(server)) {
                     list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
