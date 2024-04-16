@@ -45,6 +45,10 @@ export async function main(ns) {
 		await ns.sleep(500)
 		ns.clearLog()
 
+		if (ns.getServerMaxRam("home") < 64 && ns.fileExists(ESSENTIAL[2].name)) {
+			scriptExit(ns)
+		}
+
 		if (!ns.fileExists(ESSENTIAL[i].name)) {
 
 			let work = ns.singularity.getCurrentWork()
@@ -64,9 +68,9 @@ export async function main(ns) {
 					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Working with " + work.factionName + " will buy only")
 					buyPrograms(ESSENTIAL[i])
-					
+
 				} else if (work.type === "CLASS") {
-					
+
 					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Taking a class at " + work.location + " will buy only")
 					buyPrograms(ESSENTIAL[i])
