@@ -46,19 +46,17 @@ export async function main(ns) {
   ns.run(SCRIPT.servers, 1)
   await ns.sleep(1000)
 
-  if (ns.getServerMaxRam("home") > 1024) {
+  while (ns.getServerMaxRam("home") < 1024) { await ns.sleep(1000) } // wait here 
 
-    // faction
-    while (!calculateHomeRam(SCRIPT.faction)) { await ns.sleep(1000) }
-    ns.run(SCRIPT.faction, 1, "--story")
-    await ns.sleep(1000)
+  // faction
+  while (!calculateHomeRam(SCRIPT.faction)) { await ns.sleep(1000) }
+  ns.run(SCRIPT.faction, 1)
+  await ns.sleep(1000)
 
-    // stockmarket
-    while (!calculateHomeRam(SCRIPT.stockmarket)) { await ns.sleep(1000) }
-    ns.run(SCRIPT.stockmarket, 1)
-    await ns.sleep(1000)
-
-  }
+  // stockmarket
+  while (!calculateHomeRam(SCRIPT.stockmarket)) { await ns.sleep(1000) }
+  ns.run(SCRIPT.stockmarket, 1)
+  await ns.sleep(1000)
 
   if (ns.getServerMaxRam("home") > 8000) {
 
