@@ -10,6 +10,8 @@ export async function main(ns) {
     const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const FOCUS = false
+    const DONATION = 1e9 // 
+    const BALANCE_TRIGGER_THRESHOLD = 1e12 // 1t
 
     let FACTION = ns.args[0]
     let REPUTATION_START = ns.singularity.getFactionRep(FACTION)
@@ -40,14 +42,13 @@ export async function main(ns) {
 
         var hh = Math.floor(ticks / 3600)
         var mm = Math.floor((ticks % 3600) / 60)
-        var ss = Math.round(ticks % 60)
+        var ss = Math.floor(ticks % 60)
 
         let hours = hh < 10 ? "0" + `${hh}` : hh
         let minutes = mm < 10 ? "0" + `${mm}` : mm
         let seconds = ss < 10 ? "0" + `${ss}` : ss
 
         return hours + ":" + minutes + ":" + seconds
-
     }
 
     //\\ MAIN LOGIC
@@ -69,11 +70,16 @@ export async function main(ns) {
             } else if (work.type === "FACTION") {
 
                 ns.print("Working with " + work.factionName)
-                ns.print("Completion time est\t" + calculateCompletionTime(FACTION))
+                ns.print("Time estimate \t\t" + calculateCompletionTime(FACTION))
                 ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
                 ns.print("Completed \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
 
                 ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+
+                if (ns.singularity.getFactionFavor(FACTION) >= 150 && ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
+                    ns.singularity.donateToFaction(FACTION, DONATION)
+                }
+
                 TIME++
 
             } else if (work.type === "CLASS") {
