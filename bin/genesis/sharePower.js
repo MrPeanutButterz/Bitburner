@@ -53,12 +53,12 @@ export async function main(ns) {
 
     } else if (flags.network) {
 
-        shareNetwork()
+        await shareNetwork()
 
     } else {
 
-        shareNetwork()
         shareHome()
+        await shareNetwork()
 
     }
     scriptExit(ns)
