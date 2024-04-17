@@ -101,7 +101,7 @@ export async function main(ns) {
     let topCandidate
 
     flags.story ?
-        topCandidate = getTopCandidate(["Netburners", "Sector-12", "CyberSec", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
+        topCandidate = getTopCandidate(["Sector-12", "CyberSec", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
         topCandidate = getTopCandidate(getFactionNames(ns))
 
     if (topCandidate.name !== "RedPillTime") {

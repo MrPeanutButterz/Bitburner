@@ -101,7 +101,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         ns.clearLog()
 
-        if (FACTION === "Netburners") {
+        if (["Netburners"].includes(FACTION)) {
 
             // "Netburners" Hacking lvl 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
 
@@ -115,27 +115,17 @@ export async function main(ns) {
 
             }
 
-        } else if (
-            FACTION === "CyberSec" ||
-            FACTION === "NiteSec" ||
-            FACTION === "The Black Hand" ||
-            FACTION === "BitRunners") {
+        } else if (["CyberSec", "NiteSec", "The Black Hand", "BitRunners"].includes(FACTION)) {
 
             // "CyberSec" 					    // Install a backdoor on the CSEC server
             // "NiteSec"						// Install a backdoor on the avmnite-02h server
             // "The Black Hand"				    // Install a backdoor on the I.I.I.I server
             // "BitRunners"					    // Install a backdoor on the run4theh111z server
 
+            displayLog("Installing backdoor")
             await installBackdoor(ns, SERVER)
 
-        } else if (
-            FACTION === "Tian Di Hui" ||
-            FACTION === "Sector-12" ||
-            FACTION === "Chongqing" ||
-            FACTION === "New Tokyo" ||
-            FACTION === "Ishima" ||
-            FACTION === "Aevum" ||
-            FACTION === "Volhaven") {
+        } else if (["Tian Di Hui", "Sector-12", "Chongqing", "New Tokyo", "Ishima", "Aevum", "Volhaven"].includes(FACTION)) {
 
             // "Tian Di Hui"					// $1m & Hacking lvl 50 & Be in Chongqing, New Tokyo, or Ishima
             // "Sector-12"					    // Be in Sector-12 & $15m
@@ -159,17 +149,8 @@ export async function main(ns) {
                 moveToCity(FACTION_STATS.city)
             }
 
-        } else if (
-            FACTION === "ECorp" ||
-            FACTION === "MegaCorp" ||
-            FACTION === "KuaiGong International" ||
-            FACTION === "Four Sigma" ||
-            FACTION === "NWO" ||
-            FACTION === "Blade Industries" ||
-            FACTION === "OmniTek Incorporated" ||
-            FACTION === "Bachman & Associates" ||
-            FACTION === "Clarke Incorporated" ||
-            FACTION === "Fulcrum Secret Technologies") {
+        } else if (["ECorp", "MegaCorp", "KuaiGong International", "Four Sigma", "NWO", "Blade Industries",
+            "OmniTek Incorporated", "Bachman & Associates", "Clarke Incorporated", "Fulcrum Secret Technologies"].includes(FACTION)) {
 
             // "ECorp"						    // Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "MegaCorp"						// Have 400K reputation, Backdooring company server reduces faction requirement to 300k
@@ -186,13 +167,7 @@ export async function main(ns) {
             await installBackdoor(ns, SERVER)
             FACTION === "Fulcrum Secret Technologies" ? runTheCompany("Fulcrum Technologies", 4e5) : runTheCompany(FACTION, 3e5)
 
-        } else if (
-            FACTION === "Slum Snakes" ||
-            FACTION === "Tetrads" ||
-            FACTION === "Silhouette" ||
-            FACTION === "Speakers for the Dead" ||
-            FACTION === "The Dark Army" ||
-            FACTION === "The Syndicate") {
+        } else if (["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"].includes(FACTION)) {
 
             // "Slum Snakes"					// All Combat Stats of 30, -9 Karma, $1m
             // "Tetrads"						// Be in Chongqing, New Tokyo, or Ishima, All Combat Stats of 75, -18 Karma
@@ -200,8 +175,6 @@ export async function main(ns) {
             // "Speakers for the Dead"		    // Hacking lvl 100, All Combat Stats of 300, 30 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Dark Army"				    // Hacking lvl 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Syndicate"				    // Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
-
-
 
             if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
 
@@ -231,10 +204,7 @@ export async function main(ns) {
                 }
             }
 
-        } else if (
-            FACTION === "The Covenant" ||
-            FACTION === "Daedalus" ||
-            FACTION === "Illuminati") {
+        } else if (["The Covenant", "Daedalus", "Illuminati"].includes(FACTION)) {
 
             // "The Covenant"					// 20 Augmentations, $75b, Hacking lvl of 850, All Combat Stats of 850
             // "Daedalus"						// 30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
