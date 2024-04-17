@@ -14,10 +14,9 @@ export async function main(ns) {
 
     let FOCUS = false
     let FACTION = ns.args[0]
-    let REPUTATION_START = ns.singularity.getFactionRep(FACTION)
+    let REPUTATION = 0
     let REPUTATION_GOAL = calculateRepGoal(FACTION)
 
-    let TIME = 0
     let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = "Field work" : "Hacking contracts"
 
     //\\ FUNCTIONS 
@@ -32,17 +31,35 @@ export async function main(ns) {
         return rep
     }
 
-    function calculateCompletionTime(f) {
+    // function calculateCompletionTime(f) {
 
-        let reputationNow = ns.singularity.getFactionRep(f)
-        let reputationPerSecond = (reputationNow - REPUTATION_START) / TIME
+    //     let reputationNow = ns.singularity.getFactionRep(f)
+    //     let reputationPerSecond = (reputationNow - REPUTATION_START) / TIME
+
+    //     let reputaitonLeft = REPUTATION_GOAL - reputationNow
+    //     let ticks = reputaitonLeft / reputationPerSecond
+
+    //     var hh = Math.floor(ticks / 3600)
+    //     var mm = Math.floor((ticks % 3600) / 60)
+    //     var ss = Math.floor(ticks % 60)
+
+    //     let hours = hh < 10 ? "0" + `${hh}` : hh
+    //     let minutes = mm < 10 ? "0" + `${mm}` : mm
+    //     let seconds = ss < 10 ? "0" + `${ss}` : ss
+
+    //     return hours + ":" + minutes + ":" + seconds
+    // }
+
+    function calculateCompletionTime() {
+
+        let reputationNow = ns.singularity.getFactionRep(FACTION)
+        let reputationPerSecond = (reputationNow - REPUTATION).toFixed(3)
 
         let reputaitonLeft = REPUTATION_GOAL - reputationNow
         let ticks = reputaitonLeft / reputationPerSecond
-
         var hh = Math.floor(ticks / 3600)
         var mm = Math.floor((ticks % 3600) / 60)
-        var ss = Math.floor(ticks % 60)
+        var ss = Math.round(ticks % 60)
 
         let hours = hh < 10 ? "0" + `${hh}` : hh
         let minutes = mm < 10 ? "0" + `${mm}` : mm
@@ -54,10 +71,9 @@ export async function main(ns) {
     //\\ MAIN LOGIC
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
+        REPUTATION = ns.singularity.getFactionRep(FACTION)
         await ns.sleep(1000)
         ns.clearLog()
-
-        if (TIME === 60) { ns.tprint(FACTION + " completion time estimation in " + calculateCompletionTime(FACTION)) }
 
         ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
 
@@ -72,17 +88,16 @@ export async function main(ns) {
             } else if (work.type === "FACTION") {
 
                 ns.print("Working with " + work.factionName)
-                ns.print("Time estimate \t\t" + calculateCompletionTime(FACTION))
+                ns.print("Time estimate \t\t" + calculateCompletionTime())
                 ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
                 ns.print("Completed \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
 
                 ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
-                if (ns.singularity.getFactionFavor(FACTION) >= 150 && ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
+                if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
+                    ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
                     ns.singularity.donateToFaction(FACTION, DONATION)
                 }
-
-                TIME++
 
             } else if (work.type === "CLASS") {
 
