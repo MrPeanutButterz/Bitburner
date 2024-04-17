@@ -1,5 +1,5 @@
-import { scriptStart, scriptPath } from "modules/scripting"
-import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "modules/network"
+import { scriptStart, scriptPath } from "lib/scripting"
+import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {

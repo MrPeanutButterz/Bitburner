@@ -1,6 +1,6 @@
-import { scriptStart, scriptPath } from "modules/scripting"
-import { installBackdoor } from "modules/network"
-import { getFactionServer, getFactionStats } from "modules/factions"
+import { scriptStart, scriptPath } from "lib/scripting"
+import { installBackdoor } from "lib/network"
+import { getFactionServer, getFactionStats } from "lib/factions"
 
 /** @param {NS} ns */
 export async function main(ns) {

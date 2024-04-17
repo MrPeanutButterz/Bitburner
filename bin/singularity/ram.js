@@ -1,4 +1,4 @@
-import { scriptStart } from "modules/scripting"
+import { scriptStart } from "lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {

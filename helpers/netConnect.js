@@ -1,4 +1,4 @@
-import { Nmap, getServerPath } from "modules/network"
+import { Nmap, getServerPath } from "lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {

@@ -1,5 +1,5 @@
-import { scriptStart, scriptExit } from "modules/scripting"
-import { colorPrint } from "modules/scripting";
+import { scriptStart } from "lib/scripting"
+import { colorPrint } from "lib/scripting";
 
 /** @param {NS} ns */
 export async function main(ns) {

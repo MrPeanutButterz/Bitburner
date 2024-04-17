@@ -1,4 +1,4 @@
-import { NmapTotalRam, NmapFreeRam } from "modules/network";
+import { NmapTotalRam, NmapFreeRam } from "lib/network";
 
 /** @param {NS} ns */
 export async function main(ns) {

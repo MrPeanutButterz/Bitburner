@@ -1,4 +1,4 @@
-import { NmapRamServers } from "modules/network";
+import { NmapRamServers } from "lib/network";
 
 /** @param {NS} ns */
 export async function main(ns) {

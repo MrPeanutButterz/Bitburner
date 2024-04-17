@@ -1,4 +1,4 @@
-import { NmapMoneyServers } from "modules/network"
+import { NmapMoneyServers } from "lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
