@@ -107,14 +107,5 @@ export async function main(ns) {
 
     ns.singularity.stopAction()
     ns.closeTail()
-
-    if (flags.story) {
-
-        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story")
-
-    } else {
-
-        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
-
-    }
+    flags.story ? ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") : ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
 }

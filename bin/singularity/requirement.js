@@ -14,8 +14,8 @@ export async function main(ns) {
     const TRAVEL_COST = 2e5
 
     let FACTION = ns.args[0]
-    let FACTION_STATS = getFactionStats(ns, FACTION)
     let SERVER = getFactionServer(ns, FACTION)
+    let REQUIREMENT = getFactionStats(ns, FACTION)
 
     ns.resizeTail(500, 160)
 
@@ -56,19 +56,24 @@ export async function main(ns) {
     }
 
     function moveToCity(city) {
+        displayLog("Traveling to " + city)
         if (ns.getServerMoneyAvailable("home") > TRAVEL_COST) {
             ns.singularity.travelToCity(city)
         }
     }
 
     function getHacknet() {
-        let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
-        if (ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home")) {
-            ns.run(SCRIPT.hacknet, 1)
+        displayLog("Running hacknet")
+        if (!ns.scriptRunning(SCRIPT.hacknet, "home")) {
+            let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
+            if (ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home")) {
+                ns.run(SCRIPT.hacknet, 1)
+            }
         }
     }
 
     function goToGym(str, def, dex, agi) {
+        displayLog("At the gym")
         if (!ns.scriptRunning(SCRIPT.gym, "home")) {
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
             if (ramAvailable > ns.getScriptRam(SCRIPT.gym, "home")) {
@@ -78,6 +83,7 @@ export async function main(ns) {
     }
 
     function doSomeCrime(kill, karma) {
+        displayLog("Comitting crime")
         if (!ns.scriptRunning(SCRIPT.crime, "home")) {
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
             if (ramAvailable > ns.getScriptRam(SCRIPT.crime, "home")) {
@@ -87,6 +93,7 @@ export async function main(ns) {
     }
 
     function runTheCompany(corp, rep) {
+        displayLog("Runnig a company")
         if (!ns.scriptRunning(SCRIPT.company, "home")) {
             let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
             if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
@@ -99,21 +106,14 @@ export async function main(ns) {
     while (true) {
 
         await ns.sleep(1000)
+        checkInvites()
         ns.clearLog()
 
         if (["Netburners"].includes(FACTION)) {
 
             // "Netburners" Hacking lvl 80 & Total Hacknet Levels of 100 & Total Hacknet RAM of 8 & Total Hacknet Cores of 4
 
-            if (ns.hacknet.numNodes() < 4 && !ns.scriptRunning(SCRIPT.hacknet, "home")) {
-
-                getHacknet()
-
-            } else {
-
-                displayLog("Running hacknet script")
-
-            }
+            if (ns.hacknet.numNodes() < 4) { getHacknet() }
 
         } else if (["CyberSec", "NiteSec", "The Black Hand", "BitRunners"].includes(FACTION)) {
 
@@ -135,18 +135,17 @@ export async function main(ns) {
             // "Aevum"						    // Be in Aevum & $40m
             // "Volhaven"						// Be in Volhaven & $50m
 
-            if (moneyCondition(FACTION_STATS.money)) {
+            if (moneyCondition(REQUIREMENT.money)) {
 
-                displayLog("Awaiting money > " + ns.formatNumber(FACTION_STATS.money))
+                displayLog("Awaiting money " + ns.formatNumber(REQUIREMENT.money))
 
-            } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
+            } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < REQUIREMENT.hacklvl) {
 
-                displayLog("Awaiting hack skill > " + FACTION_STATS.hacklvl)
+                displayLog("Awaiting hack skill " + REQUIREMENT.hacklvl)
 
-            } else if (locationCondition(FACTION_STATS.city)) {
+            } else if (locationCondition(REQUIREMENT.city)) {
 
-                displayLog("Traveling")
-                moveToCity(FACTION_STATS.city)
+                moveToCity(REQUIREMENT.city)
             }
 
         } else if (["ECorp", "MegaCorp", "KuaiGong International", "Four Sigma", "NWO", "Blade Industries",
@@ -163,9 +162,10 @@ export async function main(ns) {
             // "Clarke Incorporated"			// Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "Fulcrum Secret Technologies" 	// Have 500K reputation, Backdooring company server reduces faction requirement to 400K
 
-            displayLog("Runnig the company")
             await installBackdoor(ns, SERVER)
-            FACTION === "Fulcrum Secret Technologies" ? runTheCompany("Fulcrum Technologies", 4e5) : runTheCompany(FACTION, 3e5)
+            FACTION === "Fulcrum Secret Technologies" ?
+                runTheCompany("Fulcrum Technologies", 4e5) :
+                runTheCompany(FACTION, 3e5)
 
         } else if (["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"].includes(FACTION)) {
 
@@ -176,31 +176,28 @@ export async function main(ns) {
             // "The Dark Army"				    // Hacking lvl 300, All Combat Stats of 300, Be in Chongqing, 5 People Killed, -45 Karma, Not working for CIA or NSA
             // "The Syndicate"				    // Hacking lvl 200, All Combat Stats of 200, Be in Aevum or Sector-12, $10m, -90 Karma, Not working for CIA or NSA
 
-            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)) {
+            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)) {
 
-                displayLog("Pumping at the gym brb...")
-                goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
+                goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
 
-            } else if (ns.getPlayer().numPeopleKilled < FACTION_STATS.skills ||
-                ns.getPlayer().karma > FACTION_STATS.karma) {
+            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.skills ||
+                ns.getPlayer().karma > REQUIREMENT.karma) {
 
-                displayLog("Doing some crime...")
-                doSomeCrime(FACTION_STATS.kills, FACTION_STATS.karma)
+                doSomeCrime(REQUIREMENT.kills, REQUIREMENT.karma)
 
-            } else if (locationCondition(FACTION_STATS.city)) {
+            } else if (locationCondition(REQUIREMENT.city)) {
 
-                displayLog("Traveling " + FACTION_STATS.city)
-                moveToCity(FACTION_STATS.city)
+                moveToCity(REQUIREMENT.city)
 
             } else if (FACTION === "Silhouette") {
-
-                displayLog("CEO in the making")
 
                 if (!ns.scriptRunning(SCRIPT.company, "home")) {
 
                     let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    ramAvailable > ns.getScriptRam(SCRIPT.company, "home") ?
-                        ns.run(SCRIPT.company, 1) : await ns.sleep(1000)
+                    if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
+
+                        ns.run(SCRIPT.company, 1)
+                    }
                 }
             }
 
@@ -210,22 +207,20 @@ export async function main(ns) {
             // "Daedalus"						// 30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
             // "Illuminati"					    // 30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
 
-            if (skillCondition(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility) &&
+            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility) &&
                 FACTION != "Daedalus") {
 
-                displayLog("Pumping at the gym brb...")
-                goToGym(FACTION_STATS.strength, FACTION_STATS.defense, FACTION_STATS.dexterity, FACTION_STATS.agility)
+                goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
 
-            } else if (ns.getPlayer().skills.hacking < FACTION_STATS.hacklvl) {
+            } else if (ns.getPlayer().skills.hacking < REQUIREMENT.hacklvl) {
 
-                displayLog("Awaiting hack skill to be more than " + FACTION_STATS.hacklvl)
+                displayLog("Awaiting hack skill " + REQUIREMENT.hacklvl)
 
-            } else if (moneyCondition(FACTION_STATS.money)) {
+            } else if (moneyCondition(REQUIREMENT.money)) {
 
-                displayLog("Awaiting money to be more than " + ns.formatNumber(FACTION_STATS.money))
+                displayLog("Awaiting money " + ns.formatNumber(REQUIREMENT.money))
 
             }
         }
-        checkInvites()
     }
 }
