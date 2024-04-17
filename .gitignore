@@ -2,5 +2,6 @@
 lib/
 template.ts
 NetscriptDefinitions.d.ts 
+.vscode
 test.js
 test2.js
