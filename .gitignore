@@ -1,6 +1,3 @@
 /.vscode
-template.ts
-NetscriptDefinitions.d.ts 
-.vscode
+/lib/react.ts
 test.js
-test2.js
