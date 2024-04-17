@@ -15,7 +15,6 @@ export async function main(ns) {
     let T = 1000
 
     const FOCUS = false
-    const CRIMECHANCE = 0.8
     const KILLS_REQUIRED = ns.args[0]
     const KARMA_REQUIRED = ns.args[1]
 
@@ -50,7 +49,7 @@ export async function main(ns) {
 
             ns.singularity.stopAction()
             scriptExit(ns)
-            
+
         }
 
     }

@@ -7,7 +7,6 @@ export async function main(ns) {
 	scriptStart(ns)
 
 	//\\ GENERAL DATA
-	let PROGRAM = 0
 	const FOCUS = false
 
 	const ESSENTIAL = [

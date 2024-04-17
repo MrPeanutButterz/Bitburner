@@ -139,7 +139,7 @@ export async function main(ns) {
 
                 i++
                 ns.print(augmentation)
-                await ns.sleep(3000)
+                await ns.sleep(1000)
 
             } else {
 
@@ -157,19 +157,14 @@ export async function main(ns) {
         }
     }
 
-    ns.print("NeuroFlux...")
+    ns.print("Spending remaining money on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
-            ns.print("NeuroFlux Governor added...")
-            await ns.sleep(3000)
-
-        } else {
-
-            await ns.sleep(3000)
-
+            ns.print("NeuroFlux Governor added")
+            await ns.sleep(2000)
         }
     }
 

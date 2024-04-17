@@ -6,10 +6,10 @@ import { getFactionServer, getFactionStats } from "lib/factions"
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
+    const flags = ns.flags([["story", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const TRAVEL_COST = 2e5
 

@@ -4,26 +4,8 @@ import { getFactionNames } from "lib/factions"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    /* path of reps: 
-    find faction with lowest reputation needed
-    */
-
-    /* path of succes: 
-    NetBurners: all
-    Sector12: CashRoot Starter Kit, NeuroFlux++
-    Csec: all
-    NiteSec: all
-    The Black Hand: all (takes a long time...)
-    BitRunners: all (takes a long time...)
-    Daedalus: all
-
-    Must have one more in order to get 30 augmentations
-    */
-
-    //\\ FLAGS
-    const flags = ns.flags([["story", false]])
-
     //\\ SCRIPT SETTINGS
+    const flags = ns.flags([["story", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
@@ -101,7 +83,7 @@ export async function main(ns) {
     let topCandidate
 
     flags.story ?
-        topCandidate = getTopCandidate(["Sector-12", "CyberSec", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
+        topCandidate = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
         topCandidate = getTopCandidate(getFactionNames(ns))
 
     if (topCandidate.name !== "RedPillTime") {

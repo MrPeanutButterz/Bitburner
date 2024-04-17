@@ -4,10 +4,10 @@ import { scriptStart, scriptPath } from "lib/scripting"
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
+    const flags = ns.flags([["story", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const flags = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const DONATION = 1e9 // 
     const BALANCE_TRIGGER_THRESHOLD = 1e12 // 1t
