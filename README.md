@@ -42,7 +42,6 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 - Grow the money of a server, use arg to define target server with a delay
 - Hack the money available of a server, use arg to define target server with a delay
 
-`parent: collectStage1.js collectStage2.js`
 `args required`
 > run pck_grow.js sigma-cosmetics 2000
 
@@ -51,20 +50,19 @@ These scripts have the same functions as sqn_gwh.js buy are seperated for more c
 This script will continuously purchase servers until 32GB. Initially, it will buy servers with 4GB of RAM. Once all 24 servers have 4GB RAM, it will replace each server with an 8GB RAM version. This process will continue, increasing the RAM of each server until the 32GB amount of RAM is reached. The script will consider the total available RAM in the network. If the usage is more than 90% of the total RAM, the script will purchase upgrades.
 
 `args: non`
-> run servers.js 128
+> run servers.js
 
 ### sharePower.js
 
 When all is said and done, and all you're waiting for is the reputation of a faction, run this script. The network will be flooded with sharepower so that waiting for reputation can proceed more quickly.
 
-`args: non`
+`args: non` `flags optional`
 > run sharePower.js
 
 ### pre_weak.js
 
 The pre_weak.js script operates based on probability. It initiates within a range of 70% to 80% and traverses through all servers to lower their security. Once all servers within this range have been addressed, the range expands to 60% to 80%. This process continues until all servers are completely open, at 0% security. At this point, the script self-terminates. The purpose of this script is to bring servers with a probability lower than 70% into this range. Once achieved, collectStage2.js takes over further actions.
 
-`parent: collectStage2.js`
 `args optional`
 > run pre_weak.js 0.5 0.8
 
@@ -91,8 +89,21 @@ core.js will keep buying as long as the script is running.
 `args non`
 > run core.js
 
-### crime.js Next update...
-### faction.js Next update...
+### crime.js 
+
+When starting the script, you'll need to provide two arguments: Kills and Karma. Initially, it will focus on Kills, achieved through homicide. Once that's completed, it will shift to Karma, accomplished via robStore. If the player's health points decrease, a visit to the hospital will be prioritized. Once all stats are addressed, the script will close itself. crime.js is part of a focus on working on a program, faction, class, or company, all of which take precedence over crime.
+
+`args required`
+> run crime.js 10 -45
+
+### faction.js 
+
+faction.js is the management script for requirements, reputation, installation, and bitnode. When faction.js is started without flags, all factions are included in the evaluation. If its run with flags, the story line wil be leading. faction.js examines each faction, selecting the augmentation with the highest reputation value. Based on this, all factions are sorted, and the one with the lowest reputation value is chosen to work on. Then, it checks if the faction in question has already sent an invitation; if not, this script will start the requirements script. Once all requirements are met, this script will again check for an invitation. If one exists, the reputation script is initiated. When all reputation is earned, it returns to faction.js, which then proceeds to install.js. After installation, the game restarts, immediately running the start script system.js, and everything begins anew. If there are no more factions to work on, bitnode.js is started, and the game is played out on autopilot.
+
+`args non`
+`flags --story`
+> run faction.js
+
 ### gym.js 
 
 When starting this script, you are required to specify via the arguments how much skills you want to acquire. Upon starting the script, it will first attempt to install a backdoor on the gym server for a small discount. Then, you will be directed to the correct location. Afterward, you will begin building up your skills to the point you have specified. Once the goal is reached, the script will automatically close itself.
@@ -102,12 +113,17 @@ skills: str, def, dex, agi
 `args required`
 > run gym.js 20 20 20 20
 
-### install.js Next update...
+### install.js 
+
+The script is initiated with a faction name. Subsequently, the script will close all money-consuming scripts such as the stock market, RAM, core, server, hacknet, and programs, and all stocks will be sold. Then, a list will be printed to the log containing the augmentations to be purchased. Following this, the most expensive augmentation will be acquired first, making its way down to the cheapest. If an augmentation requiring pre-installation is to be purchased, those will be acquired first. After all augmentations are purchased, any remaining funds will be spent on NeuroFlux. If you no longer have the money or reputation to purchase the next augmentation, all augmentations will be installed and system.js will be booted.
+
+`args required`
+> run install.js NiteSec
+
 ### programs.js
 
 During its focus, Programs will always take precedence over any of its similar scripts. This script contains a list of essential programs that will either be purchased or created. Once all the programs are acquired, the script will close to free up space for other scripts.
 
-`cousins: company, crime, gym, programs, reputation, school`
 `args non`
 > run programs.js
 
@@ -118,8 +134,20 @@ Ram.js will keep buying as long as the script is running.
 `args non`
 > run ram.js
 
-### reputation.js Next update...
-### requirement.js Next update...
+### reputation.js 
+
+reputation.js is responsible for achieving reputation. The script must be run with a faction name. In the log, you can find an overview estimating the total time, a summary of the earned reputation, and the percentage progress towards your goal. If you have more than 150 favor, the script will also purchase reputation if your balance exceeds 1t. reputation.js is part of the focus and takes precedence over all other activities because reputation takes the longest to achieve.
+
+`args required`
+> run reputation.js NiteSec
+
+### requirement.js 
+
+The requirement.js script handles the prerequisites for each faction. All you need to provide as arguments is the faction name. Once all requirements are met, the script will return to faction.js to proceed with necessary actions.
+
+`args required`
+> run reputation.js
+
 ### school.js
 
 When starting this script, you are required to specify via the arguments how much charisma you want to acquire. Upon starting the script, it will first attempt to install a backdoor on the school server for a small discount. Then, you will be directed to the correct location. Afterward, you will begin building up your charisma to the point you have specified. Once the goal is reached, the script will automatically close itself.

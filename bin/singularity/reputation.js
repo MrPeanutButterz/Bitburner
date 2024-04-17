@@ -31,25 +31,6 @@ export async function main(ns) {
         return rep
     }
 
-    // function calculateCompletionTime(f) {
-
-    //     let reputationNow = ns.singularity.getFactionRep(f)
-    //     let reputationPerSecond = (reputationNow - REPUTATION_START) / TIME
-
-    //     let reputaitonLeft = REPUTATION_GOAL - reputationNow
-    //     let ticks = reputaitonLeft / reputationPerSecond
-
-    //     var hh = Math.floor(ticks / 3600)
-    //     var mm = Math.floor((ticks % 3600) / 60)
-    //     var ss = Math.floor(ticks % 60)
-
-    //     let hours = hh < 10 ? "0" + `${hh}` : hh
-    //     let minutes = mm < 10 ? "0" + `${mm}` : mm
-    //     let seconds = ss < 10 ? "0" + `${ss}` : ss
-
-    //     return hours + ":" + minutes + ":" + seconds
-    // }
-
     function calculateCompletionTime() {
 
         let reputationNow = ns.singularity.getFactionRep(FACTION)
