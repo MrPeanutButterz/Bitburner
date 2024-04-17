@@ -16,7 +16,7 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
     const SECURITY_PATCH = 3
-    const HACK_PROCENT = 0.7
+    const HACK_PROCENT = 0.8
 
     //\\ FUNCTIONS
     function switchScript() {
@@ -61,7 +61,7 @@ export async function main(ns) {
         let list = []
         for (let server of NmapMoneyServers(ns)) {
 
-            if (ns.getServerNumPortsRequired(server) === 0 && ns.hackAnalyzeChance(server) > 0.95) {
+            if (ns.getServerNumPortsRequired(server) === 0) {
 
                 if (weakCondition(server)) {
                     list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
@@ -112,7 +112,7 @@ export async function main(ns) {
 
     //\\ MAIN LOGICA
     NmapClear(ns)
-    distributeAcrossNetwork(SCRIPT.weak, 250, "n00dles")
+    distributeAcrossNetwork(SCRIPT.grow, 250, "n00dles")
 
     while (true) {
 

@@ -98,7 +98,7 @@ export async function main(ns) {
 
     let availableRam = (ns.getServerMaxRam("home") / 1.5) - ns.getServerUsedRam("home")
     let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.preweak))
-    if (availableThreads > 1) {
+    if (availableThreads > 1 && ns.getServerMaxRam("home") > 1024) {
         availableThreads > 6000 ? ns.exec(SCRIPT.preweak, "home", 6000) : ns.exec(SCRIPT.preweak, "home", availableThreads)
     }
 
