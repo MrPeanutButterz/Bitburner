@@ -120,7 +120,7 @@ export async function main(ns) {
 
                 if (weakCondition(target)) {
 
-                    colorPrint(ns, "white", "WEAK - " + target)
+                    ns.print("WEAK - " + target)
                     if (!checkRunningScript(SCRIPT.weak, target)) {
 
                         let weakThreads = calculateWeakThreads(target)
@@ -130,7 +130,7 @@ export async function main(ns) {
 
                 } else if (growCondition(target)) {
 
-                    colorPrint(ns, "white", "GROW - " + target)
+                    ns.print("GROW - " + target)
                     if (!checkRunningScript(SCRIPT.grow, target)) {
 
                         let growThreads = calculateGrowThreads(target)
@@ -140,7 +140,7 @@ export async function main(ns) {
 
                 } else {
 
-                    colorPrint(ns, "green", "HACK - " + target)
+                    colorPrint(ns, "white", "HACK - " + target)
                     if (!checkRunningScript(SCRIPT.hack, target)) {
 
                         let hackThreads = calculateHackThreads(target)
