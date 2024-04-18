@@ -16,7 +16,7 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         ns.clearLog()
-        ns.print("Net Ram: " + NmapFreeRam(ns) + " / " + NmapTotalRam(ns) + " GB")
+        ns.print("NetRam: " + ns.formatRam(NmapFreeRam(ns)) + "/" + ns.formatRam(NmapTotalRam(ns)))
         ns.print(" ")
 
         for (let server of NmapMoneyServers(ns)) {
@@ -40,23 +40,19 @@ export async function main(ns) {
 
             }
 
-            // Grow Weak Hack stats
+            // Grow Weak Hack stats | Security stats | Money
             colorPrint(ns, "white",
                 "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
                 "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
-                "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s")
+                "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s" + " | " +
 
-            // Money stats
-            colorPrint(ns, "white",
+                // Security
+                (ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server)).toPrecision(3) + " | " +
+
+                // Money
                 ns.formatNumber(Math.floor(ns.getServerMoneyAvailable(server))) +
                 " / " +
-                ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%")
-
-            // Security stats
-            colorPrint(ns, "white",
-                ns.getServerSecurityLevel(server).toPrecision(3) +
-                " / " +
-                ns.getServerMinSecurityLevel(server).toPrecision(3)
+                ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%"
             )
         }
     }
