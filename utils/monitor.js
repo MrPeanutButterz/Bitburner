@@ -17,7 +17,7 @@ export async function main(ns) {
             tGrow: Math.ceil(ns.getGrowTime(s) / 1000),
             tWeak: Math.ceil(ns.getWeakenTime(s) / 1000),
             tHack: Math.ceil(ns.getHackTime(s) / 1000),
-            sercurity: (ns.getServerSecurityLevel(s) - ns.getServerMinSecurityLevel(s)).toPrecision(3),
+            sercurity: (ns.getServerSecurityLevel(s) - ns.getServerMinSecurityLevel(s)).toPrecision(2),
             money: Math.floor(ns.getServerMoneyAvailable(s)),
             moneyProc: ns.getServerMoneyAvailable(s) / Math.floor(ns.getServerMaxMoney(s))
         }
@@ -27,7 +27,7 @@ export async function main(ns) {
         colorPrint(ns, color, s.hostname + " " + s.chance + "%")
         colorPrint(ns, "white",
             "G" + s.tGrow + " W" + s.tWeak + " H" + s.tHack + " | " +
-            "S" + s.sercurity + " | " +
+            s.sercurity + " | " +
             ns.formatNumber(s.money) + " = " + ns.formatPercent(s.moneyProc, 0)
         )
     }

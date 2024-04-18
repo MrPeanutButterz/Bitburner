@@ -1,4 +1,4 @@
-import { scriptStart, scriptPath } from "lib/scripting"
+import { scriptStart, scriptPath, colorPrint } from "lib/scripting"
 import { NmapClear, watchForNewServer, NmapFreeRam, NmapTotalRam, NmapRamServers, NmapMoneyServers } from "lib/network"
 
 /** @param {NS} ns */
@@ -152,11 +152,11 @@ export async function main(ns) {
                 } else if (i.action === "hack") {
 
                     if (!distributeAcrossNetwork(SCRIPT.hack, i.threads, i.hostname)) {
-                        ns.print("H... - " + i.hostname)
+                        colorPrint(ns, "white", "H... - " + i.hostname)
                         break
 
                     } else {
-                        ns.print("HACK - " + i.hostname)
+                        colorPrint(ns, "white", "HACK - " + i.hostname)
                     }
                 }
 

@@ -115,7 +115,7 @@ export async function main(ns) {
 
         } else {
 
-            ns.singularity.workForFaction(FACTION, TASK)
+            ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
         }
     }
