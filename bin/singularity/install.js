@@ -15,6 +15,7 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
+    const FLAGS = ns.flags([["neuroflux", false]])
     const SCRIPT = scriptPath(ns)
 
     let FACTION = ns.args[0]
@@ -88,6 +89,7 @@ export async function main(ns) {
 
     killScript(SCRIPT.programs)
     await ns.sleep(1000)
+
     killScript(SCRIPT.hacknet)
     await ns.sleep(1000)
 
@@ -107,9 +109,7 @@ export async function main(ns) {
         ns.stock.hasTIXAPIAccess() &&
         ns.stock.has4SDataTIXAPI()) {
 
-        let symbols = ns.stock.getSymbols()
-
-        symbols.forEach(sym => {
+        ns.stock.getSymbols().forEach(sym => {
             let shares = ns.stock.getPosition(sym)[0]
             if (shares > 0) {
                 ns.stock.sellStock(sym, shares)
@@ -118,41 +118,44 @@ export async function main(ns) {
         })
     }
 
-    ns.print(" ")
-    ns.print("Shopping list")
+    if (!FLAGS.neuroflux) {
 
-    let shoppingList = createSortedShoppingList(FACTION)
-    shoppingList.forEach(item => {
-        ns.print(item)
-    })
+        ns.print(" ")
+        ns.print("Shopping list")
 
-    ns.print(" ")
-    ns.print("Buying")
+        let shoppingList = createSortedShoppingList(FACTION)
+        shoppingList.forEach(item => {
+            ns.print(item)
+        })
 
-    for (let i = 0; i < shoppingList.length;) {
+        ns.print(" ")
+        ns.print("Buying")
 
-        let augmentation = shoppingList[i]
+        for (let i = 0; i < shoppingList.length;) {
 
-        if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(augmentation) &&
-            ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq(augmentation)) {
+            let augmentation = shoppingList[i]
 
-            if (ns.singularity.purchaseAugmentation(FACTION, augmentation)) {
+            if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(augmentation) &&
+                ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq(augmentation)) {
 
-                i++
-                ns.print(augmentation)
+                if (ns.singularity.purchaseAugmentation(FACTION, augmentation)) {
+
+                    i++
+                    ns.print(augmentation)
+                    await ns.sleep(1000)
+
+                }
+
+            } else {
+
                 await ns.sleep(1000)
 
             }
-
-        } else {
-
-            await ns.sleep(1000)
-
         }
     }
 
     ns.print(" ")
-    ns.print("Spending remaining money on NeuroFlux")
+    ns.print("Spending on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 

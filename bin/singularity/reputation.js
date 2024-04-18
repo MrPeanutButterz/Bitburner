@@ -4,20 +4,21 @@ import { scriptStart, scriptPath } from "lib/scripting"
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    const flags = ns.flags([["story", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const FLAGS = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const DONATION = 1e9 // 
-    const BALANCE_TRIGGER_THRESHOLD = 1e12 // 1t
+    const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
+    const COMPLETION_TRIGGER = 80 // 80%
 
     let FOCUS = false
     let FACTION = ns.args[0]
     let REPUTATION = 0
     let REPUTATION_GOAL = calculateRepGoal(FACTION)
 
-    let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = "Field work" : "Hacking contracts"
+    let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = ns.enums.FactionWorkType.field : ns.enums.FactionWorkType.hacking
 
     //\\ FUNCTIONS 
     function calculateRepGoal(f) {
@@ -38,9 +39,10 @@ export async function main(ns) {
 
         let reputaitonLeft = REPUTATION_GOAL - reputationNow
         let ticks = reputaitonLeft / reputationPerSecond
-        var hh = Math.floor(ticks / 3600)
-        var mm = Math.floor((ticks % 3600) / 60)
-        var ss = Math.round(ticks % 60)
+
+        let hh = Math.floor(ticks / 3600)
+        let mm = Math.floor((ticks % 3600) / 60)
+        let ss = Math.round(ticks % 60)
 
         let hours = hh < 10 ? "0" + `${hh}` : hh
         let minutes = mm < 10 ? "0" + `${mm}` : mm
@@ -49,14 +51,21 @@ export async function main(ns) {
         return hours + ":" + minutes + ":" + seconds
     }
 
+    function calculateTotalFavor(f) {
+
+        let reputationPast = Math.floor(25500 * Math.pow(1.02, ns.singularity.getFactionFavor(f) - 1) - 25000)
+        let reputationSession = ns.singularity.getFactionRep(f)
+        let reputation = reputationPast + reputationSession
+
+        return Math.floor(1 + Math.log((reputation + 25000) / 25500) / Math.log(1.02))
+    }
+
     //\\ MAIN LOGIC
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
         REPUTATION = ns.singularity.getFactionRep(FACTION)
         await ns.sleep(1000)
         ns.clearLog()
-
-        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
 
         if (ns.singularity.isBusy()) {
 
@@ -68,12 +77,22 @@ export async function main(ns) {
 
             } else if (work.type === "FACTION") {
 
-                ns.print("Working with " + work.factionName)
-                ns.print("Time estimate \t\t" + calculateCompletionTime())
+                ns.print(work.factionName + "\t\t" + work.factionWorkType)
                 ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
-                ns.print("Completed \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
+                ns.print("Time estimate \t\t" + calculateCompletionTime())
+                ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
+                ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
+                ns.print("Favor \t\t\t" + ns.singularity.getFactionFavor(FACTION))
 
                 ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+
+                if (calculateTotalFavor(FACTION) >= 150 &&
+                    (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
+                    ns.singularity.getFactionFavor(FACTION) < 150) {
+
+                    ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
+
+                }
 
                 if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
                     ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
@@ -96,12 +115,12 @@ export async function main(ns) {
 
         } else {
 
-            ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+            ns.singularity.workForFaction(FACTION, TASK)
 
         }
     }
 
     ns.singularity.stopAction()
     ns.closeTail()
-    flags.story ? ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") : ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+    FLAGS.story ? ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") : ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
 }
