@@ -127,6 +127,7 @@ export async function main(ns) {
     })
 
     ns.print(" ")
+    ns.print("Buying")
 
     for (let i = 0; i < shoppingList.length;) {
 
@@ -141,29 +142,23 @@ export async function main(ns) {
                 ns.print(augmentation)
                 await ns.sleep(1000)
 
-            } else {
-
-                ns.print("Eh")
-                ns.print(augmentation)
-                await ns.sleep(1000)
-
             }
 
         } else {
 
-            ns.print("LACK OF FUNDS...")
             await ns.sleep(1000)
 
         }
     }
 
+    ns.print(" ")
     ns.print("Spending remaining money on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
-            ns.print("NeuroFlux Governor added")
+            ns.print("NeuroFlux++")
             await ns.sleep(2000)
         }
     }
