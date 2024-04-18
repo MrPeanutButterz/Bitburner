@@ -1,4 +1,4 @@
-import { scriptStart, scriptPath } from "lib/scripting"
+import { scriptStart, scriptPath, colorPrint } from "lib/scripting"
 import { NmapClear, watchForNewServer, NmapMoneyServers, NmapRamServers } from "lib/network"
 
 /** @param {NS} ns */
@@ -17,7 +17,7 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
     const HACK_CHANCE = 0.8
-    const HACK_PROCENT = 0.8
+    const HACK_PROCENT = 0.7
     const SECURITY_PATCH = 3
 
     //\\ FUNCTIONS
@@ -120,7 +120,7 @@ export async function main(ns) {
 
                 if (weakCondition(target)) {
 
-                    ns.print("WEAK - " + target)
+                    colorPrint(ns, "white", "WEAK - " + target)
                     if (!checkRunningScript(SCRIPT.weak, target)) {
 
                         let weakThreads = calculateWeakThreads(target)
@@ -130,7 +130,7 @@ export async function main(ns) {
 
                 } else if (growCondition(target)) {
 
-                    ns.print("GROW - " + target)
+                    colorPrint(ns, "white", "GROW - " + target)
                     if (!checkRunningScript(SCRIPT.grow, target)) {
 
                         let growThreads = calculateGrowThreads(target)
@@ -140,7 +140,7 @@ export async function main(ns) {
 
                 } else {
 
-                    ns.print("HACK - " + target)
+                    colorPrint(ns, "green", "HACK - " + target)
                     if (!checkRunningScript(SCRIPT.hack, target)) {
 
                         let hackThreads = calculateHackThreads(target)
