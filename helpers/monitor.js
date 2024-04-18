@@ -9,51 +9,65 @@ export async function main(ns) {
     ns.clearLog()
     ns.tail()
 
-    //\\ GENERAL DATA
-    const hackChance = 0.5
+    //\\ FUNCTIONS
+    function serverStats(s) {
+        return {
+            hostname: s,
+            chance: Math.round(ns.hackAnalyzeChance(s) * 100),
+            tGrow: Math.ceil(ns.getGrowTime(s) / 1000),
+            tWeak: Math.ceil(ns.getWeakenTime(s) / 1000),
+            tHack: Math.ceil(ns.getHackTime(s) / 1000),
+            sercurity: (ns.getServerSecurityLevel(s) - ns.getServerMinSecurityLevel(s)).toPrecision(3),
+            money: Math.floor(ns.getServerMoneyAvailable(s)),
+            moneyProc: ns.getServerMoneyAvailable(s) / Math.floor(ns.getServerMaxMoney(s))
+        }
+    }
+
+    function print(s, color) {
+        colorPrint(ns, color, s.hostname + " " + s.chance + "%")
+        colorPrint(ns, "white",
+            "G" + s.tGrow + " W" + s.tWeak + " H" + s.tHack + " | " +
+            "S" + s.sercurity + " | " +
+            ns.formatNumber(s.money) + " = " + ns.formatPercent(s.moneyProc, 0)
+        )
+    }
 
     //\\ MAIN LOGICA
     while (true) {
+
         await ns.sleep(1000)
         ns.clearLog()
-        ns.print("NetRam: " + ns.formatRam(NmapFreeRam(ns)) + "/" + ns.formatRam(NmapTotalRam(ns)))
+        ns.print("NetRam: " + ns.formatRam(NmapFreeRam(ns)) + " / " + ns.formatRam(NmapTotalRam(ns)))
         ns.print(" ")
 
+        let top = []
+        let hi = []
+        let mid = []
+        let low = []
+
+        // sort 
         for (let server of NmapMoneyServers(ns)) {
 
-            // green 80% chance
-            // yellow 50% chance
-            // red 0% chance
-
-            // server name en hackchance 
             if (ns.hackAnalyzeChance(server) > 0.9) {
-                colorPrint(ns, "green", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                top.push(serverStats(server))
 
             } else if (ns.hackAnalyzeChance(server) > 0.7) {
-                colorPrint(ns, "cyan", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                hi.push(serverStats(server))
 
             } else if (ns.hackAnalyzeChance(server) > 0.5) {
-                colorPrint(ns, "yellow", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                mid.push(serverStats(server))
 
             } else {
-                colorPrint(ns, "red", server + " " + Math.round(ns.hackAnalyzeChance(server) * 100) + "%")
+                low.push(serverStats(server))
 
             }
-
-            // Grow Weak Hack stats | Security stats | Money
-            colorPrint(ns, "white",
-                "G" + Math.ceil(ns.getGrowTime(server) / 1000) + "s " +
-                "W" + Math.ceil(ns.getWeakenTime(server) / 1000) + "s " +
-                "H" + Math.ceil(ns.getHackTime(server) / 1000) + "s" + " | " +
-
-                // Security
-                (ns.getServerSecurityLevel(server) - ns.getServerMinSecurityLevel(server)).toPrecision(3) + " | " +
-
-                // Money
-                ns.formatNumber(Math.floor(ns.getServerMoneyAvailable(server))) +
-                " / " +
-                ((Math.floor(ns.getServerMoneyAvailable(server)) / Math.floor(ns.getServerMaxMoney(server))) * 100).toPrecision(3) + "%"
-            )
         }
+
+        // print
+        for (let s of top) { print(s, "green") }
+        for (let s of hi) { print(s, "cyan") }
+        for (let s of mid) { print(s, "yellow") }
+        for (let s of low) { print(s, "red") }
+
     }
 }
