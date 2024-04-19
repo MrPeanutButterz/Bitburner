@@ -28,12 +28,11 @@ export async function main(ns) {
             HOOK1.innerText = value.join("\n")
 
         } catch (e) { ns.tprint(e) }
-        ns.atExit(() => UIclear())
-    }
 
-    function UIclear() {
-        HOOK0.innerText = ""
-        HOOK1.innerText = ""
+        ns.atExit(() => {
+            HOOK0.innerText = ""
+            HOOK1.innerText = ""
+        })
     }
 
     //\\ LOGIC
