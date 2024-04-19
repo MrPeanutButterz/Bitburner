@@ -15,7 +15,9 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["neuroflux", false]])
+    const FLAGS = ns.flags([
+        ["neuroflux", false],
+        ["story", false]])
     const SCRIPT = scriptPath(ns)
 
     let FACTION = ns.args[0]

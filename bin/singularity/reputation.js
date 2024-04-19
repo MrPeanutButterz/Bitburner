@@ -82,7 +82,7 @@ export async function main(ns) {
                 ns.print("Time estimate \t\t" + calculateCompletionTime())
                 ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
                 ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
-                ns.print("Favor \t\t\t" + ns.singularity.getFactionFavor(FACTION))
+                ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
 
                 ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
