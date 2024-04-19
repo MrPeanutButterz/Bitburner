@@ -18,18 +18,22 @@ export async function main(ns) {
     let REPUTATION = 0
     let REPUTATION_GOAL = calculateRepGoal(FACTION)
 
-    let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = ns.enums.FactionWorkType.field : ns.enums.FactionWorkType.hacking
+    let TASK
+    TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = ns.enums.FactionWorkType.field : ns.enums.FactionWorkType.hacking
 
     //\\ FUNCTIONS 
     function calculateRepGoal(f) {
 
         let rep = 0
+        let augmentationsInstalled = ns.singularity.getOwnedAugmentations()
         ns.singularity.getAugmentationsFromFaction(f).forEach(a => {
-            if (ns.singularity.getAugmentationRepReq(a) > rep) {
-                rep = ns.singularity.getAugmentationRepReq(a)
+            if (ns.singularity.getAugmentationRepReq(a) > rep && a != "NeuroFlux Governor") {
+                if (!augmentationsInstalled.includes(a)) {
+                    rep = ns.singularity.getAugmentationRepReq(a)
+                }
             }
         })
-        return rep
+        return Math.ceil(rep)
     }
 
     function calculateCompletionTime() {
@@ -77,7 +81,7 @@ export async function main(ns) {
 
             } else if (work.type === "FACTION") {
 
-                ns.print(work.factionName + "\t\t" + work.factionWorkType)
+                ns.print("Working for " + work.factionWorkType)
                 ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
                 ns.print("Time estimate \t\t" + calculateCompletionTime())
                 ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
