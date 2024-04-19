@@ -43,7 +43,7 @@ export async function main(ns) {
     }
 
     function moneyCondition(req) {
-        return !ns.getServerMoneyAvailable("home") < req
+        return ns.getServerMoneyAvailable("home") < req
     }
 
     function skillCondition(str, def, dex, agi) {
@@ -180,7 +180,7 @@ export async function main(ns) {
 
                 goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
 
-            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.skills ||
+            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.kills ||
                 ns.getPlayer().karma > REQUIREMENT.karma) {
 
                 doSomeCrime(REQUIREMENT.kills, REQUIREMENT.karma)
