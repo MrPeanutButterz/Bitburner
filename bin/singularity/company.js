@@ -1,4 +1,5 @@
 import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { getFactionServer } from "lib/factions"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -7,11 +8,16 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const FLAGS = ns.flags([
+        ["cfo", false],
+    ])
     const SCRIPT = scriptPath(ns)
 
-    const FOCUS = false
     let COMPANY_NAME = ns.args[0]
     let COMPANY_REPUTATION = ns.args[1]
+
+    const FOCUS = false
+    const SERVER = getFactionServer(ns, COMPANY_NAME)
 
     //\\ FUNCTIONS 
     function goToUniversity(learn) {
@@ -38,16 +44,55 @@ export async function main(ns) {
         }
     }
 
+    function becomeCFO() {
+
+        let list = []
+        for (let key in CORPORATIONS) {
+
+            let corp = CORPORATIONS[key]
+            let positions = ns.singularity.getCompanyPositions(corp)
+
+            // ns.print(corp)
+            // ns.print(positions)
+            // ns.print(" ")
+
+            if (positions.includes("Chief Financial Officer")) {
+                list.push({
+                    name: corp,
+                    favor: ns.singularity.getCompanyFavor(corp)
+                })
+            }
+        }
+        list.sort((a, b) => a.favor - b.favor).reverse()
+        if (list.length > 0) {
+            return list[0].name
+
+        } else {
+            return ns.enums.CompanyName.FourSigma
+        }
+    }
+
     //\\ MAIN LOGIC
     ns.resizeTail(500, 160)
 
-    if (COMPANY_NAME === undefined) { COMPANY_NAME = ns.enums.CompanyName.FourSigma }
-    if (COMPANY_REPUTATION === undefined) { COMPANY_REPUTATION = 8e5 + 100 }
+    if (FLAGS.cfo) {
+
+        COMPANY_NAME = becomeCFO()
+        COMPANY_REPUTATION = 8e5
+
+    } else {
+
+        if (COMPANY_NAME === undefined) { COMPANY_NAME = ns.enums.CompanyName.FourSigma }
+        if (COMPANY_REPUTATION === undefined) { COMPANY_REPUTATION = 8e5 + 100 }
+
+    }
+
 
     while (true) {
 
         await ns.sleep(1000)
         ns.clearLog()
+        await installBackdoor(ns, SERVER)
 
         let player = ns.getPlayer()
 

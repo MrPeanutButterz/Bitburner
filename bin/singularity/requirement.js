@@ -102,6 +102,16 @@ export async function main(ns) {
         }
     }
 
+    function runTheCompanyCFO() {
+        displayLog("Runnig a company")
+        if (!ns.scriptRunning(SCRIPT.company, "home")) {
+            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
+            if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
+                ns.run(SCRIPT.company, 1, "--cfo")
+            }
+        }
+    }
+
     //\\ MAIN LOGIC
     while (true) {
 
@@ -162,10 +172,7 @@ export async function main(ns) {
             // "Clarke Incorporated"			// Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "Fulcrum Secret Technologies" 	// Have 500K reputation, Backdooring company server reduces faction requirement to 400K
 
-            await installBackdoor(ns, SERVER)
-            FACTION === "Fulcrum Secret Technologies" ?
-                runTheCompany("Fulcrum Technologies", 4e5) :
-                runTheCompany(FACTION, 3e5)
+            FACTION === "Fulcrum Secret Technologies" ? runTheCompany("Fulcrum Technologies", 4e5) : runTheCompany(FACTION, 3e5)
 
         } else if (["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"].includes(FACTION)) {
 
@@ -180,8 +187,7 @@ export async function main(ns) {
 
                 goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
 
-            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.kills ||
-                ns.getPlayer().karma > REQUIREMENT.karma) {
+            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.kills || ns.getPlayer().karma > REQUIREMENT.karma) {
 
                 doSomeCrime(REQUIREMENT.kills, REQUIREMENT.karma)
 
@@ -191,14 +197,7 @@ export async function main(ns) {
 
             } else if (FACTION === "Silhouette") {
 
-                if (!ns.scriptRunning(SCRIPT.company, "home")) {
-
-                    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                    if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
-
-                        ns.run(SCRIPT.company, 1)
-                    }
-                }
+                runTheCompanyCFO()
             }
 
         } else if (["The Covenant", "Daedalus", "Illuminati"].includes(FACTION)) {
@@ -207,8 +206,7 @@ export async function main(ns) {
             // "Daedalus"						// 30 Augmentations, $100b, Hacking lvl of 2500 OR All Combat Stats of 1500
             // "Illuminati"					    // 30 Augmentations, $150b, Hacking lvl of 1500, All Combat Stats of 1200
 
-            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility) &&
-                FACTION != "Daedalus") {
+            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility) && FACTION != "Daedalus") {
 
                 goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
 
