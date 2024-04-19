@@ -1,4 +1,4 @@
-import { scriptStart } from "lib/scripting"
+import { scriptStart, scriptExit } from "lib/scripting"
 import { colorPrint } from "lib/scripting";
 
 /** @param {NS} ns */
@@ -9,6 +9,7 @@ export async function main(ns) {
     // buy en sell stocks based on forcast
 
     //\\ SCRIPT SETTINGS
+    const FLAGS = ns.flags([["sell", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
@@ -21,21 +22,26 @@ export async function main(ns) {
     let PORTFOLIO = []
 
     //\\ FUNCTIONS
-    function getAccounts() {
+    async function getAccounts() {
 
         // get all accounts
 
-        if (!ns.stock.hasWSEAccount()) {
-            ns.stock.purchaseWseAccount() ? ns.print("WSE account active") : ns.print("WSE account missing")
+        while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
+            await ns.sleep(5000)
+            ns.clearLog()
 
-        } else if (!ns.stock.has4SData()) {
-            ns.stock.purchase4SMarketData() ? ns.print("4S markt data account active") : ns.print("4S markt data account missing")
+            if (!ns.stock.hasWSEAccount()) {
+                ns.stock.purchaseWseAccount() ? ns.print("WSE account active") : ns.print("WSE account missing")
 
-        } else if (!ns.stock.hasTIXAPIAccess()) {
-            ns.stock.purchaseTixApi() ? ns.print("TIX API access active") : ns.print("TIX API acccess missing")
+            } else if (!ns.stock.has4SData()) {
+                ns.stock.purchase4SMarketData() ? ns.print("4S markt data account active") : ns.print("4S markt data account missing")
 
-        } else if (!ns.stock.has4SDataTIXAPI()) {
-            ns.stock.purchase4SMarketDataTixApi() ? ns.print("4S markt data TIX API active") : ns.print("4S markt data TIX API missing")
+            } else if (!ns.stock.hasTIXAPIAccess()) {
+                ns.stock.purchaseTixApi() ? ns.print("TIX API access active") : ns.print("TIX API acccess missing")
+
+            } else if (!ns.stock.has4SDataTIXAPI()) {
+                ns.stock.purchase4SMarketDataTixApi() ? ns.print("4S markt data TIX API active") : ns.print("4S markt data TIX API missing")
+            }
         }
     }
 
@@ -143,30 +149,61 @@ export async function main(ns) {
         }
     }
 
-    //\\ MAIN LOGICA
-    while (!ns.stock.hasWSEAccount() ||
-        !ns.stock.has4SData() ||
-        !ns.stock.hasTIXAPIAccess() ||
-        !ns.stock.has4SDataTIXAPI()) {
-        await ns.sleep(5000)
-        ns.clearLog()
-        getAccounts()
+    function sellAllShares() {
+
+        // sell if profit
+        // sell if not in portfolio
+
+        for (let stock of PORTFOLIO) {
+
+            let profit = Math.round(ns.stock.getSaleGain(stock.sym, ns.stock.getPosition(stock.sym)[0], "Long") - ns.stock.getPosition(stock.sym)[1] * ns.stock.getPosition(stock.sym)[0])
+            let shares = ns.stock.getPosition(stock.sym)[0]
+            if (profit > 0 && shares > 0) { ns.stock.sellStock(stock.sym, shares) }
+        }
     }
 
+    function exit() {
+
+        let e = 0
+        SYMBOLS.forEach(s => {
+            if (ns.stock.getPosition(s)[0] > 0) { e++ }
+        })
+        if (e === 0) { scriptExit(ns) }
+    }
+
+    //\\ MAIN LOGICA
+    await getAccounts()
     SYMBOLS = ns.stock.getSymbols()
 
-    // managing stocks
-    while (true) {
+    if (FLAGS.sell) {
 
-        displayStatus()
-        await ns.stock.nextUpdate()
-        ns.clearLog()
 
-        updatePortfolio()
-        sellShares()
+        while (true) {
 
-        updatePortfolio()
-        buyShares()
+            ns.print("Selling all stock when in profit")
+            displayStatus()
+            await ns.stock.nextUpdate()
+            ns.clearLog()
 
+            updatePortfolio()
+            sellAllShares()
+            exit()
+
+        }
+
+    } else {
+
+        while (true) {
+
+            displayStatus()
+            await ns.stock.nextUpdate()
+            ns.clearLog()
+
+            updatePortfolio()
+            sellShares()
+
+            updatePortfolio()
+            buyShares()
+        }
     }
 }
