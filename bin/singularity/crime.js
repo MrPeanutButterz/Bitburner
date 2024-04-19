@@ -17,8 +17,58 @@ export async function main(ns) {
     const FOCUS = false
     const KILLS_REQUIRED = ns.args[0]
     const KARMA_REQUIRED = ns.args[1]
+    const CRIMETYPES = ns.enums.CrimeType
 
     //\\ FUNCTIONS 
+    function crimeForKills() {
+
+        let list = []
+        for (let key in CRIMETYPES) {
+
+            if (ns.singularity.getCrimeStats(key).kills > 0) {
+
+                list.push({
+                    type: key,
+                    chance: ns.singularity.getCrimeChance(key),
+                    kills: ns.singularity.getCrimeStats(key).kills,
+                })
+            }
+        }
+        let bestPick = list.reduce(function (max, obj) {
+            return list.chance > max.num ? obj : max;
+        })
+        return bestPick.type
+    }
+
+    function crimeForKarma() {
+
+        let list = []
+        for (let key in CRIMETYPES) {
+
+            if (ns.singularity.getCrimeStats(key).karma > 0 &&
+                ns.singularity.getCrimeChance(key) > 0.75) {
+
+                list.push({
+                    type: key,
+                    chance: ns.singularity.getCrimeChance(key),
+                    karma: ns.singularity.getCrimeStats(key).karma,
+                })
+            }
+        }
+
+        if (list.length === 0) {
+
+            return ns.enums.CrimeType.shoplift
+
+        } else {
+
+            let bestPick = list.reduce(function (max, obj) {
+                return list.karma > max.num ? max : obj;
+            })
+            return bestPick
+        }
+    }
+
     function commitCrime() {
 
         // check hp
@@ -37,13 +87,13 @@ export async function main(ns) {
 
         } else if (player.numPeopleKilled < KILLS_REQUIRED) {
 
-            ns.singularity.commitCrime(ns.enums.CrimeType.homicide, FOCUS)
-            return ns.singularity.getCrimeStats(ns.enums.CrimeType.homicide).time
+            ns.singularity.commitCrime(crimeForKills(), FOCUS)
+            return ns.singularity.getCrimeStats(crimeForKills()).time
 
         } else if (player.karma > KARMA_REQUIRED) {
 
-            ns.singularity.commitCrime(ns.enums.CrimeType.robStore, FOCUS)
-            return ns.singularity.getCrimeStats(ns.enums.CrimeType.robStore).time
+            ns.singularity.commitCrime(crimeForKarma(), FOCUS)
+            return ns.singularity.getCrimeStats(crimeForKarma()).time
 
         } else {
 
