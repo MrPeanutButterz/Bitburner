@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "lib/scripting"
+import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
 import { colorPrint } from "lib/scripting";
 
 /** @param {NS} ns */
@@ -10,6 +10,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     const FLAGS = ns.flags([["sell", false]])
+    const SCRIPT = scriptPath(ns)
     scriptStart(ns)
 
     //\\ GENERAL DATA
@@ -26,23 +27,60 @@ export async function main(ns) {
 
         // get all accounts
 
-        while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() || !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
-            await ns.sleep(5000)
-            ns.clearLog()
+        while (!ns.stock.hasWSEAccount() || !ns.stock.has4SData() ||
+            !ns.stock.hasTIXAPIAccess() || !ns.stock.has4SDataTIXAPI()) {
+
+            await ns.sleep(5000); ns.clearLog()
 
             if (!ns.stock.hasWSEAccount()) {
-                ns.stock.purchaseWseAccount() ? ns.print("WSE account active") : ns.print("WSE account missing")
+
+                ns.stock.purchaseWseAccount() ?
+                    ns.print("WSE account active") :
+                    ns.print("WSE account missing")
 
             } else if (!ns.stock.has4SData()) {
-                ns.stock.purchase4SMarketData() ? ns.print("4S markt data account active") : ns.print("4S markt data account missing")
+
+                ns.stock.purchase4SMarketData() ?
+                    ns.print("4S markt data account active") :
+                    ns.print("4S markt data account missing")
 
             } else if (!ns.stock.hasTIXAPIAccess()) {
-                ns.stock.purchaseTixApi() ? ns.print("TIX API access active") : ns.print("TIX API acccess missing")
+
+                ns.stock.purchaseTixApi() ?
+                    ns.print("TIX API access active") :
+                    ns.print("TIX API acccess missing")
 
             } else if (!ns.stock.has4SDataTIXAPI()) {
-                ns.stock.purchase4SMarketDataTixApi() ? ns.print("4S markt data TIX API active") : ns.print("4S markt data TIX API missing")
+
+                ns.stock.purchase4SMarketDataTixApi() ?
+                    ns.print("4S markt data TIX API active") :
+                    ns.print("4S markt data TIX API missing")
             }
         }
+    }
+
+    function displayLog() {
+
+        ns.print("\tforca\tvolat\tshares\tprofit")
+        PORTFOLIO.forEach(stock => {
+
+            let ticker = stock.sym
+            let forcast = stock.forcast
+            let volatility = ns.stock.getVolatility(ticker)
+            let sharesProcent = (ns.stock.getPosition(ticker)[0] / ns.stock.getMaxShares(ticker))
+            let profit = Math.round(ns.stock.getSaleGain(ticker, ns.stock.getPosition(ticker)[0], "Long") - ns.stock.getPosition(ticker)[1] * ns.stock.getPosition(ticker)[0])
+            let log = ticker + "\t" + forcast + "\t" + ns.formatPercent(volatility, 2) + "\t" + ns.formatPercent(sharesProcent, 0) + "\t" + ns.formatNumber(profit)
+
+            if (profit > 0) {
+                ns.print(log)
+
+            } else if (profit === 0) {
+                colorPrint(ns, "white", log)
+
+            } else {
+                colorPrint(ns, "red", log)
+            }
+        })
     }
 
     function isOwnedStock(symbol) {
@@ -155,10 +193,14 @@ export async function main(ns) {
         // sell if not in portfolio
 
         for (let stock of PORTFOLIO) {
-
             let profit = Math.round(ns.stock.getSaleGain(stock.sym, ns.stock.getPosition(stock.sym)[0], "Long") - ns.stock.getPosition(stock.sym)[1] * ns.stock.getPosition(stock.sym)[0])
             let shares = ns.stock.getPosition(stock.sym)[0]
-            if (profit > 0 && shares > 0) { ns.stock.sellStock(stock.sym, shares) }
+
+            if (profit > 0 && shares > 0) {
+                ns.stock.sellStock(stock.sym, shares)
+            } else if (ns.stock.getForecast(stock.sym) < FORCAST_SELL_THRESHOLD) {
+                ns.stock.sellStock(stock.sym, shares)
+            }
         }
     }
 
@@ -180,30 +222,29 @@ export async function main(ns) {
 
         while (true) {
 
-            ns.print("Selling all stock when in profit")
-            displayStatus()
             await ns.stock.nextUpdate()
             ns.clearLog()
 
+            ns.print("Selling off stocks\n\n")
             updatePortfolio()
             sellAllShares()
+            displayLog()
             exit()
-
         }
 
     } else {
 
         while (true) {
 
-            displayStatus()
             await ns.stock.nextUpdate()
             ns.clearLog()
 
+            ns.print("Managing stocks\n\n")
             updatePortfolio()
             sellShares()
-
             updatePortfolio()
             buyShares()
+            displayLog()
         }
     }
 }
