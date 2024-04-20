@@ -7,68 +7,42 @@ export async function main(ns) {
 	scriptStart(ns)
 
 	//\\ GENERAL DATA
-	let maxNode = ns.args[0]
-	let maxLevel = ns.args[1]
-	let maxRam = ns.args[2]
-	let maxCore = ns.args[3]
+	let nodes = ns.args[0] || 4
+	let level = ns.args[1] > 200 ? 200 : ns.args[1] || 25
+	let ram = ns.args[0] > 64 ? 64 : ns.args[0] || 2
+	let core = ns.args[0] > 16 ? 16 : ns.args[0] || 1
 
-	if (maxNode === undefined) { maxNode = 4 }
-	if (maxLevel === undefined) { maxLevel = 25 }
-	if (maxRam === undefined) { maxRam = 2 }
-	if (maxCore === undefined) { maxCore = 1 }
-	if (maxLevel > 200) { maxLevel = 200 }
-	if (maxRam > 64) { maxRam = 64 }
-	if (maxCore > 16) { maxCore = 16 }
-
-	//\\ SCRIPT SPECIFIC FUNCTIONS
+	//\\ FUNCTIONS
 	function displayStatus() {
 		ns.clearLog()
 		ns.print("Objective")
-		ns.print("Nodes: \t" + maxNode)
-		ns.print("Level: \t" + maxLevel)
-		ns.print("Ram: \t" + maxRam)
-		ns.print("Core: \t" + maxCore)
+		ns.print("Nodes: \t" + nodes)
+		ns.print("Level: \t" + level)
+		ns.print("Ram: \t" + ram)
+		ns.print("Core: \t" + core)
+	}
+
+	function exit() {
+		if (ns.hacknet.numNodes() >= nodes && ns.hacknet.getNodeStats(nodes - 1).level >= level
+			&& ns.hacknet.getNodeStats(nodes - 1).ram >= ram && ns.hacknet.getNodeStats(nodes - 1).cores >= core) {
+			scriptExit(ns)
+		}
 	}
 
 	//\\ MAIN LOGICA
 	while (true) {
+
 		await ns.sleep(1000)
 		displayStatus()
 
-		if (ns.hacknet.numNodes() === 0) {
-			if (ns.getPlayer().money > ns.hacknet.getPurchaseNodeCost()) { ns.hacknet.purchaseNode() }
-		}
+		if (ns.hacknet.numNodes() === 0) { if (ns.getPlayer().money > ns.hacknet.getPurchaseNodeCost()) { ns.hacknet.purchaseNode() } }
 
 		for (let i = 0; i < ns.hacknet.numNodes(); i++) {
-
-			//buy nodes
-			if (ns.hacknet.numNodes() < maxNode) {
-				if (ns.getPlayer().money > ns.hacknet.getPurchaseNodeCost()) { ns.hacknet.purchaseNode() }
-			}
-
-			//updrage levels
-			if (ns.hacknet.getNodeStats(i).level < maxLevel) {
-				if (ns.getPlayer().money > ns.hacknet.getLevelUpgradeCost(i, 1)) { ns.hacknet.upgradeLevel(i, 1) }
-			}
-
-			//upgrade ram
-			if (ns.hacknet.getNodeStats(i).ram < maxRam) {
-				if (ns.getPlayer().money > ns.hacknet.getRamUpgradeCost(i, 1)) { ns.hacknet.upgradeRam(i, 1) }
-			}
-
-			//upgrade core
-			if (ns.hacknet.getNodeStats(i).cores < maxCore) {
-				if (ns.getPlayer().money > ns.hacknet.getCoreUpgradeCost(i, 1)) { ns.hacknet.upgradeCore(i, 1) }
-			}
-
-			//shutdown script
-			if (ns.hacknet.numNodes() >= maxNode) {
-				if (ns.hacknet.getNodeStats(maxNode - 1).level >= maxLevel
-					&& ns.hacknet.getNodeStats(maxNode - 1).ram >= maxRam
-					&& ns.hacknet.getNodeStats(maxNode - 1).cores >= maxCore) {
-					scriptExit(ns)
-				}
-			}
+			if (ns.hacknet.numNodes() < nodes && ns.getPlayer().money > ns.hacknet.getPurchaseNodeCost()) { ns.hacknet.purchaseNode() }
+			if (ns.hacknet.getNodeStats(i).level < level && ns.getPlayer().money > ns.hacknet.getLevelUpgradeCost(i, 1)) { ns.hacknet.upgradeLevel(i, 1) }
+			if (ns.hacknet.getNodeStats(i).ram < ram && ns.getPlayer().money > ns.hacknet.getRamUpgradeCost(i, 1)) { ns.hacknet.upgradeRam(i, 1) }
+			if (ns.hacknet.getNodeStats(i).cores < core && ns.getPlayer().money > ns.hacknet.getCoreUpgradeCost(i, 1)) { ns.hacknet.upgradeCore(i, 1) }
+			exit()
 		}
 	}
 }
