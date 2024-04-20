@@ -35,16 +35,15 @@ export async function main(ns) {
   //\\ MAIN MAGIC
   await intro()
   await run(SCRIPT.collect)
-  await run(SCRIPT.programs)
-  await run(SCRIPT.ram)
   await run(SCRIPT.servers)
+  await run(SCRIPT.ram)
+  await run(SCRIPT.programs)
 
   while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
+
   await run(SCRIPT.faction)
   await run(SCRIPT.stockmarket)
+  await run("utils/interface.js")
 
-  if (ns.getServerMaxRam("home") > 2000) {
-    await run(SCRIPT.core)
-    await run("utils/interface.js")
-  }
+  if (ns.getServerMaxRam("home") > 2000) { await run(SCRIPT.core) }
 }
