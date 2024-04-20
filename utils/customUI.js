@@ -12,11 +12,11 @@ export async function main(ns) {
     const HOOK1 = document.getElementById("overview-extra-hook-1")
 
     //\\ FUNCTIONS 
-    function UIlog() {
+    function userInterface() {
 
         const slots = [
-            ["Income", ns.formatNumber(ns.getTotalScriptIncome()[1])],
-            ["NetRam", ns.formatRam(NmapTotalRam(ns))],
+            ["Income_", ns.formatNumber(ns.getTotalScriptIncome()[1])],
+            ["NetRam_", ns.formatRam(NmapTotalRam(ns))],
         ]
 
         let source = [], value = []
@@ -39,6 +39,6 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         ns.clearLog()
-        UIlog()
+        userInterface()
     }
 }
