@@ -1,4 +1,5 @@
 import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { installBackdoor } from "lib/network"
 import { getFactionServer } from "lib/factions"
 
 /** @param {NS} ns */
@@ -17,6 +18,7 @@ export async function main(ns) {
     let COMPANY_REPUTATION = ns.args[1]
 
     const FOCUS = false
+    const CORPORATIONS = ns.enums.CompanyName
     const SERVER = getFactionServer(ns, COMPANY_NAME)
 
     //\\ FUNCTIONS 
@@ -73,8 +75,6 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
-    ns.resizeTail(500, 160)
-
     if (FLAGS.cfo) {
 
         COMPANY_NAME = becomeCFO()
@@ -92,7 +92,8 @@ export async function main(ns) {
 
         await ns.sleep(1000)
         ns.clearLog()
-        await installBackdoor(ns, SERVER)
+
+        // await installBackdoor(ns, SERVER)
 
         let player = ns.getPlayer()
 

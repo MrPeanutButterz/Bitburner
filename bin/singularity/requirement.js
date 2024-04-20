@@ -172,6 +172,7 @@ export async function main(ns) {
             // "Clarke Incorporated"			// Have 400K reputation, Backdooring company server reduces faction requirement to 300k
             // "Fulcrum Secret Technologies" 	// Have 500K reputation, Backdooring company server reduces faction requirement to 400K
 
+            await installBackdoor(ns.SERVER)
             FACTION === "Fulcrum Secret Technologies" ? runTheCompany("Fulcrum Technologies", 4e5) : runTheCompany(FACTION, 3e5)
 
         } else if (["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"].includes(FACTION)) {
