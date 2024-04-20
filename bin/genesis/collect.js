@@ -132,15 +132,45 @@ export async function main(ns) {
     function preWeak() {
 
         // runs pre weak of not runnning 
+        // make list of all server within range 
+        // weaken on home 
+        // list.lenght 0? expand range
+        // dont run function if lowerband = 0
 
-        if (!ns.scriptRunning(SCRIPT.preweak, "home") && !PRE_WEAK_HAS_RUN) {
+        if (!ns.scriptRunning(SCRIPT.weak, "home") && CHANCE_LOWERBAND > -1) {
 
-            let availableRam = (ns.getServerMaxRam("home") / 1.5) - ns.getServerUsedRam("home")
-            let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.preweak))
+            let list = []
+            for (let target of NmapMoneyServers(ns)) {
 
-            if (availableThreads > 1 && ns.getServerMaxRam("home") > 1024) {
-                availableThreads > 6000 ? ns.exec(SCRIPT.preweak, "home", 6000) : ns.exec(SCRIPT.preweak, "home", availableThreads)
-                PRE_WEAK_HAS_RUN = true
+                if (ns.hackAnalyzeChance(target) <= CHANCE_UPPERBAND &&
+                    ns.hackAnalyzeChance(target) >= CHANCE_LOWERBAND) {
+                    list.push({ hostname: target, threads: calculateWeakThreads(target) })
+                }
+            }
+
+            if (list.length === 0) {
+                CHANCE_LOWERBAND = (CHANCE_LOWERBAND - 0.01).toFixed(2)
+
+            } else {
+
+                list.sort((a, b) => a.threads - b.threads).reverse()
+
+                let target = list[0].hostname
+                let threads = list[0].threads
+
+                let availableRam = ns.getServerMaxRam("home") - (ns.getServerUsedRam("home") + 500)
+                let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.weak))
+
+                if (ns.getServerMaxRam("home") > 1024) {
+
+                    if (availableThreads > threads) {
+                        ns.exec(SCRIPT.weak, "home", threads, target, 0)
+
+                    } else {
+                        ns.exec(SCRIPT.weak, "home", threadsAvailable, target, 0)
+
+                    }
+                }
             }
         }
     }
@@ -156,7 +186,7 @@ export async function main(ns) {
         if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
 
             ns.clearLog()
-            ns.print("Stage 1\n\n")
+            ns.print("STAGE 1\n\n")
             let targets = createServerList()
 
             for (let target of targets) {
@@ -195,7 +225,7 @@ export async function main(ns) {
 
         preWeak()
         ns.clearLog()
-        ns.print("Stage 2\n\n")
+        ns.print("STAGE 2\n\n")
 
         let targets = NmapMoneyServers(ns)
 
