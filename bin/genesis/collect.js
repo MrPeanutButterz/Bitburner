@@ -5,6 +5,9 @@ import { scriptPath, scriptStart, colorPrint } from "lib/scripting"
 export async function main(ns) {
 
     /** 
+     * Stage 0: operates only on n00dles server
+     * The script will only focus on 1 server to get home ram up en running when you enter a new bitnode.
+     * 
      * Stage 1: operates based on minimal threads. 
      * It records necessary details such as hostname, required action (weak, grow, hack), and the threads needed for each action. 
      * Once the list is complete, it is sorted based on thread count, and then all entries in the network are installed. 
@@ -175,6 +178,38 @@ export async function main(ns) {
         }
     }
 
+    function stage0() {
+
+        // only works on n00dles 
+
+        const target = "n00dles"
+
+        ns.clearLog()
+        ns.print("STAGE 0\n\n")
+
+        if (weakCondition(target)) {
+
+            ns.print("WEAK - " + target)
+            if (!checkRunningScript(SCRIPT.weak, target)) {
+                distributeAcrossNetwork(SCRIPT.weak, calculateWeakThreads(target), target)
+            }
+
+        } else if (growCondition(target)) {
+
+            ns.print("GROW - " + target)
+            if (!checkRunningScript(SCRIPT.grow, target)) {
+                distributeAcrossNetwork(SCRIPT.grow, calculateGrowThreads(target), target)
+            }
+
+        } else {
+
+            colorPrint(ns, "white", "HACK - " + target)
+            if (!checkRunningScript(SCRIPT.hack, target)) {
+                distributeAcrossNetwork(SCRIPT.hack, calculateHackThreads(target), target)
+            }
+        }
+    }
+
     function stage1() {
 
         // get thread sorted list of targets
@@ -269,6 +304,6 @@ export async function main(ns) {
         // run stage 1 or 2 
         await ns.sleep(1000)
         watchForNewServer(ns)
-        NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
+        ns.getServerMaxRam("home") < 128 ? stage0() : NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
     }
 }
