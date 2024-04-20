@@ -6,19 +6,24 @@ Bitburner is a programming-based incremental game that revolves around hacking a
 
 ## Genesis
 
-### collectStage1.js
+### collect.js
 
-This script generates a list of all servers with short processing times. It records necessary details such as hostname, required action (weak, grow, hack), and the threads needed for each action. Once the list is complete, it is sorted based on thread count, and then all entries in the network are installed. If any entry fails to install completely, the script halts and waits until the network is empty again before proceeding with the next installation round.
+Stage 1: operates based on minimal threads. 
+It records necessary details such as hostname, required action (weak, grow, hack), and the threads needed for each action. 
+Once the list is complete, it is sorted based on thread count, and then all entries in the network are installed. 
+If any entry fails to install completely, the script halts and waits until the network is empty again before proceeding with the next installation round.
+
+
+Stage2: operates based on probability. 
+In this process, the script will iterate through the server list, and if there's more than an 80% probability, 
+it will calculate the necessary steps to launch an attack on the server. This, in turn, is installed within the network. 
+Unlike collectstage1, the script doesn't verify whether the installation was successful; thus, it adopts a somewhat more aggressive approach. 
+It will never utilize more threads than necessary to keep the network available for running as many scripts as possible. 
+Additionally, alongside focusing on the 80% probability, another script called pre_weak.js is initiated on the home server. 
+This script assists in bringing servers that fall outside the probability threshold back within the 80% range.
 
 `args non`
-> run collectStage1.js
-
-### collectStage2.js
-
-Collectstage2 operates in a similar fashion to collectstage1. Just as collectstage1 operates based on short turnaround times, collectstage2 operates based on probability. In this process, the script will iterate through the server list, and if there's more than an 80% probability, it will calculate the necessary steps to launch an attack on the server. This, in turn, is installed within the network. Unlike collectstage1, the script doesn't verify whether the installation was successful; thus, it adopts a somewhat more aggressive approach. It will never utilize more threads than necessary to keep the network available for running as many scripts as possible. Additionally, alongside focusing on the 80% probability, another script called pre_weak.js is initiated on the home server. This script assists in bringing servers that fall outside the probability threshold back within the 80% range.
-
-`args non`
-> run collectStage2.js
+> run collect.js
 
 ### hacknet.js
 

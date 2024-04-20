@@ -22,12 +22,12 @@ export async function main(ns) {
   }
 
   //\\ MAIN LOGIC
-  ns.tprint("Charlie Charlie, are you there?")
+  ns.tprint("Neo, are you there?")
   await ns.sleep(2000)
 
   // collect
-  await here(SCRIPT.collectStage1)
-  ns.run(SCRIPT.collectStage1, 1)
+  await here(SCRIPT.collect)
+  ns.run(SCRIPT.collect, 1)
   await ns.sleep(1000)
 
   // programs
@@ -49,7 +49,7 @@ export async function main(ns) {
 
   // faction
   await here(SCRIPT.faction)
-  ns.run(SCRIPT.faction, 1, "--story")
+  ns.run(SCRIPT.faction, 1)
   await ns.sleep(1000)
 
   // stockmarket
@@ -62,6 +62,11 @@ export async function main(ns) {
     // core
     await here(SCRIPT.core)
     ns.run(SCRIPT.core, 1)
+    await ns.sleep(1000)
+
+    // UI
+    await here("utils/customUI.js")
+    ns.run("utils/customUI.js", 1)
     await ns.sleep(1000)
 
   }
