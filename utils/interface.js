@@ -15,15 +15,17 @@ export async function main(ns) {
     function userInterface() {
 
         const slots = [
-            ["Credi/s_", ns.formatNumber(ns.getTotalScriptIncome()[1])],
-            ["NetwRam_", ns.formatRam(NmapTotalRam(ns))],
-            ["HomeRam_", ns.formatRam(ns.getServerMaxRam("home"))],
+            ["Credi/s", ns.formatNumber(ns.getTotalScriptIncome()[1])],
+            ["NetwRam", ns.formatRam(NmapTotalRam(ns))],
+            ["HomeRam", ns.formatRam(ns.getServerMaxRam("home"))],
         ]
 
         let source = [], value = []
         slots.forEach(slot => { source.push(slot[0]); value.push(slot[1]) })
 
         try {
+
+            HOOK0.style.width = "100px"
 
             HOOK0.innerText = source.join("\n")
             HOOK1.innerText = value.join("\n")
