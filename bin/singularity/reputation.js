@@ -65,6 +65,8 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
+    ns.exec(SCRIPT.sharePower, "home", 1, "--home")
+
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
         REPUTATION = ns.singularity.getFactionRep(FACTION)
