@@ -91,6 +91,7 @@ export async function main(ns) {
                 ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
                 if (calculateTotalFavor(FACTION) >= 150 &&
+                    ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < calculateRepGoal(FACTION) * 0.8 &&
                     (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
                     ns.singularity.getFactionFavor(FACTION) < 150) {
 
