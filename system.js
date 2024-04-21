@@ -1,4 +1,5 @@
 import { scriptPath } from "lib/scripting"
+import { canRunOnHome } from "lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -16,19 +17,9 @@ export async function main(ns) {
     await ns.sleep(5000)
   }
 
-  async function here(s) {
-    while (!calculateHomeRam(s)) { await ns.sleep(1000) }
-  }
-
-  function calculateHomeRam(script) {
-    let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-    let scriptRam = ns.getScriptRam(script, "home")
-    return ramAvailable >= scriptRam
-  }
-
-  async function run(s) {
-    await here(s)
-    ns.run(s, 1)
+  async function run(script) {
+    while (!canRunOnHome(ns, script)) { await ns.sleep(1000) }
+    ns.run(script, 1)
     await ns.sleep(1000)
   }
 
@@ -38,12 +29,14 @@ export async function main(ns) {
   await run(SCRIPT.servers)
   await run(SCRIPT.ram)
   await run(SCRIPT.programs)
+  await ns.sleep(2000)
 
   while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
-
   await run(SCRIPT.faction)
-  await run(SCRIPT.stockmarket)
   await run("utils/interface.js")
 
-  if (ns.getServerMaxRam("home") > 2000) { await run(SCRIPT.core) }
+  if (ns.getServerMaxRam("home") > 2000) {
+    await run(SCRIPT.core)
+    await run(SCRIPT.stockmarket)
+  }
 }
