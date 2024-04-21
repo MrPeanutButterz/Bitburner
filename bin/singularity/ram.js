@@ -9,7 +9,7 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     while (true) {
         await ns.sleep(1000)
-        if (ns.getPlayer().money > ns.singularity.getUpgradeHomeRamCost() &&
+        if (ns.getServerMoneyAvailable("home") > ns.singularity.getUpgradeHomeRamCost() &&
             ns.singularity.upgradeHomeRam()) {
             ns.tprint("Ram upgraded")
         }
