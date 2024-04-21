@@ -63,7 +63,7 @@ export async function main(ns) {
         return Math.ceil(ns.hackAnalyzeThreads(server, ns.getServerMaxMoney(server) * HACK_PROCENT))
     }
 
-    function createServerList() {
+    function targetList() {
 
         // creates treads based sorted list 
         // @return array of obj
@@ -178,38 +178,6 @@ export async function main(ns) {
         }
     }
 
-    function stage0() {
-
-        // only works on n00dles 
-
-        const target = "n00dles"
-
-        ns.clearLog()
-        ns.print("STAGE 0\n\n")
-
-        if (weakCondition(target)) {
-
-            ns.print("WEAK - " + target)
-            if (!checkRunningScript(SCRIPT.weak, target)) {
-                distributeAcrossNetwork(SCRIPT.weak, calculateWeakThreads(target), target)
-            }
-
-        } else if (growCondition(target)) {
-
-            ns.print("GROW - " + target)
-            if (!checkRunningScript(SCRIPT.grow, target)) {
-                distributeAcrossNetwork(SCRIPT.grow, calculateGrowThreads(target), target)
-            }
-
-        } else {
-
-            colorPrint(ns, "white", "HACK - " + target)
-            if (!checkRunningScript(SCRIPT.hack, target)) {
-                distributeAcrossNetwork(SCRIPT.hack, calculateHackThreads(target), target)
-            }
-        }
-    }
-
     function stage1() {
 
         // get thread sorted list of targets
@@ -222,7 +190,8 @@ export async function main(ns) {
 
             ns.clearLog()
             ns.print("STAGE 1\n\n")
-            let targets = createServerList()
+
+            let targets = targetList()
 
             for (let target of targets) {
 
@@ -304,6 +273,6 @@ export async function main(ns) {
         // run stage 1 or 2 
         await ns.sleep(1000)
         watchForNewServer(ns)
-        ns.getServerMaxRam("home") < 128 ? stage0() : NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
+        NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
     }
 }
