@@ -41,7 +41,6 @@ export async function main(ns) {
         ns.print(" ")
 
         let top = []
-        let hi = []
         let mid = []
         let low = []
 
@@ -51,10 +50,7 @@ export async function main(ns) {
             if (ns.hackAnalyzeChance(server) > 0.9) {
                 top.push(serverStats(server))
 
-            } else if (ns.hackAnalyzeChance(server) > 0.7) {
-                hi.push(serverStats(server))
-
-            } else if (ns.hackAnalyzeChance(server) > 0.5) {
+            } else if (ns.hackAnalyzeChance(server) > 0.8) {
                 mid.push(serverStats(server))
 
             } else {
@@ -65,7 +61,6 @@ export async function main(ns) {
 
         // print
         for (let s of top) { print(s, "green") }
-        for (let s of hi) { print(s, "cyan") }
         for (let s of mid) { print(s, "yellow") }
         for (let s of low) { print(s, "red") }
 
