@@ -12,6 +12,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const FLAGS = ns.flags([["money", false]])
     let T = 1000
 
     const FOCUS = false
@@ -20,17 +21,43 @@ export async function main(ns) {
     const CRIMETYPES = ns.enums.CrimeType
 
     //\\ FUNCTIONS 
+    function crimeForMoney() {
+
+        let list = []
+        for (let crime in CRIMETYPES) {
+
+            if (ns.singularity.getCrimeChance(crime) > 0.75) {
+
+                list.push({
+                    type: ns.singularity.getCrimeStats(crime).type,
+                    time: ns.singularity.getCrimeStats(crime).time,
+                    money: ns.singularity.getCrimeStats(crime).money,
+                    moneySec: ns.singularity.getCrimeStats(crime).money / ns.singularity.getCrimeStats(crime).time,
+                })
+            }
+        }
+        list.sort((a, b) => a.moneySec - b.moneySec).reverse()
+
+        if (list.length > 0) {
+            return list[0].type
+
+        } else {
+
+            return ns.enums.CrimeType.shoplift
+        }
+    }
+
     function crimeForKills() {
 
         let list = []
-        for (let key in CRIMETYPES) {
+        for (let crime in CRIMETYPES) {
 
-            if (ns.singularity.getCrimeStats(key).kills > 0) {
+            if (ns.singularity.getCrimeStats(crime).kills > 0) {
 
                 list.push({
-                    type: key,
-                    chance: ns.singularity.getCrimeChance(key),
-                    kills: ns.singularity.getCrimeStats(key).kills,
+                    type: crime,
+                    chance: ns.singularity.getCrimeChance(crime),
+                    kills: ns.singularity.getCrimeStats(crime).kills,
                 })
             }
         }
@@ -81,31 +108,43 @@ export async function main(ns) {
         ns.print("Killed \t" + player.numPeopleKilled)
         ns.print("karma  \t" + player.karma.toPrecision(3))
 
-        if (player.hp.current < player.hp.max) {
+        if (FLAGS.money) {
 
-            ns.singularity.hospitalize()
+            if (player.hp.current < player.hp.max) {
 
-        } else if (player.numPeopleKilled < KILLS_REQUIRED) {
+                ns.singularity.hospitalize()
 
-            ns.singularity.commitCrime(crimeForKills(), FOCUS)
-            return ns.singularity.getCrimeStats(crimeForKills()).time
+            } else {
 
-        } else if (player.karma > KARMA_REQUIRED) {
-
-            ns.singularity.commitCrime(crimeForKarma(), FOCUS)
-            return ns.singularity.getCrimeStats(crimeForKarma()).time
+                ns.singularity.commitCrime(crimeForMoney(), FOCUS)
+                return ns.singularity.getCrimeStats(crimeForKills()).time
+            }
 
         } else {
 
-            ns.singularity.stopAction()
-            scriptExit(ns)
+            if (player.hp.current < player.hp.max) {
 
+                ns.singularity.hospitalize()
+
+            } else if (player.numPeopleKilled < KILLS_REQUIRED) {
+
+                ns.singularity.commitCrime(crimeForKills(), FOCUS)
+                return ns.singularity.getCrimeStats(crimeForKills()).time
+
+            } else if (player.karma > KARMA_REQUIRED) {
+
+                ns.singularity.commitCrime(crimeForKarma(), FOCUS)
+                return ns.singularity.getCrimeStats(crimeForKarma()).time
+
+            } else {
+
+                ns.singularity.stopAction()
+                scriptExit(ns)
+            }
         }
-
     }
 
     //\\ MAIN LOGIC
-    ns.resizeTail(500, 160)
     while (true) {
 
         await ns.sleep(T + 200)
