@@ -11,7 +11,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         if (ns.getServerMoneyAvailable("home") > ns.singularity.getUpgradeHomeRamCost() &&
             ns.singularity.upgradeHomeRam()) {
-            ns.tprint("Ram upgraded")
+            ns.tprint("Upgrade")
         }
     }
 }

@@ -98,6 +98,7 @@ export async function main(ns) {
 
 		} else {
 
+			ns.tprint(ESSENTIAL[i].name)
 			i++
 		}
 	}
