@@ -1,4 +1,5 @@
 import { scriptStart, scriptPath } from "lib/scripting"
+import { canRunOnHome } from "lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -64,8 +65,26 @@ export async function main(ns) {
         return Math.floor(1 + Math.log((reputation + 25000) / 25500) / Math.log(1.02))
     }
 
+    async function followUpScript() {
+
+        while (true) {
+            if (canRunOnHome(ns, SCRIPT.faction)) {
+
+                ns.singularity.stopAction()
+                ns.closeTail()
+                FLAGS.story ?
+                    ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") :
+                    ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+
+            } else {
+
+                await ns.sleep(1000)
+            }
+        }
+    }
+
     //\\ MAIN LOGIC
-    ns.exec(SCRIPT.sharePower, "home", 1, "--home")
+    if (ns.getServerMaxRam("home") > 4000) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
 
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
@@ -127,7 +146,6 @@ export async function main(ns) {
         }
     }
 
-    ns.singularity.stopAction()
-    ns.closeTail()
-    FLAGS.story ? ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") : ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+    await followUpScript()
+
 }

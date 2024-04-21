@@ -1,5 +1,5 @@
 import { scriptStart, scriptPath } from "lib/scripting"
-import { installBackdoor } from "lib/network"
+import { installBackdoor, canRunOnHome } from "lib/network"
 import { getFactionServer, getFactionStats } from "lib/factions"
 
 /** @param {NS} ns */
@@ -26,9 +26,12 @@ export async function main(ns) {
 
     function checkInvites() {
         if (ns.singularity.checkFactionInvitations().find(i => i === FACTION)) {
-            if (ns.singularity.joinFaction(FACTION)) {
-
-                FLAGS.story ? ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") : ns.closeTail(); ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+            if (canRunOnHome(ns, SCRIPT.faction)) {
+                if (ns.singularity.joinFaction(FACTION)) {
+                    FLAGS.story ?
+                        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") :
+                        ns.closeTail(); ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+                }
             }
         }
     }
@@ -55,52 +58,27 @@ export async function main(ns) {
 
     function getHacknet() {
         displayLog("Running hacknet")
-        if (!ns.scriptRunning(SCRIPT.hacknet, "home")) {
-            let ramAvailable = (ns.getServerMaxRam("home") - 100) - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.hacknet, "home")) {
-                ns.run(SCRIPT.hacknet, 1)
-            }
-        }
+        if (canRunOnHome(ns, SCRIPT.hacknet)) { ns.run(SCRIPT.hacknet, 1) }
     }
 
     function goToGym(str, def, dex, agi) {
         displayLog("At the gym")
-        if (!ns.scriptRunning(SCRIPT.gym, "home")) {
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.gym, "home")) {
-                ns.run(SCRIPT.gym, 1, str, def, dex, agi)
-            }
-        }
+        if (canRunOnHome(ns, SCRIPT.gym)) { ns.run(SCRIPT.gym, 1, str, def, dex, agi) }
     }
 
     function doSomeCrime(kill, karma) {
         displayLog("Comitting crime")
-        if (!ns.scriptRunning(SCRIPT.crime, "home")) {
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.crime, "home")) {
-                ns.run(SCRIPT.crime, 1, kill, karma)
-            }
-        }
+        if (canRunOnHome(ns, SCRIPT.crime)) { ns.run(SCRIPT.crime, 1, kill, karma) }
     }
 
     function runTheCompany(corp, rep) {
         displayLog("Runnig a company")
-        if (!ns.scriptRunning(SCRIPT.company, "home")) {
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
-                ns.run(SCRIPT.company, 1, corp, rep)
-            }
-        }
+        if (canRunOnHome(ns, SCRIPT.company)) { ns.run(SCRIPT.company, 1, corp, rep) }
     }
 
     function runTheCompanyCFO() {
         displayLog("Runnig a company")
-        if (!ns.scriptRunning(SCRIPT.company, "home")) {
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.company, "home")) {
-                ns.run(SCRIPT.company, 1, "--cfo")
-            }
-        }
+        if (canRunOnHome(ns, SCRIPT.company)) { ns.run(SCRIPT.company, 1, "--cfo") }
     }
 
     //\\ MAIN LOGIC

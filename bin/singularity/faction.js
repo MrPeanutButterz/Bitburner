@@ -1,15 +1,18 @@
 import { scriptStart, scriptPath } from "lib/scripting"
 import { getFactionNames } from "lib/factions"
+import { canRunOnHome } from "/lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    const flags = ns.flags([["story", false]])
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const FLAGS = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
+
+    let TOP_CANDIDATE
 
     //\\ FUNCTIONS 
     function calculateTopRep(f) {
@@ -67,63 +70,57 @@ export async function main(ns) {
         return Boolean(ns.getPlayer().factions.find(i => i === f))
     }
 
-    function followUpScript(script, candidate) {
+    async function followUpScript(script, candidate) {
 
-        if (flags.story) {
+        while (true) {
+            if (canRunOnHome(ns, script)) {
 
-            ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate, "--story")
+                FLAGS.story ?
+                    ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate, "--story") :
+                    ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate)
 
-        } else {
+            } else {
 
-            ns.spawn(script, { threads: 1, spawnDelay: 500 }, candidate)
+                await ns.sleep(1000)
+            }
         }
     }
 
     //\\ MAIN LOGIC
-    let topCandidate
 
-    flags.story ?
-        topCandidate = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
-        topCandidate = getTopCandidate(getFactionNames(ns))
+    FLAGS.story ?
+        TOP_CANDIDATE = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
+        TOP_CANDIDATE = getTopCandidate(getFactionNames(ns))
 
-    if (topCandidate.name !== "RedPillTime") {
+    if (TOP_CANDIDATE.name !== "RedPillTime") {
 
-        let factionRep = ns.singularity.getFactionRep(topCandidate.name)
-
-        if (!accepted(topCandidate.name)) {
+        if (!accepted(TOP_CANDIDATE.name)) {
 
             // requirements
             ns.closeTail()
-            ns.tprint("Working on requirements for " + topCandidate.name)
-            followUpScript(SCRIPT.requirement, topCandidate.name)
+            ns.tprint("Working on requirements for " + TOP_CANDIDATE.name)
+            await followUpScript(SCRIPT.requirement, TOP_CANDIDATE.name)
 
-        } else if (factionRep < topCandidate.rep) {
+        } else if (ns.singularity.getFactionRep(TOP_CANDIDATE.name) < TOP_CANDIDATE.rep) {
 
             // reputation 
             ns.closeTail()
-            ns.tprint("Acquiring reputation at " + topCandidate.name)
-            followUpScript(SCRIPT.reputation, topCandidate.name)
+            ns.tprint("Acquiring reputation at " + TOP_CANDIDATE.name)
+            await followUpScript(SCRIPT.reputation, TOP_CANDIDATE.name)
 
         } else {
 
             // install
             ns.closeTail()
-            ns.tprint("Installing augmentations from " + topCandidate.name)
-            followUpScript(SCRIPT.install, topCandidate.name)
+            ns.tprint("Installing augmentations from " + TOP_CANDIDATE.name)
+            await followUpScript(SCRIPT.install, TOP_CANDIDATE.name)
 
         }
 
     } else {
 
         ns.tprint("End of the road...")
-
-        // kill bitnode 
-
-        // if (redPill()) {
-
-        //     // ns.tprint("Its time to take the red pill")
-        //     // ns.run(script.killBitnode, 1)
-        // }
+        ns.tprint("Its time to take the red pill")
 
     }
 }
