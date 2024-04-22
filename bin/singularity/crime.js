@@ -1,27 +1,37 @@
 import { scriptStart, scriptExit } from "lib/scripting"
+import { NmapTotalRam } from "/lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // make list of crimes 
-    // sort on chance
-    // sort chance to max profit 
-    // commit crime 
+    /**
+     * When starting the script, you'll need to provide two arguments: Kills and Karma. Or With a --money flag.
+     * Initially, it will focus on Kills, achieved through homicide. Once that's completed, 
+     * it will shift to Karma, accomplished via robStore. If the player's health points decrease, 
+     * a visit to the hospital will be prioritized. Once all stats are addressed, the script will close itself. 
+     * crime.js is part of a focus on working on a program, faction, class, or company, all of which take precedence over crime.
+    */
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["money", false]])
-    let T = 1000
-
     const FOCUS = false
     const KILLS_REQUIRED = ns.args[0]
     const KARMA_REQUIRED = ns.args[1]
     const CRIMETYPES = ns.enums.CrimeType
 
+    let T = 1000
+
     //\\ FUNCTIONS 
     function crimeForMoney() {
+
+        // first option is chance > 75%
+        // make list en sort on money per sec
+        // if no option take the one with most chance
+        // @return option one or two
+
+        if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
 
         let list = []
         for (let crime in CRIMETYPES) {
@@ -30,8 +40,6 @@ export async function main(ns) {
 
                 list.push({
                     type: ns.singularity.getCrimeStats(crime).type,
-                    time: ns.singularity.getCrimeStats(crime).time,
-                    money: ns.singularity.getCrimeStats(crime).money,
                     moneySec: ns.singularity.getCrimeStats(crime).money / ns.singularity.getCrimeStats(crime).time,
                 })
             }
@@ -43,11 +51,27 @@ export async function main(ns) {
 
         } else {
 
-            return ns.enums.CrimeType.shoplift
+            let secondOption = { type: "", chance: 0 }
+
+            for (let crime in CRIMETYPES) {
+
+                let chance = ns.singularity.getCrimeChance(crime)
+                if (chance > secondOption.chance) {
+                    secondOption = {
+                        type: ns.singularity.getCrimeStats(crime).type,
+                        chance: chance,
+                    }
+                }
+            }
+
+            return secondOption.type
         }
     }
 
     function crimeForKills() {
+
+        // find what crime gets kills 
+        // @return crime 
 
         let list = []
         for (let crime in CRIMETYPES) {
@@ -69,16 +93,20 @@ export async function main(ns) {
 
     function crimeForKarma() {
 
-        let list = []
-        for (let key in CRIMETYPES) {
+        // make list of crime with 75% chance 
+        // find option with most karma
+        // return option
 
-            if (ns.singularity.getCrimeStats(key).karma > 0 &&
-                ns.singularity.getCrimeChance(key) > 0.75) {
+        let list = []
+        for (let crime in CRIMETYPES) {
+
+            if (ns.singularity.getCrimeStats(crime).karma > 0 &&
+                ns.singularity.getCrimeChance(crime) > 0.75) {
 
                 list.push({
-                    type: key,
-                    chance: ns.singularity.getCrimeChance(key),
-                    karma: ns.singularity.getCrimeStats(key).karma,
+                    type: crime,
+                    chance: ns.singularity.getCrimeChance(crime),
+                    karma: ns.singularity.getCrimeStats(crime).karma,
                 })
             }
         }
@@ -98,9 +126,8 @@ export async function main(ns) {
 
     function commitCrime() {
 
-        // check hp
-        // kills
-        // karma 
+        // check hp 
+        // commit crime 
 
         let player = ns.getPlayer()
 
@@ -108,7 +135,7 @@ export async function main(ns) {
         ns.print("Killed \t" + player.numPeopleKilled)
         ns.print("karma  \t" + player.karma.toPrecision(3))
 
-        if (FLAGS.money) {
+        if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
 
             if (player.hp.current < player.hp.max) {
 
@@ -117,7 +144,7 @@ export async function main(ns) {
             } else {
 
                 ns.singularity.commitCrime(crimeForMoney(), FOCUS)
-                return ns.singularity.getCrimeStats(crimeForKills()).time
+                return ns.singularity.getCrimeStats(crimeForMoney()).time
             }
 
         } else {

@@ -33,6 +33,7 @@ export async function main(ns) {
 
   while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
   await run(SCRIPT.faction)
+  await run(SCRIPT.crime)
   await run("utils/interface.js")
 
   if (ns.getServerMaxRam("home") > 2000) {

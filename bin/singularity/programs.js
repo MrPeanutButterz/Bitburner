@@ -84,6 +84,9 @@ export async function main(ns) {
 
 					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Attempting to " + work.crimeType + " will buy only")
+					if (work.programName != ESSENTIAL[i].name) {
+						createPrograms(ESSENTIAL[i])
+					}
 					buyPrograms(ESSENTIAL[i])
 
 				}
