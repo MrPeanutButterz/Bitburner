@@ -1,5 +1,5 @@
 import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
-import { installBackdoor } from "lib/network"
+import { canRunOnHome, installBackdoor } from "lib/network"
 import { getFactionServer } from "lib/factions"
 
 /** @param {NS} ns */
@@ -24,25 +24,15 @@ export async function main(ns) {
     //\\ FUNCTIONS 
     function goToUniversity(learn) {
 
-        if (!ns.scriptRunning(SCRIPT.school, "home")) {
-
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.school, "home")) {
-
-                ns.run(SCRIPT.school, 1, learn)
-            }
+        if (canRunOnHome(ns, SCRIPT.school)) {
+            ns.run(SCRIPT.school, 1, learn)
         }
     }
 
     function goToGym(a, b, c, d) {
 
-        if (!ns.scriptRunning(SCRIPT.gym, "home")) {
-
-            let ramAvailable = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-            if (ramAvailable > ns.getScriptRam(SCRIPT.gym, "home")) {
-
-                ns.run(SCRIPT.gym, 1, a, b, c, d)
-            }
+        if (canRunOnHome(ns, SCRIPT.gym)) {
+            ns.run(SCRIPT.gym, 1, a, b, c, d)
         }
     }
 
@@ -53,10 +43,6 @@ export async function main(ns) {
 
             let corp = CORPORATIONS[key]
             let positions = ns.singularity.getCompanyPositions(corp)
-
-            // ns.print(corp)
-            // ns.print(positions)
-            // ns.print(" ")
 
             if (positions.includes("Chief Financial Officer")) {
                 list.push({
