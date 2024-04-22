@@ -13,7 +13,7 @@ export async function main(ns) {
 
   //\\ FUNCTIONS 
   async function intro() {
-    ns.tprint("\n\nNeo...\nare you there?\n\n")
+    ns.tprint("\n\nWake up, Neo...\nThe matrix has you...\n\n")
     await ns.sleep(5000)
   }
 
