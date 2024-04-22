@@ -31,8 +31,6 @@ export async function main(ns) {
         // if no option take the one with most chance
         // @return option one or two
 
-        if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-
         let list = []
         for (let crime in CRIMETYPES) {
 
@@ -184,22 +182,27 @@ export async function main(ns) {
             if (work.type === "CREATE_PROGRAM") {
 
                 ns.print("Creating " + work.programName + " can't do crime")
+                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
 
             } else if (work.type === "FACTION") {
 
                 ns.print("Working with " + work.factionName + " can't do crime")
+                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
 
             } else if (work.type === "CLASS") {
 
                 ns.print("Taking a class at " + work.location + " can't do crime")
+                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
 
             } else if (work.type === "COMPANY") {
 
                 ns.print("Working a job at " + work.companyName + " can't do crime")
+                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
 
             } else if (work.type === "CRIME") {
 
                 ns.print("Attempting to " + work.crimeType)
+                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
                 T = commitCrime()
 
             }

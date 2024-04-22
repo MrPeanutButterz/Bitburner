@@ -10,7 +10,7 @@ export async function main(ns) {
     //\\ GENERAL DATA
     const FLAGS = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
-    const DONATION = 1e9 // 
+    const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
     const COMPLETION_TRIGGER = 80 // 80%
 
@@ -84,7 +84,7 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
-    if (ns.getServerMaxRam("home") > 4000) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
+    if (ns.getServerMaxRam("home") > 1000) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
 
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
@@ -102,7 +102,7 @@ export async function main(ns) {
 
             } else if (work.type === "FACTION") {
 
-                ns.print("Working for " + work.factionWorkType)
+                ns.print("\t\t\t" + FACTION)
                 ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
                 ns.print("Time estimate \t\t" + calculateCompletionTime())
                 ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
@@ -136,6 +136,7 @@ export async function main(ns) {
             } else if (work.type === "CRIME") {
 
                 ns.print("Attempting to " + work.crimeType + " can't build reputation")
+                ns.singularity.stopAction()
 
             }
 
