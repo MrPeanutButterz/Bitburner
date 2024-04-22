@@ -30,7 +30,6 @@ export async function main(ns) {
     const SECURITY_PATCH = 5, HACK_CHANCE = 0.8, HACK_PROCENT = 0.7
 
     let CHANCE_UPPERBAND = HACK_CHANCE, CHANCE_LOWERBAND = 0.79
-    let PRE_WEAK_HAS_RUN = false
 
     //\\ FUNCTIONS 
     function growCondition(server) {
@@ -152,26 +151,24 @@ export async function main(ns) {
             }
 
             if (list.length === 0) {
+
                 CHANCE_LOWERBAND = (CHANCE_LOWERBAND - 0.01).toFixed(2)
 
             } else {
 
                 list.sort((a, b) => a.threads - b.threads).reverse()
-
-                let target = list[0].hostname
-                let threads = list[0].threads
-
                 let availableRam = ns.getServerMaxRam("home") - (ns.getServerUsedRam("home") + 500)
                 let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.weak))
 
                 if (ns.getServerMaxRam("home") > 1024) {
 
-                    if (availableThreads > threads) {
-                        ns.exec(SCRIPT.weak, "home", threads, target, 0)
+                    if (availableThreads > list[0].threads) {
+
+                        ns.exec(SCRIPT.weak, "home", list[0].threads, list[0].hostname, 0)
 
                     } else {
-                        ns.exec(SCRIPT.weak, "home", threadsAvailable, target, 0)
-
+                        
+                        ns.exec(SCRIPT.weak, "home", threadsAvailable, list[0].hostname, 0)
                     }
                 }
             }
@@ -184,7 +181,6 @@ export async function main(ns) {
         // when network is clear of scripts
         // apply action to list 
         // install incomplete ? restart : continue
-
 
         if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
 
