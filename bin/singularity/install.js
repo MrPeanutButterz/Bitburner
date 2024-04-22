@@ -104,8 +104,6 @@ export async function main(ns) {
     killScript(SCRIPT.core)
     await ns.sleep(1000)
 
-    ns.print(" ")
-
     if (ns.stock.hasWSEAccount() &&
         ns.stock.has4SData() &&
         ns.stock.hasTIXAPIAccess() &&
@@ -122,16 +120,14 @@ export async function main(ns) {
 
     if (!FLAGS.neuroflux) {
 
-        ns.print(" ")
-        ns.print("Shopping list")
+        ns.print("\n\nShopping list")
 
         let shoppingList = createSortedShoppingList(FACTION)
         shoppingList.forEach(item => {
             ns.print(item)
         })
 
-        ns.print(" ")
-        ns.print("Buying")
+        ns.print("\n\nBuying")
 
         for (let i = 0; i < shoppingList.length;) {
 
@@ -156,15 +152,14 @@ export async function main(ns) {
         }
     }
 
-    ns.print(" ")
-    ns.print("Spending on NeuroFlux")
+    ns.print("\n\nSpending on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
             ns.print("NeuroFlux++")
-            await ns.sleep(2000)
+            await ns.sleep(1000)
         }
     }
 

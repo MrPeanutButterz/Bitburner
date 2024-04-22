@@ -16,7 +16,7 @@ export async function main(ns) {
 
     //\\ FUNCTIONS
     function shareHome() {
-        let availableRam = ns.getServerMaxRam("home") * 0.3
+        let availableRam = (ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) * 0.75
         let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.share))
         if (availableThreads > 1) { ns.run(SCRIPT.share, availableThreads) }
     }
