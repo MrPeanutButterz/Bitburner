@@ -4,6 +4,13 @@ import { installBackdoor } from "lib/network"
 /** @param {NS} ns */
 export async function main(ns) {
 
+    /**
+     * When starting this script, you are required to specify via the arguments how much skills you want to acquire. 
+     * Upon starting the script, it will first attempt to install a backdoor on the gym server for a small discount. 
+     * Then, you will be directed to the correct location. Afterward, you will begin building up your skills to the point you have specified. 
+     * Once the goal is reached, the script will automatically close itself.
+    */
+
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
@@ -22,9 +29,18 @@ export async function main(ns) {
     //\\ FUNCTIONS 
     function workout() {
 
+        // go to location
+        // work on stats
+        // exit when done
+
         let player = ns.getPlayer()
 
-        if (player.skills.strength < STRENGHT) {
+        if (player.city !== GYM_LOCATION && player.money > TRAVEL_COST) {
+
+            ns.print("Traveling to " + GYM_LOCATION)
+            ns.singularity.travelToCity(GYM_LOCATION)
+
+        } else if (player.skills.strength < STRENGHT) {
 
             ns.singularity.gymWorkout(GYM, ns.enums.GymType.strength, FOCUS)
 
@@ -53,7 +69,6 @@ export async function main(ns) {
         await ns.sleep(1000)
         ns.clearLog()
 
-        let player = ns.getPlayer()
         await installBackdoor(ns, SERVER)
 
         if (ns.singularity.isBusy()) {
@@ -76,26 +91,18 @@ export async function main(ns) {
             } else if (work.type === "COMPANY") {
 
                 ns.print("Working a job at " + work.companyName)
-                ns.singularity.stopAction()
+                workout()
 
             } else if (work.type === "CRIME") {
 
                 ns.print("Attempting to " + work.crimeType)
-                ns.singularity.stopAction()
+                workout()
 
             }
 
         } else {
 
-            if (player.city !== GYM_LOCATION && player.money > TRAVEL_COST) {
-
-                ns.print("Traveling to " + GYM_LOCATION)
-                ns.singularity.travelToCity(GYM_LOCATION)
-
-            } else {
-
-                workout()
-            }
+            workout()
         }
     }
 }
