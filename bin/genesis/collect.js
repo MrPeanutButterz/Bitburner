@@ -160,15 +160,15 @@ export async function main(ns) {
                 let availableRam = ns.getServerMaxRam("home") - (ns.getServerUsedRam("home") + 500)
                 let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.weak))
 
-                if (ns.getServerMaxRam("home") > 1024) {
+                if (ns.getServerMaxRam("home") > 1000) {
 
                     if (availableThreads > list[0].threads) {
 
                         ns.exec(SCRIPT.weak, "home", list[0].threads, list[0].hostname, 0)
 
                     } else {
-                        
-                        ns.exec(SCRIPT.weak, "home", threadsAvailable, list[0].hostname, 0)
+
+                        ns.exec(SCRIPT.weak, "home", availableThreads, list[0].hostname, 0)
                     }
                 }
             }

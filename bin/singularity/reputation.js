@@ -84,7 +84,7 @@ export async function main(ns) {
     }
 
     //\\ MAIN LOGIC
-    if (ns.getServerMaxRam("home") > 1000) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
+    if (ns.getServerMaxRam("home") > 500) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
 
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
