@@ -157,7 +157,7 @@ export async function main(ns) {
             } else {
 
                 list.sort((a, b) => a.threads - b.threads).reverse()
-                let availableRam = ns.getServerMaxRam("home") - (ns.getServerUsedRam("home") + 500)
+                let availableRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
                 let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.weak))
 
                 if (ns.getServerMaxRam("home") > 1000) {
@@ -260,13 +260,9 @@ export async function main(ns) {
 
     //\\ LOGIC
     NmapClear(ns)
-
-    // run init grow for hack level
     distributeAcrossNetwork(SCRIPT.grow, 250, "n00dles")
 
     while (true) {
-
-        // run stage 1 or 2 
         await ns.sleep(1000)
         watchForNewServer(ns)
         NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
