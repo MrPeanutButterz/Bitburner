@@ -149,11 +149,12 @@ export async function main(ns) {
         ns.print("Killed \t" + player.numPeopleKilled)
         ns.print("karma  \t" + player.karma.toFixed(2))
 
-        if (!pauseForRequirements()) {
 
-            if (player.hp.current < player.hp.max) { ns.singularity.hospitalize() }
+        if (player.hp.current < player.hp.max) { ns.singularity.hospitalize() }
 
-            if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
+        if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
+
+            if (!pauseForRequirements()) {
 
                 if (NmapTotalRam(ns) < 1e4) {
 
@@ -165,24 +166,24 @@ export async function main(ns) {
                     ns.singularity.stopAction()
                     scriptExit(ns)
                 }
+            }
+
+        } else {
+
+            if (player.numPeopleKilled < KILLS_REQUIRED) {
+
+                ns.singularity.commitCrime(crimeForKills(), FOCUS)
+                return ns.singularity.getCrimeStats(crimeForKills()).time
+
+            } else if (player.karma > KARMA_REQUIRED) {
+
+                ns.singularity.commitCrime(crimeForKarma(), FOCUS)
+                return ns.singularity.getCrimeStats(crimeForKarma()).time
 
             } else {
 
-                if (player.numPeopleKilled < KILLS_REQUIRED) {
-
-                    ns.singularity.commitCrime(crimeForKills(), FOCUS)
-                    return ns.singularity.getCrimeStats(crimeForKills()).time
-
-                } else if (player.karma > KARMA_REQUIRED) {
-
-                    ns.singularity.commitCrime(crimeForKarma(), FOCUS)
-                    return ns.singularity.getCrimeStats(crimeForKarma()).time
-
-                } else {
-
-                    ns.singularity.stopAction()
-                    scriptExit(ns)
-                }
+                ns.singularity.stopAction()
+                scriptExit(ns)
             }
         }
     }
