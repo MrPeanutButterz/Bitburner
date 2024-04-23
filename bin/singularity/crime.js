@@ -1,5 +1,6 @@
 import { scriptStart, scriptExit } from "lib/scripting"
 import { NmapTotalRam } from "/lib/network"
+import { focusType, focusPrio } from "/lib/focus"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -20,8 +21,9 @@ export async function main(ns) {
     const KILLS_REQUIRED = ns.args[0]
     const KARMA_REQUIRED = ns.args[1]
     const CRIMETYPES = ns.enums.CrimeType
+    const FOCUSTYPE = focusType(ns)
 
-    let T = 1000
+    let TIME = 1000
 
     //\\ FUNCTIONS 
     function crimeForMoney() {
@@ -122,7 +124,7 @@ export async function main(ns) {
         }
     }
 
-    function commitCrime() {
+    async function commitCrime() {
 
         // check hp 
         // commit crime 
@@ -133,25 +135,28 @@ export async function main(ns) {
         ns.print("Killed \t" + player.numPeopleKilled)
         ns.print("karma  \t" + player.karma.toPrecision(3))
 
+        if (player.hp.current < player.hp.max) {
+
+            ns.singularity.hospitalize()
+
+        }
+
         if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
 
-            if (player.hp.current < player.hp.max) {
-
-                ns.singularity.hospitalize()
-
-            } else {
+            if (NmapTotalRam(ns) < 1e4) {
 
                 ns.singularity.commitCrime(crimeForMoney(), FOCUS)
                 return ns.singularity.getCrimeStats(crimeForMoney()).time
+
+            } else {
+
+                ns.singularity.stopAction()
+                scriptExit(ns)
             }
 
         } else {
 
-            if (player.hp.current < player.hp.max) {
-
-                ns.singularity.hospitalize()
-
-            } else if (player.numPeopleKilled < KILLS_REQUIRED) {
+            if (player.numPeopleKilled < KILLS_REQUIRED) {
 
                 ns.singularity.commitCrime(crimeForKills(), FOCUS)
                 return ns.singularity.getCrimeStats(crimeForKills()).time
@@ -172,44 +177,8 @@ export async function main(ns) {
     //\\ MAIN LOGIC
     while (true) {
 
-        await ns.sleep(T + 200)
+        await ns.sleep(TIME)
         ns.clearLog()
-
-        if (ns.singularity.isBusy()) {
-
-            let work = ns.singularity.getCurrentWork()
-
-            if (work.type === "CREATE_PROGRAM") {
-
-                ns.print("Creating " + work.programName + " can't do crime")
-                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-
-            } else if (work.type === "FACTION") {
-
-                ns.print("Working with " + work.factionName + " can't do crime")
-                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-
-            } else if (work.type === "CLASS") {
-
-                ns.print("Taking a class at " + work.location + " can't do crime")
-                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-
-            } else if (work.type === "COMPANY") {
-
-                ns.print("Working a job at " + work.companyName + " can't do crime")
-                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-
-            } else if (work.type === "CRIME") {
-
-                ns.print("Attempting to " + work.crimeType)
-                if (NmapTotalRam(ns) > 1e4) { scriptExit(ns) }
-                T = commitCrime()
-
-            }
-
-        } else {
-
-            T = commitCrime()
-        }
+        if (focusPrio(ns, FOCUSTYPE.crime)) { TIME = await commitCrime() }
     }
 }
