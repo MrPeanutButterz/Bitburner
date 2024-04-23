@@ -13,7 +13,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const HOME_RAM_PATCH = ns.getServerMaxRam("home") > 1000 ? 0.9 : 0.5
+    const HOME_RAM_PATCH = ns.getServerMaxRam("home") > 1000 ? 0.8 : 0.5
 
     //\\ FUNCTIONS
     function shareHome() {

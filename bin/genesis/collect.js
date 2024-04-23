@@ -146,7 +146,7 @@ export async function main(ns) {
 
                 if (ns.hackAnalyzeChance(target) <= CHANCE_UPPERBAND &&
                     ns.hackAnalyzeChance(target) >= CHANCE_LOWERBAND) {
-                    list.push({ hostname: target, threads: calculateWeakThreads(target) })
+                    list.push({ target: target, threads: calculateWeakThreads(target) })
                 }
             }
 
@@ -157,19 +157,9 @@ export async function main(ns) {
             } else {
 
                 list.sort((a, b) => a.threads - b.threads).reverse()
-                let availableRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home")
-                let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.weak))
-
-                if (ns.getServerMaxRam("home") > 1000) {
-
-                    if (availableThreads > list[0].threads) {
-
-                        ns.exec(SCRIPT.weak, "home", list[0].threads, list[0].hostname, 0)
-
-                    } else {
-
-                        ns.exec(SCRIPT.weak, "home", availableThreads, list[0].hostname, 0)
-                    }
+                colorPrint(ns, "yellow", "POKE - " + list[0].target)
+                if (!checkRunningScript(SCRIPT.weak, list[0].target)) {
+                    distributeAcrossNetwork(SCRIPT.weak, list[0].threads, list[0].target)
                 }
             }
         }
@@ -223,7 +213,6 @@ export async function main(ns) {
         // hack chance > 80% ? action : single pre weak
         // script running ? run : continue
 
-        preWeak()
         ns.clearLog()
         ns.print("STAGE 2\n\n")
 
@@ -256,6 +245,7 @@ export async function main(ns) {
                 }
             }
         }
+        preWeak()
     }
 
     //\\ LOGIC
