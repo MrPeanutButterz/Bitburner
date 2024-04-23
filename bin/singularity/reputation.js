@@ -93,6 +93,8 @@ export async function main(ns) {
         ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
         ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
 
+        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
+
         ns.singularity.workForFaction(FACTION, TASK, FOCUS)
 
         if (calculateTotalFavor(FACTION) >= 150 &&
@@ -121,5 +123,4 @@ export async function main(ns) {
     }
 
     await followUpScript()
-    ns.exit()
 }
