@@ -60,6 +60,48 @@ export async function main(ns) {
         }
     }
 
+    function workJob() {
+
+        let player = ns.getPlayer()
+
+        let positionNow = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.getPlayer().jobs[COMPANY_NAME])
+        let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
+
+        if (ns.singularity.getCompanyRep(COMPANY_NAME) > COMPANY_REPUTATION) {
+
+            ns.singularity.stopAction()
+            scriptExit(ns)
+
+        } else if (player.skills.hacking < positionNext.requiredSkills.hacking) {
+
+            ns.print("Awaiting hack level")
+
+        } else if (ns.singularity.getCompanyRep(COMPANY_NAME) < positionNext.requiredReputation) {
+
+            ns.print("Building reputation as a " + positionNow.name)
+
+        } else if (
+            player.skills.strength < positionNext.requiredSkills.strength ||
+            player.skills.defense < positionNext.requiredSkills.defense ||
+            player.skills.dexterity < positionNext.requiredSkills.dexterity ||
+            player.skills.agility < positionNext.requiredSkills.agility) {
+
+            goToGym(
+                positionNext.requiredSkills.strength,
+                positionNext.requiredSkills.defense,
+                positionNext.requiredSkills.dexterity,
+                positionNext.requiredSkills.agility
+            )
+
+        } else if (player.skills.charisma < positionNext.requiredSkills.charisma) {
+
+            goToUniversity(positionNext.requiredSkills.charisma)
+
+        }
+
+        ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
+    }
+
     //\\ MAIN LOGIC
     if (FLAGS.cfo) {
 
@@ -70,9 +112,7 @@ export async function main(ns) {
 
         if (COMPANY_NAME === undefined) { COMPANY_NAME = ns.enums.CompanyName.FourSigma }
         if (COMPANY_REPUTATION === undefined) { COMPANY_REPUTATION = 8e5 + 100 }
-
     }
-
 
     while (true) {
 
@@ -102,50 +142,12 @@ export async function main(ns) {
             } else if (work.type === "COMPANY") {
 
                 ns.print("Working a job at " + work.companyName)
-
-                let positionNow = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.getPlayer().jobs[COMPANY_NAME])
-                let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
-
-                if (ns.singularity.getCompanyRep(COMPANY_NAME) > COMPANY_REPUTATION) {
-
-                    ns.singularity.stopAction()
-                    scriptExit(ns)
-
-                } else if (player.skills.hacking < positionNext.requiredSkills.hacking) {
-
-                    ns.print("Awaiting hack level")
-
-                } else if (ns.singularity.getCompanyRep(COMPANY_NAME) < positionNext.requiredReputation) {
-
-                    ns.print("Building reputation as a " + positionNow.name)
-
-                } else if (
-                    player.skills.strength < positionNext.requiredSkills.strength ||
-                    player.skills.defense < positionNext.requiredSkills.defense ||
-                    player.skills.dexterity < positionNext.requiredSkills.dexterity ||
-                    player.skills.agility < positionNext.requiredSkills.agility) {
-
-                    goToGym(
-                        positionNext.requiredSkills.strength,
-                        positionNext.requiredSkills.defense,
-                        positionNext.requiredSkills.dexterity,
-                        positionNext.requiredSkills.agility
-                    )
-
-                } else if (player.skills.charisma < positionNext.requiredSkills.charisma) {
-
-                    goToUniversity(positionNext.requiredSkills.charisma)
-
-                } else {
-
-                    ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
-
-                }
+                workJob()
 
             } else if (work.type === "CRIME") {
 
                 ns.print("Attempting to " + work.crimeType)
-                ns.singularity.stopAction()
+                workJob()
 
             }
 
