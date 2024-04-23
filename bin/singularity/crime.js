@@ -133,7 +133,7 @@ export async function main(ns) {
 
         ns.print("Health \t" + player.hp.current + " / " + player.hp.max)
         ns.print("Killed \t" + player.numPeopleKilled)
-        ns.print("karma  \t" + player.karma.toPrecision(3))
+        ns.print("karma  \t" + player.karma.toFixed(2))
 
         if (player.hp.current < player.hp.max) {
 
