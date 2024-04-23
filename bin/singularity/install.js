@@ -138,9 +138,9 @@ export async function main(ns) {
 
                 if (ns.singularity.purchaseAugmentation(FACTION, augmentation)) {
 
-                    i++
-                    ns.print(augmentation)
                     await ns.sleep(1000)
+                    ns.print(augmentation)
+                    i++
 
                 }
 
