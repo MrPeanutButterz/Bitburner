@@ -141,13 +141,11 @@ export async function main(ns) {
                     await ns.sleep(1000)
                     ns.print(augmentation)
                     i++
-
                 }
 
             } else {
 
                 await ns.sleep(1000)
-
             }
         }
     }
