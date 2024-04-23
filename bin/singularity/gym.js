@@ -1,5 +1,6 @@
 import { scriptStart, scriptExit } from "lib/scripting"
 import { installBackdoor } from "lib/network"
+import { focusType, focusPrio } from "/lib/focus"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -21,19 +22,22 @@ export async function main(ns) {
     const SERVER = "iron-gym"
     const GYM_LOCATION = ns.enums.CityName.Sector12
 
-    const STRENGHT = ns.args[0]
-    const DEFENCE = ns.args[1]
-    const DEXTERITY = ns.args[2]
-    const AGILITY = ns.args[3]
+    const STRENGHT = ns.args[0] || 0
+    const DEFENCE = ns.args[1] || 0
+    const DEXTERITY = ns.args[2] || 0
+    const AGILITY = ns.args[3] || 0
+
+    const FOCUSTYPE = focusType(ns)
 
     //\\ FUNCTIONS 
-    function workout() {
+    async function workout() {
 
         // go to location
         // work on stats
         // exit when done
 
         let player = ns.getPlayer()
+        await installBackdoor(ns, SERVER)
 
         if (player.city !== GYM_LOCATION && player.money > TRAVEL_COST) {
 
@@ -68,41 +72,6 @@ export async function main(ns) {
 
         await ns.sleep(1000)
         ns.clearLog()
-
-        await installBackdoor(ns, SERVER)
-
-        if (ns.singularity.isBusy()) {
-
-            let work = ns.singularity.getCurrentWork()
-
-            if (work.type === "CREATE_PROGRAM") {
-
-                ns.print("Creating " + work.programName)
-
-            } else if (work.type === "FACTION") {
-
-                ns.print("Working with " + work.factionName)
-
-            } else if (work.type === "CLASS") {
-
-                ns.print("Taking a class at " + work.location)
-                workout()
-
-            } else if (work.type === "COMPANY") {
-
-                ns.print("Working a job at " + work.companyName)
-                workout()
-
-            } else if (work.type === "CRIME") {
-
-                ns.print("Attempting to " + work.crimeType)
-                workout()
-
-            }
-
-        } else {
-
-            workout()
-        }
+        if (focusPrio(ns, FOCUSTYPE.gym)) { await workout() }
     }
 }

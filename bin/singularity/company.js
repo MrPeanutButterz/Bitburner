@@ -1,6 +1,7 @@
 import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
 import { canRunOnHome, installBackdoor } from "lib/network"
 import { getFactionServer } from "lib/factions"
+import { focusType, focusPrio } from "/lib/focus"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -13,6 +14,7 @@ export async function main(ns) {
         ["cfo", false],
     ])
     const SCRIPT = scriptPath(ns)
+    const FOCUSTYPE = focusType(ns)
 
     let COMPANY_NAME = ns.args[0]
     let COMPANY_REPUTATION = ns.args[1]
@@ -60,46 +62,70 @@ export async function main(ns) {
         }
     }
 
+    function hasApplied(obj, value) {
+        if (obj.hasOwnProperty(value)) { return true } else { return false }
+    }
+
     function workJob() {
 
         let player = ns.getPlayer()
+        let hasJob = hasApplied(player.jobs, COMPANY_NAME)
 
-        let positionNow = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.getPlayer().jobs[COMPANY_NAME])
-        let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
+        if (!hasJob) {
 
-        if (ns.singularity.getCompanyRep(COMPANY_NAME) > COMPANY_REPUTATION) {
+            let businessIntern = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.enums.JobName.business0)
+            if (player.skills.hacking < businessIntern.requiredSkills.hacking) {
 
-            ns.singularity.stopAction()
-            scriptExit(ns)
+                ns.print("Hacking level is to low")
 
-        } else if (player.skills.hacking < positionNext.requiredSkills.hacking) {
+            } else if (player.skills.charisma < businessIntern.requiredSkills.charisma) {
 
-            ns.print("Awaiting hack level")
+                goToUniversity(businessIntern.requiredSkills.charisma)
 
-        } else if (ns.singularity.getCompanyRep(COMPANY_NAME) < positionNext.requiredReputation) {
+            } else {
 
-            ns.print("Building reputation as a " + positionNow.name)
+                ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
+            }
 
-        } else if (
-            player.skills.strength < positionNext.requiredSkills.strength ||
-            player.skills.defense < positionNext.requiredSkills.defense ||
-            player.skills.dexterity < positionNext.requiredSkills.dexterity ||
-            player.skills.agility < positionNext.requiredSkills.agility) {
+        } else {
 
-            goToGym(
-                positionNext.requiredSkills.strength,
-                positionNext.requiredSkills.defense,
-                positionNext.requiredSkills.dexterity,
-                positionNext.requiredSkills.agility
-            )
+            let positionNow = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.getPlayer().jobs[COMPANY_NAME])
+            let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
 
-        } else if (player.skills.charisma < positionNext.requiredSkills.charisma) {
+            ns.singularity.workForCompany(COMPANY_NAME, FOCUS)
 
-            goToUniversity(positionNext.requiredSkills.charisma)
+            if (ns.singularity.getCompanyRep(COMPANY_NAME) > COMPANY_REPUTATION) {
 
+                ns.singularity.stopAction()
+                scriptExit(ns)
+
+            } else if (player.skills.hacking < positionNext.requiredSkills.hacking) {
+
+                ns.print("Awaiting hack level")
+
+            } else if (ns.singularity.getCompanyRep(COMPANY_NAME) < positionNext.requiredReputation) {
+
+                ns.print("Building reputation as a " + positionNow.name)
+
+            } else if (
+                player.skills.strength < positionNext.requiredSkills.strength ||
+                player.skills.defense < positionNext.requiredSkills.defense ||
+                player.skills.dexterity < positionNext.requiredSkills.dexterity ||
+                player.skills.agility < positionNext.requiredSkills.agility) {
+
+                goToGym(
+                    positionNext.requiredSkills.strength,
+                    positionNext.requiredSkills.defense,
+                    positionNext.requiredSkills.dexterity,
+                    positionNext.requiredSkills.agility
+                )
+
+            } else if (player.skills.charisma < positionNext.requiredSkills.charisma) {
+
+                goToUniversity(positionNext.requiredSkills.charisma)
+
+            }
         }
-
-        ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
     }
 
     //\\ MAIN LOGIC
@@ -118,57 +144,6 @@ export async function main(ns) {
 
         await ns.sleep(1000)
         ns.clearLog()
-
-        // await installBackdoor(ns, SERVER)
-
-        let player = ns.getPlayer()
-
-        if (ns.singularity.isBusy()) {
-
-            let work = ns.singularity.getCurrentWork()
-
-            if (work.type === "CREATE_PROGRAM") {
-
-                ns.print("Creating " + work.programName + " can't work a job")
-
-            } else if (work.type === "FACTION") {
-
-                ns.print("Working with " + work.factionName + " can't work a job")
-
-            } else if (work.type === "CLASS") {
-
-                ns.print("Taking a class at " + work.location + " can't work a job")
-
-            } else if (work.type === "COMPANY") {
-
-                ns.print("Working a job at " + work.companyName)
-                workJob()
-
-            } else if (work.type === "CRIME") {
-
-                ns.print("Attempting to " + work.crimeType)
-                workJob()
-
-            }
-
-        } else {
-
-            let businessIntern = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, ns.enums.JobName.business0)
-
-            if (player.skills.hacking < businessIntern.requiredSkills.hacking) {
-
-                ns.print("Hacking level is to low")
-
-            } else if (player.skills.charisma < businessIntern.requiredSkills.charisma) {
-
-                goToUniversity(businessIntern.requiredSkills.charisma)
-
-            } else {
-
-                ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
-                ns.singularity.workForCompany(COMPANY_NAME, FOCUS)
-
-            }
-        }
+        if (focusPrio(ns, FOCUSTYPE.company)) { workJob() }
     }
 }

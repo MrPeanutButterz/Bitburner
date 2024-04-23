@@ -1,5 +1,6 @@
 import { scriptStart, scriptPath } from "lib/scripting"
 import { canRunOnHome } from "lib/network"
+import { focusType, focusPrio } from "/lib/focus"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -13,6 +14,7 @@ export async function main(ns) {
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
     const COMPLETION_TRIGGER = 80 // 80%
+    const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false
     let FACTION = ns.args[0]
@@ -83,6 +85,30 @@ export async function main(ns) {
         }
     }
 
+    function factionWork() {
+
+        ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
+        ns.print("Time estimate \t\t" + calculateCompletionTime())
+        ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
+        ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
+        ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
+
+        ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+
+        if (calculateTotalFavor(FACTION) >= 150 &&
+            ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < calculateRepGoal(FACTION) * 0.8 &&
+            (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
+            ns.singularity.getFactionFavor(FACTION) < 150) {
+
+            ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
+        }
+
+        if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
+            ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
+            ns.singularity.donateToFaction(FACTION, DONATION)
+        }
+    }
+
     //\\ MAIN LOGIC
     if (ns.getServerMaxRam("home") > 500) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
 
@@ -91,62 +117,9 @@ export async function main(ns) {
         REPUTATION = ns.singularity.getFactionRep(FACTION)
         await ns.sleep(1000)
         ns.clearLog()
-
-        if (ns.singularity.isBusy()) {
-
-            let work = ns.singularity.getCurrentWork()
-
-            if (work.type === "CREATE_PROGRAM") {
-
-                ns.print("Creating " + work.programName + " can't build reputation")
-
-            } else if (work.type === "FACTION") {
-
-                ns.print("\t\t\t" + FACTION)
-                ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
-                ns.print("Time estimate \t\t" + calculateCompletionTime())
-                ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
-                ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
-                ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
-
-                ns.singularity.workForFaction(FACTION, TASK, FOCUS)
-
-                if (calculateTotalFavor(FACTION) >= 150 &&
-                    ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < calculateRepGoal(FACTION) * 0.8 &&
-                    (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
-                    ns.singularity.getFactionFavor(FACTION) < 150) {
-
-                    ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
-
-                }
-
-                if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
-                    ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
-                    ns.singularity.donateToFaction(FACTION, DONATION)
-                }
-
-            } else if (work.type === "CLASS") {
-
-                ns.print("Taking a class at " + work.location + " can't build reputation")
-
-            } else if (work.type === "COMPANY") {
-
-                ns.print("Working a job at " + work.companyName + " can't build reputation")
-
-            } else if (work.type === "CRIME") {
-
-                ns.print("Attempting to " + work.crimeType + " can't build reputation")
-                ns.singularity.stopAction()
-
-            }
-
-        } else {
-
-            ns.singularity.workForFaction(FACTION, TASK, FOCUS)
-
-        }
+        if (focusPrio(ns, FOCUSTYPE.faction)) { factionWork() }
     }
 
     await followUpScript()
-
+    ns.exit()
 }
