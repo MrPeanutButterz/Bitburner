@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "lib/scripting"
+import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
 import { NmapTotalRam } from "/lib/network"
 import { focusType, focusPrio } from "/lib/focus"
 
@@ -15,6 +15,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
+    const SCRIPT = scriptPath(ns)
 
     //\\ GENERAL DATA
     const FOCUS = false
