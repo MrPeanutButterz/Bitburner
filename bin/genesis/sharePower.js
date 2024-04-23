@@ -13,11 +13,11 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const HOME_RAM_USAGE = ns.getServerMaxRam("home") > 1000 ? 0.9 : 0.5
+    const HOME_RAM_PATCH = ns.getServerMaxRam("home") > 1000 ? 0.9 : 0.5
 
     //\\ FUNCTIONS
     function shareHome() {
-        let availableRam = (ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) * HOME_RAM_USAGE
+        let availableRam = (ns.getServerMaxRam("home") - ns.getServerUsedRam("home")) * HOME_RAM_PATCH
         let availableThreads = Math.floor(availableRam / ns.getScriptRam(SCRIPT.share))
         if (availableThreads > 1) { ns.run(SCRIPT.share, availableThreads) }
     }
