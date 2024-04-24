@@ -62,8 +62,8 @@ export async function main(ns) {
         }
     }
 
-    function hasApplied(obj, value) {
-        if (obj.hasOwnProperty(value)) { return true } else { return false }
+    function hasApplied(jobs, company) {
+        return jobs.hasOwnProperty(company)
     }
 
     function workJob() {
@@ -93,6 +93,7 @@ export async function main(ns) {
             let positionNext = ns.singularity.getCompanyPositionInfo(COMPANY_NAME, positionNow.nextPosition)
 
             ns.singularity.workForCompany(COMPANY_NAME, FOCUS)
+            ns.singularity.applyToCompany(COMPANY_NAME, ns.enums.JobField.business)
 
             if (ns.singularity.getCompanyRep(COMPANY_NAME) > COMPANY_REPUTATION) {
 
