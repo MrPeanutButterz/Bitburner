@@ -57,9 +57,6 @@ export async function main(ns) {
 				if (work.type === "CREATE_PROGRAM") {
 
 					ns.print("Creating " + work.programName)
-					if (work.programName != ESSENTIAL[i].name) {
-						createPrograms(ESSENTIAL[i])
-					}
 					buyPrograms(ESSENTIAL[i])
 
 				} else if (work.type === "FACTION") {
@@ -84,9 +81,6 @@ export async function main(ns) {
 
 					ns.print("Next item " + ESSENTIAL[i].name)
 					ns.print("Attempting to " + work.crimeType + " will buy only")
-					if (work.programName != ESSENTIAL[i].name) {
-						createPrograms(ESSENTIAL[i])
-					}
 					buyPrograms(ESSENTIAL[i])
 
 				}
@@ -94,7 +88,7 @@ export async function main(ns) {
 			} else {
 
 				ns.print("Next item " + ESSENTIAL[i].name)
-				createPrograms(ESSENTIAL[i])
+				// createPrograms(ESSENTIAL[i])
 				buyPrograms(ESSENTIAL[i])
 
 			}

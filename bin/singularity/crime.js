@@ -130,8 +130,8 @@ export async function main(ns) {
         const excludeArgs = ["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"]
         let isRunning = false
 
-        excludeArgs.forEach(a => {
-            if (Boolean(ns.getRunningScript(SCRIPT.requirement, "home", a))) {
+        excludeArgs.forEach(args => {
+            if (Boolean(ns.getRunningScript(SCRIPT.requirement, "home", args))) {
                 isRunning = true
             }
         })
@@ -149,24 +149,28 @@ export async function main(ns) {
         ns.print("Killed \t" + player.numPeopleKilled)
         ns.print("karma  \t" + player.karma.toFixed(2))
 
-
         if (player.hp.current < player.hp.max) { ns.singularity.hospitalize() }
 
         if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
 
-            if (!pauseForRequirements()) {
+            if (NmapTotalRam(ns) < 5000) {
 
-                if (NmapTotalRam(ns) < 1e4) {
+                if (!pauseForRequirements()) {
 
                     ns.singularity.commitCrime(crimeForMoney(), FOCUS)
                     return ns.singularity.getCrimeStats(crimeForMoney()).time
 
                 } else {
 
-                    ns.singularity.stopAction()
-                    scriptExit(ns)
+                    ns.print("Waiting for requirements...")
                 }
+
+            } else {
+
+                ns.singularity.stopAction()
+                scriptExit(ns)
             }
+
 
         } else {
 
