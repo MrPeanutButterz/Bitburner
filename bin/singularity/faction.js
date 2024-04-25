@@ -86,11 +86,18 @@ export async function main(ns) {
         }
     }
 
+    function hasRedPill() {
+
+    }
+
     //\\ MAIN LOGIC
 
     FLAGS.story ?
         TOP_CANDIDATE = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
         TOP_CANDIDATE = getTopCandidate(getFactionNames(ns))
+
+    if (ownedAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
+
 
     if (TOP_CANDIDATE.name !== "RedPillTime") {
 
@@ -119,8 +126,8 @@ export async function main(ns) {
 
     } else {
 
-        ns.tprint("End of the road...")
-        ns.tprint("Its time to take the red pill")
+        ns.tprint("Follow the white rabbit...")
+        ns.tprint("Knock, knock, Neo.")
 
     }
 }
