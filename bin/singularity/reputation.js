@@ -13,7 +13,7 @@ export async function main(ns) {
     const SCRIPT = scriptPath(ns)
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
-    const COMPLETION_TRIGGER = 80 // 80%
+    const COMPLETION_TRIGGER = 90 // 90%
     const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false
@@ -85,30 +85,38 @@ export async function main(ns) {
         }
     }
 
-    function factionWork() {
-
-        ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
-        ns.print("Time estimate \t\t" + calculateCompletionTime())
-        ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
-        ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
-        ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
-
-        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
-
-        ns.singularity.workForFaction(FACTION, TASK, FOCUS)
-
+    function preInstall() {
         if (calculateTotalFavor(FACTION) >= 150 &&
-            ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < calculateRepGoal(FACTION) * 0.8 &&
+            ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < ns.singularity.getFactionRep(FACTION) &&
             (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
             ns.singularity.getFactionFavor(FACTION) < 150) {
 
             ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
         }
+    }
 
+    function donate() {
         if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
             ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
             ns.singularity.donateToFaction(FACTION, DONATION)
         }
+    }
+
+    function display() {
+        ns.print("Reputation \t\t" + Math.round(ns.singularity.getFactionRep(FACTION)) + "/" + REPUTATION_GOAL)
+        ns.print("Time estimate \t\t" + calculateCompletionTime())
+        ns.print("Completion \t\t" + ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100).toPrecision(4) + "%")
+        ns.print("Total favor \t\t" + calculateTotalFavor(FACTION))
+        ns.print("Favor \t\t\t" + Math.round(ns.singularity.getFactionFavor(FACTION)))
+    }
+
+    function factionWork() {
+
+        ns.singularity.workForFaction(FACTION, TASK, FOCUS)
+        display()
+        preInstall()
+        donate()
+
     }
 
     //\\ MAIN LOGIC
@@ -116,6 +124,7 @@ export async function main(ns) {
 
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
+        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
         REPUTATION = ns.singularity.getFactionRep(FACTION)
         await ns.sleep(1000)
         ns.clearLog()

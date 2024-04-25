@@ -15,7 +15,7 @@ export async function main(ns) {
 
     let FACTION = ns.args[0]
     let SERVER = getFactionServer(ns, FACTION)
-    let REQUIREMENT = getFactionStats(ns, FACTION)
+    let REQ = getFactionStats(ns, FACTION)
 
     //\\ FUNCTIONS 
     function displayLog(msg) {
@@ -99,17 +99,17 @@ export async function main(ns) {
 
         } else if (["Tian Di Hui", "Sector-12", "Chongqing", "New Tokyo", "Ishima", "Aevum", "Volhaven"].includes(FACTION)) {
 
-            if (moneyCondition(REQUIREMENT.money)) {
+            if (moneyCondition(REQ.money)) {
 
-                displayLog("Awaiting money " + ns.formatNumber(REQUIREMENT.money))
+                displayLog("Awaiting money " + ns.formatNumber(REQ.money))
 
-            } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < REQUIREMENT.hacklvl) {
+            } else if (FACTION === "Tian Di Hui" && ns.getPlayer().skills.hacking < REQ.hacklvl) {
 
-                displayLog("Awaiting hack skill " + REQUIREMENT.hacklvl)
+                displayLog("Awaiting hack skill " + REQ.hacklvl)
 
-            } else if (locationCondition(REQUIREMENT.city)) {
+            } else if (locationCondition(REQ.city)) {
 
-                moveToCity(REQUIREMENT.city)
+                moveToCity(REQ.city)
             }
 
         } else if (["ECorp", "MegaCorp", "KuaiGong International", "Four Sigma", "NWO", "Blade Industries",
@@ -120,17 +120,17 @@ export async function main(ns) {
 
         } else if (["Slum Snakes", "Tetrads", "Silhouette", "Speakers for the Dead", "The Dark Army", "The Syndicate"].includes(FACTION)) {
 
-            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)) {
+            if (skillCondition(REQ.str, REQ.def, REQ.dex, REQ.agi)) {
 
-                goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
+                goToGym(REQ.str, REQ.def, REQ.dex, REQ.agi)
 
-            } else if (ns.getPlayer().numPeopleKilled < REQUIREMENT.kills || ns.getPlayer().karma > REQUIREMENT.karma) {
+            } else if (ns.getPlayer().numPeopleKilled < REQ.kills || ns.getPlayer().karma > REQ.karma) {
 
-                doSomeCrime(REQUIREMENT.kills, REQUIREMENT.karma)
+                doSomeCrime(REQ.kills, REQ.karma)
 
-            } else if (locationCondition(REQUIREMENT.city)) {
+            } else if (locationCondition(REQ.city)) {
 
-                moveToCity(REQUIREMENT.city)
+                moveToCity(REQ.city)
 
             } else if (FACTION === "Silhouette") {
 
@@ -139,17 +139,17 @@ export async function main(ns) {
 
         } else if (["The Covenant", "Daedalus", "Illuminati"].includes(FACTION)) {
 
-            if (skillCondition(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility) && FACTION != "Daedalus") {
+            if (skillCondition(REQ.str, REQ.def, REQ.dex, REQ.agi) && FACTION != "Daedalus") {
 
-                goToGym(REQUIREMENT.strength, REQUIREMENT.defense, REQUIREMENT.dexterity, REQUIREMENT.agility)
+                goToGym(REQ.str, REQ.def, REQ.dex, REQ.agi)
 
-            } else if (ns.getPlayer().skills.hacking < REQUIREMENT.hacklvl) {
+            } else if (ns.getPlayer().skills.hacking < REQ.hacklvl) {
 
-                displayLog("Awaiting hack skill " + REQUIREMENT.hacklvl)
+                displayLog("Awaiting hack skill " + REQ.hacklvl)
 
-            } else if (moneyCondition(REQUIREMENT.money)) {
+            } else if (moneyCondition(REQ.money)) {
 
-                displayLog("Awaiting money " + ns.formatNumber(REQUIREMENT.money))
+                displayLog("Awaiting money " + ns.formatNumber(REQ.money))
 
             }
         }
