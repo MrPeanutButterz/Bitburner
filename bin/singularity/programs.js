@@ -88,8 +88,8 @@ export async function main(ns) {
 			} else {
 
 				ns.print("Next item " + ESSENTIAL[i].name)
-				// createPrograms(ESSENTIAL[i])
 				buyPrograms(ESSENTIAL[i])
+				createPrograms(ESSENTIAL[i])
 
 			}
 

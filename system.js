@@ -26,9 +26,9 @@ export async function main(ns) {
   //\\ MAIN MAGIC
   await intro()
   await run(SCRIPT.collect)
+  await run(SCRIPT.programs)
   await run(SCRIPT.servers)
   await run(SCRIPT.ram)
-  await run(SCRIPT.programs)
   await ns.sleep(2000)
 
   while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
