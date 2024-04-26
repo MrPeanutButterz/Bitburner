@@ -55,7 +55,7 @@
  * -Corporations do not reset when installing Augmentations, but they do reset when destroying a BitNode
 */
 
-import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { scriptStart, scriptPath } from "lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -66,6 +66,49 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
+
     //\\ FUNCTIONS 
+    function createCorporation() {
+        if (!ns.corporation.hasCorporation()) {
+            const corporationName = "CapitalPrinter Inc"
+            if (ns.corporation.createCorporation(corporationName, false)) { ns.tprint("Corporation \"" + corporationName + "\" created") }
+        }
+    }
+
     //\\ LOGIC
+    createCorporation()
+
+
 }
+
+
+
+// nextUpdate()	                                Sleep until the next Corporation update has happened.
+// hasCorporation()	                            Returns whether the player has a corporation. Does not require API access.
+// createCorporation(corporationName, selfFund)	Create a Corporation
+// getCorporation()	                            Get corporation data
+// getDivision(divisionName)	                Get division data
+// expandCity(divisionName, city)	            Expand to a new city
+// expandIndustry(industryType, divisionName)	Expand to a new industry
+// goPublic(numShares)	                        Go public
+// hasUnlock(upgradeName)	                    Check if you have a one time unlockable upgrade
+
+// acceptInvestmentOffer()	                    Accept investment based on you companies current valuation
+// getBonusTime()	                            Get bonus time. “Bonus time” is accumulated when the game is offline or if the game is inactive in the browser. “Bonus time” makes the game progress faster.
+// getConstants()	                            Get corporation related constants
+// getIndustryData(industryName)	            Get constant industry definition data for a specific industry
+// getInvestmentOffer()	                        Get an offer for investment based on you companies current valuation
+// getMaterialData(materialName)	            Get constant data for a specific material
+// getUnlockCost(upgradeName)	                Gets the cost to unlock a one time unlockable upgrade
+// getUpgradeLevel(upgradeName)	                Get the level of a levelable upgrade
+// getUpgradeLevelCost(upgradeName)	            Gets the cost to unlock the next level of a levelable upgrade
+// issueDividends(rate)	                        Issue dividends
+// issueNewShares(amount)	                    Issue new shares
+// levelUpgrade(upgradeName)	                Level an upgrade.
+// purchaseUnlock(upgradeName)	                Unlock an upgrade
+
+// buyBackShares(amount)	                    Buyback Shares. Spend money from the player's wallet to transfer shares from public traders to the CEO.
+// sellShares(amount)	                        Sell Shares. Transfer shares from the CEO to public traders to receive money in the player's wallet.
+// sellDivision(divisionName)	                Sell a division
+
+// bribe(factionName, amountCash)	            Bribe a faction
