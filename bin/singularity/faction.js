@@ -23,14 +23,14 @@ export async function main(ns) {
         augmentations.forEach(augmentation => {
 
             let augmentationReputation = ns.singularity.getAugmentationRepReq(augmentation)
-            if (!ownedAugmentation(augmentation) && augmentationReputation > topRep) {
+            if (!ownAugmentation(augmentation) && augmentationReputation > topRep) {
                 topRep = augmentationReputation
             }
         })
         return Math.ceil(topRep)
     }
 
-    function ownedAugmentation(augmentation) {
+    function ownAugmentation(augmentation) {
 
         // return true if its owned
         return Boolean(ns.singularity.getOwnedAugmentations(true).find(e => e === augmentation))
@@ -42,7 +42,7 @@ export async function main(ns) {
         let augmentations = ns.singularity.getAugmentationsFromFaction(f)
 
         augmentations.forEach(a => {
-            if (!ownedAugmentation(a)) {
+            if (!ownAugmentation(a)) {
                 augmentationLeft = false
             }
         })
@@ -86,17 +86,12 @@ export async function main(ns) {
         }
     }
 
-    function hasRedPill() {
-
-    }
-
     //\\ MAIN LOGIC
-
     FLAGS.story ?
         TOP_CANDIDATE = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
         TOP_CANDIDATE = getTopCandidate(getFactionNames(ns))
 
-    if (ownedAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
+    if (ownAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
 
 
     if (TOP_CANDIDATE.name !== "RedPillTime") {

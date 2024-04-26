@@ -13,6 +13,6 @@ export async function main(ns) {
     //\\ MAIN LOGICA
     while (true) {
         await ns.sleep(1000)
-        installBackdoor(ns, SERVER)
+        await installBackdoor(ns, SERVER)
     }
 }
