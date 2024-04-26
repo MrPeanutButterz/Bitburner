@@ -90,7 +90,7 @@ export async function main(ns) {
 
         if (["Netburners"].includes(FACTION)) {
 
-            if (ns.hacknet.numNodes() < 4) { getHacknet() }
+            getHacknet()
 
         } else if (["CyberSec", "NiteSec", "The Black Hand", "BitRunners"].includes(FACTION)) {
 
