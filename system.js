@@ -25,19 +25,41 @@ export async function main(ns) {
 
   //\\ MAIN MAGIC
   await intro()
-  await run(SCRIPT.collect)
-  await run(SCRIPT.programs)
-  await run(SCRIPT.servers)
-  await run(SCRIPT.ram)
-  await ns.sleep(2000)
 
-  while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
-  await run(SCRIPT.faction)
-  await run(SCRIPT.crime)
-  await run("utils/interface.js")
+  if (ns.getResetInfo().currentNode === 9) {
 
-  if (ns.getServerMaxRam("home") > 2000) {
+    // no pserver in bn 9
+
+    await run(SCRIPT.collect)
+    await run(SCRIPT.hashnet)
+    await run(SCRIPT.ram)
+    await run(SCRIPT.programs)
+    await ns.sleep(2000)
+
+    while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
+    await run(SCRIPT.faction)
+    await run(SCRIPT.crime)
+    await run("utils/interface.js")
+
     await run(SCRIPT.core)
     await run(SCRIPT.stockmarket)
+
+  } else {
+
+    await run(SCRIPT.collect)
+    await run(SCRIPT.programs)
+    await run(SCRIPT.servers)
+    await run(SCRIPT.ram)
+    await ns.sleep(2000)
+
+    while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
+    await run(SCRIPT.faction)
+    await run(SCRIPT.crime)
+    await run("utils/interface.js")
+
+    if (ns.getServerMaxRam("home") > 2000) {
+      await run(SCRIPT.core)
+      await run(SCRIPT.stockmarket)
+    }
   }
 }
