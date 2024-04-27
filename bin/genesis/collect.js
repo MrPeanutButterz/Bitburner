@@ -83,8 +83,16 @@ export async function main(ns) {
                 }
             }
         }
-        list.sort(function (a, b) { return a.threads - b.threads })
-        return list
+
+        if (list.length === 0) {
+
+            return [{ hostname: "n00dles", action: "grow", threads: calculateGrowThreads("n00dles") }]
+
+        } else {
+
+            list.sort(function (a, b) { return a.threads - b.threads })
+            return list
+        }
     }
 
     function checkRunningScript(script, target) {
@@ -249,22 +257,9 @@ export async function main(ns) {
     }
 
     //\\ LOGIC
-    NmapClear(ns)
-    distributeAcrossNetwork(SCRIPT.grow, 250, "n00dles")
-
     while (true) {
         await ns.sleep(1000)
         watchForNewServer(ns)
-
-        if (NmapTotalRam(ns) < 1e4) {
-            1000
-
-            stage1()
-
-        } else {
-
-            stage2()
-
-        }
+        NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
     }
 }
