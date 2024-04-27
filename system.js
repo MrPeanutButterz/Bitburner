@@ -17,8 +17,19 @@ export async function main(ns) {
     await ns.sleep(5000)
   }
 
+  async function waitForRam() {
+    while (ns.getServerMaxRam("home") < 128) {
+      ns.print("Awaiting more ram on home")
+      await ns.sleep(1000)
+    }
+  }
+
   async function run(script) {
-    while (!canRunOnHome(ns, script)) { await ns.sleep(1000) }
+    while (!canRunOnHome(ns, script)) {
+      ns.print("Next is " + script)
+      await ns.sleep(1000)
+    }
+
     ns.run(script, 1)
     await ns.sleep(1000)
   }
@@ -32,8 +43,8 @@ export async function main(ns) {
   await run(SCRIPT.servers)
   await ns.sleep(2000)
 
-  while (ns.getServerMaxRam("home") < 128) { await ns.sleep(1000) }
-  await run(SCRIPT.faction)
+  await waitForRam()
+  // await run(SCRIPT.faction)
   await run(SCRIPT.crime)
   await run("utils/interface.js")
 

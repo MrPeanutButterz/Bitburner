@@ -165,41 +165,6 @@ export async function main(ns) {
         }
     }
 
-    function stage0() {
-
-        // only hack n00dles
-
-        if (NmapFreeRam(ns) === NmapTotalRam(ns)) {
-
-            ns.clearLog()
-            ns.print("STAGE ZERO\n\n")
-
-            let target = "n00dles"
-
-            if (weakCondition(target)) {
-
-                if (!distributeAcrossNetwork(SCRIPT.weak, calculateWeakThreads(target), target)) {
-                    ns.print("W... - " + target)
-
-                } else { ns.print("WEAK - " + target) }
-
-            } else if (growCondition(target)) {
-
-                if (!distributeAcrossNetwork(SCRIPT.grow, calculateGrowThreads(target), target)) {
-                    ns.print("G... - " + target)
-
-                } else { ns.print("GROW - " + target) }
-
-            } else {
-
-                if (!distributeAcrossNetwork(SCRIPT.hack, calculateHackThreads(target), target)) {
-                    colorPrint(ns, "white", "H... - " + target)
-
-                } else { colorPrint(ns, "white", "HACK - " + target) }
-            }
-        }
-    }
-
     function stage1() {
 
         // get thread sorted list of targets
@@ -291,11 +256,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         watchForNewServer(ns)
 
-        if (NmapTotalRam(ns) < 1e3) {
-
-            stage0()
-
-        } else if (NmapTotalRam(ns) < 1e4) {
+        if (NmapTotalRam(ns) < 1e4) {
             1000
 
             stage1()
