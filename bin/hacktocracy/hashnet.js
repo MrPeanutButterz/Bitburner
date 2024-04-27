@@ -46,7 +46,7 @@ export async function main(ns) {
         if (ns.getServerMoneyAvailable("home") > API.getCacheUpgradeCost(index)) { API.upgradeCache(index) }
     }
 
-    function baselineHacknet() {
+    function baselineHashnet() {
 
         let nodes = 4
         let level = 25
@@ -54,20 +54,40 @@ export async function main(ns) {
         let core = 1
 
         for (var i = 0; i < API.numNodes(); i++) {
-            if (API.numNodes() < nodes) { buyNode() }
-            if (API.getNodeStats(i).level < level) { buyLevel(i) }
-            if (API.getNodeStats(i).ram < ram) { buyRam(i) }
-            if (API.getNodeStats(i).cores < core) { buyCore(i) }
+            if (API.numNodes() < nodes) { sellForMoney(); buyNode() }
+            if (API.getNodeStats(i).level < level) { sellForMoney(); buyLevel(i) }
+            if (API.getNodeStats(i).ram < ram) { sellForMoney(); buyRam(i) }
+            if (API.getNodeStats(i).cores < core) { sellForMoney(); buyCore(i) }
         }
     }
 
-    function expandHacknet() {
+    function expandHashnet() {
 
         // upgrade all hacknet servers
 
-        for (var i = 0; i < API.numNodes(); i++) {
-            buyNode(); buyLevel(i); buyRam(i); buyCore(i); buyCache(i)
+        if (API.numNodes() === 0) {
+
+            buyNode()
+
+        } else {
+
+            for (var i = 0; i < API.numNodes(); i++) {
+                buyNode(); buyLevel(i); buyRam(i); buyCore(i); buyCache(i)
+            }
         }
+    }
+
+    function calculateHashPerSecond() {
+
+        // calculates hash per second
+
+        let production = 0
+        for (let i = 0; i < ns.hacknet.numNodes(); i++) {
+            let hashPerSec = ns.hacknet.getNodeStats(i).production
+            production += hashPerSec
+
+        }
+        return production
     }
 
     function sellForMoney() {
@@ -81,6 +101,7 @@ export async function main(ns) {
         await ns.sleep(1000)
         ns.clearLog()
 
+        baselineHashnet()
 
         if (ns.getServerMaxRam("home") < 256) {
 
@@ -90,12 +111,15 @@ export async function main(ns) {
 
             sellForMoney()
 
+            // sell all
+
         } else if (ns.corporation.hasCorporation()) {
 
 
         } else {
 
-            expandHacknet()
+            ns.print("Expanding Hashnet")
+            expandHashnet()
         }
     }
 }

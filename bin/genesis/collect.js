@@ -70,7 +70,7 @@ export async function main(ns) {
         let list = []
         for (let server of NmapMoneyServers(ns)) {
 
-            if (ns.getServerNumPortsRequired(server) === 0) {
+            if (ns.hackAnalyzeChance(server) >= CHANCE_UPPERBAND) {
 
                 if (weakCondition(server)) {
                     list.push({ hostname: server, action: "weak", threads: calculateWeakThreads(server) })
