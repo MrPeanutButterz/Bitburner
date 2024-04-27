@@ -44,7 +44,7 @@ export async function main(ns) {
 		await ns.sleep(500)
 		ns.clearLog()
 
-		if (ns.getServerMaxRam("home") < 64 && ns.fileExists(ESSENTIAL[2].name)) {
+		if (ns.getServerMaxRam("home") < 64 && ns.fileExists(ESSENTIAL[1].name)) {
 			scriptExit(ns)
 		}
 
