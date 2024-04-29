@@ -9,7 +9,7 @@ export async function main(ns) {
 
 	//\\ GENERAL DATA
 	const NET_GB_BASE = 10
-	const POOL_GB_BASE = 64
+	const POOL_GB_BASE = 128
 	const SERVER_LIMIT = ns.getPurchasedServerLimit()
 	const SERVER_GB_LIMIT = ns.getPurchasedServerMaxRam()
 

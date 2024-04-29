@@ -15,9 +15,8 @@ export async function main(ns) {
     function userInterface() {
 
         const slots = [
-            ["Credi/s", ns.formatNumber(ns.getTotalScriptIncome()[1])],
-            ["NetwRam", ns.formatRam(NmapTotalRam(ns))],
-            ["HomeRam", ns.formatRam(ns.getServerMaxRam("home"))],
+            ["Home", ns.formatRam(ns.getServerMaxRam("home"))],
+            ["Network", ns.formatRam(NmapTotalRam(ns))],
         ]
 
         let source = [], value = []

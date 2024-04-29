@@ -41,15 +41,11 @@ export async function main(ns) {
   await run(SCRIPT.programs)
   await run(SCRIPT.ram)
   await run(SCRIPT.servers)
-  await ns.sleep(2000)
-
-  await waitForRam()
-  // await run(SCRIPT.faction)
   await run(SCRIPT.crime)
+  await run(SCRIPT.faction)
+  await run(SCRIPT.hacking)
   await run("utils/interface.js")
+  await run(SCRIPT.core)
+  await run(SCRIPT.stockmarket)
 
-  if (ns.getServerMaxRam("home") > 2000) {
-    await run(SCRIPT.core)
-    await run(SCRIPT.stockmarket)
-  }
 }
