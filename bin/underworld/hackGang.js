@@ -1,10 +1,10 @@
+import { scriptStart } from "/lib/scripting"
+
 /** @param {NS} ns */
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    ns.disableLog("ALL")
-    ns.clearLog()
-    ns.tail()
+    scriptStart(ns)
 
     //\\ GENERAL DATA
     const API = ns.gang
@@ -12,6 +12,9 @@ export async function main(ns) {
     const ASCEND_THRESHOLD = 1.025
     const WANTED_LOWERBAND = 1
     const WANTED_UPPERBAND = 10
+
+    const AUGMENTATIONS = ["BitWire", "Neuralstimulator", "DataJack"]
+    const ROOTKITS = ["NUKE Rootkit", "Soulstealer Rootkit", "Demon Rootkit", "Hmap Node", "Jack the Ripper"]
 
     let memberNum = 0
 
@@ -23,7 +26,7 @@ export async function main(ns) {
         ns.print("Money gain \t" + ns.formatNumber(info.moneyGainRate * API.getMemberNames().length))
         ns.print("Respect \t" + Math.round(info.respect))
         ns.print("Wanted lvl \t" + info.wantedLevel.toFixed(3))
-        // displayAscendMembers()
+        displayAscendMembers()
     }
 
     function displayAscendMembers() {
@@ -120,6 +123,9 @@ export async function main(ns) {
     }
 
     function assignTaskMainBonus() {
+
+        // assign main task for every member
+
         API.getMemberNames().forEach(member => {
             API.setMemberTask(member, getTaskBonus(member))
         })
@@ -139,6 +145,20 @@ export async function main(ns) {
         }
     }
 
+    function getAugmentation(member) {
+
+        // buy augmentations for members
+
+        AUGMENTATIONS.forEach(a => {
+            if (!API.getMemberInformation(member).augmentations.includes(a)) {
+                if (ns.getServerMoneyAvailable("home") > API.getEquipmentCost(a)) {
+
+                    API.purchaseEquipment(a)
+                }
+            }
+        })
+    }
+
     function ascendMembers() {
 
         // ascend members if posible
@@ -147,6 +167,7 @@ export async function main(ns) {
             if (API.getInstallResult(member)) {
                 if (API.getAscensionResult(member).hack * API.getInstallResult(member).hack >= ASCEND_THRESHOLD) {
                     API.ascendMember(member)
+                    getAugmentation(member)
                 }
             }
         }
@@ -159,7 +180,8 @@ export async function main(ns) {
         display()
         await API.nextUpdate()
 
-        if (API.getBonusTime() > 5000 && API.getMemberNames().lenght < 11) {
+        if (API.getBonusTime() > 5000 &&
+            API.getMemberNames().lenght < 11) {
 
             recruitMembers()
             memberTaskBonus()
