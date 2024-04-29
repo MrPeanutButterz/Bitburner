@@ -20,14 +20,10 @@ export async function main(ns) {
 
         let info = API.getGangInformation()
         ns.print("Faction \t" + info.faction)
-        ns.print("IsHack \t\t" + info.isHacking)
-        ns.print("Money gain \t" + info.moneyGainRate.toFixed(3))
-        ns.print("Respect \t" + info.respect.toFixed(3))
-        ns.print("Respect nex \t" + info.respectForNextRecruit)
-        ns.print("Respect gain \t" + info.respectGainRate.toFixed(3))
+        ns.print("Money gain \t" + ns.formatNumber(info.moneyGainRate * API.getMemberNames().length))
+        ns.print("Respect \t" + Math.round(info.respect))
         ns.print("Wanted lvl \t" + info.wantedLevel.toFixed(3))
-        ns.print("Wanted pen \t" + info.wantedPenalty.toFixed(3))
-        displayAscendMembers()
+        // displayAscendMembers()
     }
 
     function displayAscendMembers() {
