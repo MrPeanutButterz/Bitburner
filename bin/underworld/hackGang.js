@@ -153,7 +153,7 @@ export async function main(ns) {
             if (!API.getMemberInformation(member).augmentations.includes(a)) {
                 if (ns.getServerMoneyAvailable("home") > API.getEquipmentCost(a)) {
 
-                    API.purchaseEquipment(a)
+                    API.purchaseEquipment(member, a)
                 }
             }
         })

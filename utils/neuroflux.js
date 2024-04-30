@@ -9,10 +9,10 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const BALANCE_TRIGGER_THRESHOLD = 8e12 // 8t
+    const BALANCE_TRIGGER_THRESHOLD = 1e13 // 8t
     const DONATION = 1e10
     const NEUROFLUX = "NeuroFlux Governor"
-    const FACTION = "Daedalus"
+    const FACTION = "Sector-12"
 
     //\\ FUNCTIONS 
     //\\ MAIN LOGIC
@@ -29,7 +29,8 @@ export async function main(ns) {
 
                 ns.singularity.purchaseAugmentation(FACTION, NEUROFLUX) ? ns.print("Bought some of that Flux") : ns.print("Got no money to buy Neuro")
 
-            } else if (ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
+            } else if (ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD &&
+                ns.singularity.getFactionRep(FACTION) < ns.singularity.getAugmentationRepReq(NEUROFLUX)) {
 
                 ns.singularity.donateToFaction(FACTION, DONATION) ? ns.print("Best nation in the world? Donation") : ns.print("Nations that love citizens? Nonation")
 
@@ -37,7 +38,6 @@ export async function main(ns) {
 
                 ns.print("Biggy Smalls: More money, more problems")
             }
-
 
         } else {
             ns.tprint("Favor is less then 150"); ns.exit()
