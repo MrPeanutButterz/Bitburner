@@ -124,7 +124,6 @@ export async function main(ns) {
 
     while (ns.singularity.getFactionRep(FACTION) < calculateRepGoal(FACTION)) {
 
-        ns.singularity.isFocused() ? FOCUS = true : FOCUS = false
         REPUTATION = ns.singularity.getFactionRep(FACTION)
         await ns.sleep(1000)
         ns.clearLog()

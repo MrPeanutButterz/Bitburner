@@ -47,5 +47,6 @@ export async function main(ns) {
   await run("utils/interface.js")
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
+  await run(SCRIPT.corporation)
 
 }
