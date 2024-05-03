@@ -18,7 +18,7 @@ export async function main(ns) {
         ns.enums.CityName.Ishima,
         ns.enums.CityName.Volhaven,
     ]
-    const DIVISIONS = []
+    const DIVISIONS = ["Agriculture", "Spring Water", "Tabacco"]
 
     //\\ FUNCTIONS 
     function createCorporation() {
@@ -100,11 +100,9 @@ export async function main(ns) {
             data.push({
 
                 city: city,
-
                 product: boostProduct,
                 productSize: API.getMaterialData(boostProduct).size,
                 marketPrice: Math.round(API.getMaterial(division, city, boostProduct).marketPrice),
-                // actualSell: Math.round(API.getMaterial(division, city, boostProduct).actualSellAmount),
 
                 warehouseMaxFill: Math.round((API.getWarehouse(division, city).size / API.getMaterialData(boostProduct).size)),
                 warehouseProductFill: Math.round((API.getWarehouse(division, city).size * warehouseUsageProc) / API.getMaterialData(boostProduct).size),
@@ -192,7 +190,19 @@ export async function main(ns) {
         })
     }
 
-    function handleWarehouse(divisionData) {
+    function expandWarehouseSize(warehouse) {
+
+        // upgrade warehouse size bij levelable upgrade
+
+        if (warehouse.sizeUsed / warehouse.size * 100 > 90) {
+
+            if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage")) {
+                API.levelUpgrade("Smart Storage")
+            }
+        }
+    }
+
+    function handleMaterialWarehouse(divisionData) {
 
         // handle all ware house stats
 
@@ -208,11 +218,11 @@ export async function main(ns) {
 
             // sell products
             sellProducts.forEach(product => {
-
                 API.sellMaterial(divisionData.name, city, product, "MAX", "MP")
             })
 
             boosterProductExport(divisionData.name)
+            expandWarehouseSize(warehouse)
         }
     }
 
@@ -300,6 +310,12 @@ export async function main(ns) {
         }
     }
 
+    function buyUpgradeABCsalebot() {
+        if (API.getCorporation().funds > API.getUpgradeLevelCost("ABC SalesBots") + 3e9) {
+            API.levelUpgrade("ABC SalesBots")
+        }
+    }
+
     function handleOffice(division) {
 
         // handles all office stats
@@ -315,10 +331,9 @@ export async function main(ns) {
             handleMorale(division.name, city, office)
             handleEnergy(division.name, city, office)
             hireAdVert(division.name)
-
+            buyUpgradeABCsalebot()
         }
     }
-
 
     function runCorporation() {
 
@@ -340,6 +355,8 @@ export async function main(ns) {
 
             } else {
 
+                handleOffice(divisionData)
+
                 if (divisionData.makesProducts) {
 
                     // product based
@@ -347,8 +364,7 @@ export async function main(ns) {
                 } else {
 
                     // material based
-                    handleWarehouse(divisionData)
-                    handleOffice(divisionData)
+                    handleMaterialWarehouse(divisionData)
                 }
             }
         }

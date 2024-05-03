@@ -44,9 +44,9 @@ export async function main(ns) {
   await run(SCRIPT.crime)
   await run(SCRIPT.faction)
   // await run(SCRIPT.hackGang)
-  await run("utils/interface.js")
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
   await run(SCRIPT.corporation)
+  await run("utils/interface.js")
 
 }
