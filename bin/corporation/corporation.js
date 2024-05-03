@@ -18,7 +18,6 @@ export async function main(ns) {
         ns.enums.CityName.Ishima,
         ns.enums.CityName.Volhaven,
     ]
-
     const DIVISIONS = []
 
     //\\ FUNCTIONS 
@@ -40,19 +39,25 @@ export async function main(ns) {
     function display() {
 
         let c = API.getCorporation()
+        // getCorporation {"name":"CapitalPrinter Inc","funds":20000000000,"revenue":0,"expenses":0,"public":false,"totalShares":1500000000,"numShares":1000000000,"shareSaleCooldown":0,"investorShares":500000000,"issuedShares":0,"issueNewSharesCooldown":0,"sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE","divisions":["Agriculture"],"state":"START"}
 
-        // ns.print(c)
         ns.print("Running \t" + c.name)
         ns.print("Funds \t\t" + ns.formatNumber(c.funds))
         ns.print("Revenue \t" + ns.formatNumber(c.revenue))
         ns.print("Expenses \t" + ns.formatNumber(c.expenses))
         ns.print("State \t\t" + c.prevState + " => " + c.nextState)
         ns.print("Divisions \t" + c.divisions.length)
-
-        // getCorporation {"name":"CapitalPrinter Inc","funds":20000000000,"revenue":0,"expenses":0,"public":false,"totalShares":1500000000,"numShares":1000000000,"shareSaleCooldown":0,"investorShares":500000000,"issuedShares":0,"issueNewSharesCooldown":0,"sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE","divisions":["Agriculture"],"state":"START"}
     }
 
-    function expandIndustry(division) {
+    function expandIndustry() {
+
+        // expand to next industrie when money
+
+    }
+
+    function expandIndustrieToCity(division) {
+
+        // expand to next city, buy city & warehouse
 
         CITIES.forEach(city => {
             if (!division.cities.includes(city) && API.getCorporation().funds > 9e9) {
@@ -64,6 +69,8 @@ export async function main(ns) {
 
     function getSellProducts(division) {
 
+        // @return the industie required for production
+
         switch (division) {
             case "Agriculture": return ["Plants", "Food"]
             case "Spring Water": return ["Water"]
@@ -71,6 +78,8 @@ export async function main(ns) {
     }
 
     function getProductBooster(division) {
+
+        // @return the industie boosting products 
 
         switch (division) {
             case "Agriculture": return "Real Estate"
@@ -80,72 +89,112 @@ export async function main(ns) {
 
     function boosterProductExport(division) {
 
+        // buy boosting product in cheapest city en export to others 
+
+        const warehouseUsageProc = 0.5
+
         let data = []
         let boostProduct = getProductBooster(division)
 
         CITIES.forEach(city => {
             data.push({
+
                 city: city,
+
+                product: boostProduct,
+                productSize: API.getMaterialData(boostProduct).size,
                 marketPrice: Math.round(API.getMaterial(division, city, boostProduct).marketPrice),
-                disiredSellPrice: API.getMaterial(division, city, boostProduct).desiredSellPrice,
-                desiredSellAmount: API.getMaterial(division, city, boostProduct).desiredSellAmount,
-                actualSellAmount: Math.round(API.getMaterial(division, city, boostProduct).actualSellAmount),
-                stored: API.getMaterial(division, city, boostProduct).stored,
+                // actualSell: Math.round(API.getMaterial(division, city, boostProduct).actualSellAmount),
+
+                warehouseMaxFill: Math.round((API.getWarehouse(division, city).size / API.getMaterialData(boostProduct).size)),
+                warehouseProductFill: Math.round((API.getWarehouse(division, city).size * warehouseUsageProc) / API.getMaterialData(boostProduct).size),
+
+                stored: Math.floor(API.getMaterial(division, city, boostProduct).stored),
+
+                demand: Math.round((API.getWarehouse(division, city).size * warehouseUsageProc) /
+                    API.getMaterialData(boostProduct).size) -
+                    Math.floor(API.getMaterial(division, city, boostProduct).stored),
+
+                exportAmount: Math.ceil((API.getWarehouse(division, city).size * warehouseUsageProc /
+                    API.getMaterialData(boostProduct).size -
+                    API.getMaterial(division, city, boostProduct).stored) *
+                    API.getMaterialData(boostProduct).size +
+                    API.getMaterial(division, city, boostProduct).actualSellAmount),
+
                 exports: API.getMaterial(division, city, boostProduct).exports,
-                exportAmount: (6000 - API.getMaterial(division, city, boostProduct).stored) +
-                    API.getMaterial(division, city, boostProduct).actualSellAmount,
             })
         })
 
         data.sort((a, b) => a.marketPrice - b.marketPrice)
+        data.forEach(element => {
 
-        data.forEach(e => {
+            if (data[0].city === element.city) {
 
-            if (data[0].city === e.city) {
+                // dont sell in city where to buy
+                API.sellMaterial(division, element.city, boostProduct, 0, "MP")
 
-                API.sellMaterial(division, e.city, boostProduct, 0, "MP")
-                if (e.stored < 6000) {
+                // only buy if there is demand 
+                if (element.demand > 0 && element.stored < element.warehouseProductFill) {
 
-                    let price = API.getMaterial(division, e.city, boostProduct).marketPrice
-                    let amount = 6000 - e.stored
+                    let price = element.demand * element.marketPrice
 
-                    if (API.getCorporation().funds > amount * price) {
+                    // buy demand or funds based
+                    if (API.getCorporation().funds > price) {
 
-                        API.bulkPurchase(division, e.city, boostProduct, 6000 - e.stored)
+                        API.bulkPurchase(division, element.city, boostProduct, element.demand)
 
                     } else {
 
-                        let funds = API.getCorporation().funds
-                        let amount = Math.floor(funds / price)
-                        API.bulkPurchase(division, e.city, boostProduct, amount)
+                        let parcialPurchase = Math.floor(API.getCorporation().funds / price)
+                        API.bulkPurchase(division, element.city, boostProduct, parcialPurchase)
                     }
                 }
 
             } else {
 
-                API.sellMaterial(division, e.city, boostProduct, "MAX", "MP")
+                // set all other city to sell
+                API.sellMaterial(division, element.city, boostProduct, "MAX", "MP")
 
-                for (let o of e.exports) {
-
-                    API.cancelExportMaterial(division, e.city, o.division, o.city, boostProduct)
+                // remove expired exports from sellCity
+                for (let oldExport of element.exports) {
+                    API.cancelExportMaterial(division, element.city, oldExport.division, oldExport.city, boostProduct)
                 }
 
-                for (let o of data[0].exports) {
-                    if (o.city === e.city) {
+                // get state 
+                let nextState = API.getCorporation().nextState
 
-                        API.cancelExportMaterial(division, data[0].city, division, e.city, boostProduct)
+                if (nextState === "EXPORT") {
+
+                    // set up exports from buyCity
+                    if (element.demand > 0) {
+
+                        // find if export exists 
+                        let exportExists = false
+                        for (let runningExports of data[0].exports) {
+                            if (runningExports.city === element.city) { exportExists = true }
+                        }
+
+                        // set up export
+                        if (!exportExists) {
+                            API.exportMaterial(division, data[0].city, division, element.city, boostProduct, element.exportAmount)
+                        }
+
                     }
-                }
 
-                if (e.exportAmount > 0) {
+                } else {
 
-                    API.exportMaterial(division, data[0].city, division, e.city, boostProduct, e.exportAmount)
+                    // remove all exports from buyCity when done
+                    for (let oldExport of data[0].exports) {
+                        API.cancelExportMaterial(division, data[0].city, division, oldExport.city, boostProduct)
+                    }
                 }
             }
         })
     }
 
     function handleWarehouse(divisionData) {
+
+        // handle all ware house stats
 
         for (let city of divisionData.cities) {
 
@@ -169,6 +218,8 @@ export async function main(ns) {
 
     function hireEmployees(division, city, office) {
 
+        // hires employees 
+
         if (office.numEmployees < office.size) {
             let amount = office.size - office.numEmployees
             for (var i = 0; i < amount; i++) {
@@ -179,6 +230,8 @@ export async function main(ns) {
     }
 
     function assignTask(division, city, employees) {
+
+        // assign tasks to all employees
 
         let dist = {
             o: Math.round(employees * 0.35),
@@ -194,7 +247,6 @@ export async function main(ns) {
         let leftover = employees - x
         if (leftover > 0) { dist.o += leftover }
 
-
         if (employees === 3) {
 
             API.setAutoJobAssignment(division, city, "Operations", 1)
@@ -207,25 +259,50 @@ export async function main(ns) {
             API.setAutoJobAssignment(division, city, "Engineer", dist.e)
             API.setAutoJobAssignment(division, city, "Business", dist.b)
             API.setAutoJobAssignment(division, city, "Management", dist.m)
-
         }
     }
 
     function upgradeOfficeSize(division, city) {
 
-        if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(division, city, 3)) {
+        // upgrades office size
+
+        if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(division, city, 3) &&
+            API.getCorporation().funds > 1e9) {
             API.upgradeOfficeSize(division, city, 3)
         }
     }
 
     function hireAdVert(division) {
+
+        // hires adverts
+
         if (API.getCorporation().funds > API.getHireAdVertCost(division) &&
             API.getCorporation().funds > 1e9) {
             API.hireAdVert(division)
         }
     }
 
+    function handleMorale(division, city, office) {
+
+        // push employees moral up
+
+        if (office.avgMorale < 80 && API.getCorporation().funds > 1e9) {
+            API.throwParty(division, city, 1e6)
+        }
+    }
+
+    function handleEnergy(division, city, office) {
+
+        // push employees enegry up
+
+        if (office.avgEnergy < 80 && API.getCorporation().funds > 1e9) {
+            API.buyTea(division, city)
+        }
+    }
+
     function handleOffice(division) {
+
+        // handles all office stats
 
         for (let city of division.cities) {
 
@@ -235,8 +312,9 @@ export async function main(ns) {
             hireEmployees(division.name, city, office)
             assignTask(division.name, city, office.numEmployees)
             upgradeOfficeSize(division.name, city)
+            handleMorale(division.name, city, office)
+            handleEnergy(division.name, city, office)
             hireAdVert(division.name)
-
 
         }
     }
@@ -244,9 +322,12 @@ export async function main(ns) {
 
     function runCorporation() {
 
-        display()
+        // expands industies, cities, handle warehouse en office
 
         let divisions = API.getCorporation().divisions
+
+        display()
+        expandIndustry()
 
         for (let division of divisions) {
 
@@ -255,7 +336,7 @@ export async function main(ns) {
 
             if (divisionData.cities.length < 6) {
 
-                expandIndustry(divisionData)
+                expandIndustrieToCity(divisionData)
 
             } else {
 
@@ -268,7 +349,6 @@ export async function main(ns) {
                     // material based
                     handleWarehouse(divisionData)
                     handleOffice(divisionData)
-
                 }
             }
         }
@@ -276,7 +356,6 @@ export async function main(ns) {
 
     //\\ LOGIC
     createCorporation()
-
     while (true) {
         await API.nextUpdate()
         ns.clearLog()
