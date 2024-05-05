@@ -1,16 +1,53 @@
-import { scriptStart, scriptPath } from "lib/scripting"
+import { scriptPath } from "./lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
 
+    /** Script logica...
+     * start > corporation "CapitalPrinter Inc"
+     * start > buy first division "Agriculture"
+     * start > buy Unlocks "Export", "Smart Supply"
+     *
+     * corporation > run divisions we have 
+     * corporation > try to buy next division 
+     * corporation > buy Upgrades "Smart Storage", "ABC SalesBots", "Smart Factories"
+     * corporation > buy Unlocks ?
+     * corporation > set dividents based on timeline
+     * corporation > go public if divisions > 2 
+     *
+     * division > expand to all cities first
+     * division > get all cities a warehouse, then continue
+     * division > run the office
+     * division > run the warehouse
+     * division > hire advert
+     * division > create / discontinue product 
+     * division > fill warehouse with booster material en export
+     * division > buy research upgrades 
+     *
+     * office > hire employees
+     * office > set jobs for employees 
+     * office > buy some tea
+     * office > throw a party
+     * office > upgrade office size
+     * office > set up research & development if office size > 30
+     * 
+     * warehouse > set Smart Supply
+     * warehouse > sell material
+     * warehouse > sell product
+     * warehouse > expand warehouse size
+    */
+
     //\\ SCRIPT SETTINGS
-    scriptStart(ns)
+    ns.disableLog("ALL")
+    ns.clearLog()
     ns.tail()
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
     const API = ns.corporation
-    const CITIES = [
+    const AVG_EMPLOYEE_HEALTH = 90
+
+    const ALL_CITIES = [
         ns.enums.CityName.Sector12,
         ns.enums.CityName.Aevum,
         ns.enums.CityName.Chongqing,
@@ -18,183 +55,128 @@ export async function main(ns) {
         ns.enums.CityName.Ishima,
         ns.enums.CityName.Volhaven,
     ]
-    const DIVISIONS = ["Agriculture", "Spring Water", "Tabacco"]
 
-    //\\ FUNCTIONS 
-    function createCorporation() {
+    const ALL_DIVISIONS = [
+        "Agriculture", // 40b
+        "Spring Water", // 10b
+        "Restaurant", // 10b
+        "Tobacco", // 20b
+        "Software", // 25b
+        "Refinery", // 50b
+        "Chemical", // 70b
+        "Fishing", // 80b
+        "Water Utilities", // 150b
+        "Pharmaceutical", // 200b
+        "Mining", // 300b
+        "Computer Hardware", // 500b 
+        "Real Estate", // 600b
+        "Healthcare", // 750b
+        "Robotics", // 1t
+    ]
 
-        // create corp if non existant 
-        const corporationName = "CapitalPrinter Inc"
+    function logCorporation(corp) {
 
-        if (!API.hasCorporation()) {
-            if (API.createCorporation(corporationName, false)) {
-                ns.tprint("Corporation \"" + corporationName + "\" created")
-                API.expandIndustry("Agriculture", "Agriculture")
-                API.purchaseUnlock("Smart Supply")
-                API.purchaseUnlock("Export")
-            }
+        // log corp status
+
+        ns.print("Name\t\t" + corp.name)
+        ns.print("Funds\t\t" + ns.formatNumber(corp.funds))
+        ns.print("Revenue\t\t" + ns.formatNumber(corp.revenue))
+        ns.print("Expense\t\t" + ns.formatNumber(corp.expenses))
+        ns.print("Divisions\t" + corp.divisions.length)
+    }
+
+    function logDivision(division) {
+
+        // log division status
+
+        ns.print("\nDivision\t" + division.name)
+        ns.print("Profit\t\t" + ns.formatNumber(division.lastCycleRevenue - division.lastCycleExpenses))
+        ns.print("Awareness\t" + Math.round(division.awareness))
+        ns.print("Popularity\t" + Math.round(division.popularity))
+        ns.print("Research\t" + division.researchPoints)
+        if (division.makesProducts) {
+            ns.print("Products\t" + division.products.length + "/" + division.maxProducts)
         }
     }
 
-    function display() {
+    function expandDivision(division) {
 
-        let c = API.getCorporation()
-        // getCorporation {"name":"CapitalPrinter Inc","funds":20000000000,"revenue":0,"expenses":0,"public":false,"totalShares":1500000000,"numShares":1000000000,"shareSaleCooldown":0,"investorShares":500000000,"issuedShares":0,"issueNewSharesCooldown":0,"sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE","divisions":["Agriculture"],"state":"START"}
+        // expand to all cities with warehouse
 
-        ns.print("Running \t" + c.name)
-        ns.print("Funds \t\t" + ns.formatNumber(c.funds))
-        ns.print("Revenue \t" + ns.formatNumber(c.revenue))
-        ns.print("Expenses \t" + ns.formatNumber(c.expenses))
-        ns.print("State \t\t" + c.prevState + " => " + c.nextState)
-        ns.print("Divisions \t" + c.divisions.length)
+        if (division.cities.length < 6) {
+
+            ALL_CITIES.forEach(city => {
+                if (!division.cities.includes(city) && API.getCorporation().funds > 9e9) {
+                    API.expandCity(division.name, city)
+                    API.purchaseWarehouse(division.name, city)
+                }
+            })
+            return false
+
+        } else {
+
+            return true
+        }
     }
 
-    function expandIndustry() {
+    function getSellMaterials(divisionName) {
 
-        // expand to next industrie when money
+        // @return the industie required material for production
 
-    }
-
-    function expandIndustrieToCity(division) {
-
-        // expand to next city, buy city & warehouse
-
-        CITIES.forEach(city => {
-            if (!division.cities.includes(city) && API.getCorporation().funds > 9e9) {
-                API.expandCity(division.name, city)
-                API.purchaseWarehouse(division.name, city)
-            }
-        })
-    }
-
-    function getSellProducts(division) {
-
-        // @return the industie required for production
-
-        switch (division) {
+        switch (divisionName) {
             case "Agriculture": return ["Plants", "Food"]
             case "Spring Water": return ["Water"]
+            case "Restaurant": return ["Food", "Water"]
+            case "Tobacco": return ["Plants"]
+            case "Software": return ["AI Cores"]
+            case "Refinery": return ["Metal"]
+            case "Chemical": return ["Chemicals"]
+            case "Fishing": return ["Food"]
+            case "Water Utilities": return ["Water"]
+            case "Pharmaceutical": return ["Drugs"]
+            case "Mining": return ["Ore", "Minerals"]
+            case "Computer Hardware": return ["Hardware"]
+            case "Real Estate": return ["Real Estate"]
+            case "Healthcare": return []
+            case "Robotics": return ["Robots"]
         }
     }
 
-    function getProductBooster(division) {
+    function setSmartSupply(smartSupplyEnabled, divisionName, city) {
 
-        // @return the industie boosting products 
+        // set smart supply
 
-        switch (division) {
-            case "Agriculture": return "Real Estate"
-            case "Spring Water": return "Real Estate"
+        if (!smartSupplyEnabled) {
+            API.setSmartSupply(divisionName, city, true)
         }
     }
 
-    function boosterProductExport(division) {
+    function sellMaterial(divisionName, city) {
 
-        // buy boosting product in cheapest city en export to others 
+        // set sell materials 
 
-        const warehouseUsageProc = 0.5
+        let sellMaterial = getSellMaterials(divisionName)
+        for (let material of sellMaterial) {
+            API.sellMaterial(divisionName, city, material, "MAX", "MP")
+        }
+    }
 
-        let data = []
-        let boostProduct = getProductBooster(division)
+    function sellProduct(makeProducts, products, divisionName, city) {
 
-        CITIES.forEach(city => {
-            data.push({
+        // set sell to products 
 
-                city: city,
-                product: boostProduct,
-                productSize: API.getMaterialData(boostProduct).size,
-                marketPrice: Math.round(API.getMaterial(division, city, boostProduct).marketPrice),
-
-                warehouseMaxFill: Math.round((API.getWarehouse(division, city).size / API.getMaterialData(boostProduct).size)),
-                warehouseProductFill: Math.round((API.getWarehouse(division, city).size * warehouseUsageProc) / API.getMaterialData(boostProduct).size),
-
-                stored: Math.floor(API.getMaterial(division, city, boostProduct).stored),
-
-                demand: Math.round((API.getWarehouse(division, city).size * warehouseUsageProc) /
-                    API.getMaterialData(boostProduct).size) -
-                    Math.floor(API.getMaterial(division, city, boostProduct).stored),
-
-                exportAmount: Math.ceil((API.getWarehouse(division, city).size * warehouseUsageProc /
-                    API.getMaterialData(boostProduct).size -
-                    API.getMaterial(division, city, boostProduct).stored) *
-                    API.getMaterialData(boostProduct).size +
-                    API.getMaterial(division, city, boostProduct).actualSellAmount),
-
-                exports: API.getMaterial(division, city, boostProduct).exports,
-            })
-        })
-
-        data.sort((a, b) => a.marketPrice - b.marketPrice)
-        data.forEach(element => {
-
-            if (data[0].city === element.city) {
-
-                // dont sell in city where to buy
-                API.sellMaterial(division, element.city, boostProduct, 0, "MP")
-
-                // only buy if there is demand 
-                if (element.demand > 0 && element.stored < element.warehouseProductFill) {
-
-                    let price = element.demand * element.marketPrice
-
-                    // buy demand or funds based
-                    if (API.getCorporation().funds > price) {
-
-                        API.bulkPurchase(division, element.city, boostProduct, element.demand)
-
-                    } else {
-
-                        let parcialPurchase = Math.floor(API.getCorporation().funds / price)
-                        API.bulkPurchase(division, element.city, boostProduct, parcialPurchase)
-                    }
-                }
-
-            } else {
-
-                // set all other city to sell
-                API.sellMaterial(division, element.city, boostProduct, "MAX", "MP")
-
-                // remove expired exports from sellCity
-                for (let oldExport of element.exports) {
-                    API.cancelExportMaterial(division, element.city, oldExport.division, oldExport.city, boostProduct)
-                }
-
-                // get state 
-                let nextState = API.getCorporation().nextState
-
-                if (nextState === "EXPORT") {
-
-                    // set up exports from buyCity
-                    if (element.demand > 0) {
-
-                        // find if export exists 
-                        let exportExists = false
-                        for (let runningExports of data[0].exports) {
-                            if (runningExports.city === element.city) { exportExists = true }
-                        }
-
-                        // set up export
-                        if (!exportExists) {
-                            API.exportMaterial(division, data[0].city, division, element.city, boostProduct, element.exportAmount)
-                        }
-
-                    }
-
-                } else {
-
-                    // remove all exports from buyCity when done
-                    for (let oldExport of data[0].exports) {
-                        API.cancelExportMaterial(division, data[0].city, division, oldExport.city, boostProduct)
-                    }
-                }
+        if (makeProducts) {
+            for (let product of products) {
+                API.sellProduct(divisionName, city, product, "MAX", "MP")
             }
-        })
+        }
     }
 
-    function expandWarehouseSize(warehouse) {
+    function expandWarehouseSize(sizeUsed, size) {
 
-        // upgrade warehouse size bij levelable upgrade
+        // upgrade warehouse size with level upgrade
 
-        if (warehouse.sizeUsed / warehouse.size * 100 > 90) {
+        if (sizeUsed / size * 100 > 90) {
 
             if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage")) {
                 API.levelUpgrade("Smart Storage")
@@ -202,44 +184,38 @@ export async function main(ns) {
         }
     }
 
-    function handleMaterialWarehouse(divisionData) {
+    function handleWarehouse(division) {
 
-        // handle all ware house stats
+        // done > set Smart Supply
+        // done > sell material
+        // done > sell product
+        // done > expand warehouse size
 
-        for (let city of divisionData.cities) {
+        for (let city of division.cities) {
 
-            // {"level":1,"city":"Sector-12","size":100,"sizeUsed":3.030938363758457,"smartSupplyEnabled":true}
+            let warehouseData = API.getWarehouse(division.name, city)
+            // {"level":2,"city":"Sector-12","size":940,"sizeUsed":469.64325151524343,"smartSupplyEnabled":true}
 
-            let warehouse = API.getWarehouse(divisionData.name, city)
-            let sellProducts = getSellProducts(divisionData.name)
-
-            // enable smart supply
-            if (!warehouse.smartSupplyEnabled) { API.setSmartSupply(divisionData.name, city, true) }
-
-            // sell products
-            sellProducts.forEach(product => {
-                API.sellMaterial(divisionData.name, city, product, "MAX", "MP")
-            })
-
-            boosterProductExport(divisionData.name)
-            expandWarehouseSize(warehouse)
+            setSmartSupply(warehouseData.smartSupplyEnabled, division.name, city)
+            sellMaterial(division.name, city)
+            sellProduct(division.makesProducts, division.products, division.name, city)
+            expandWarehouseSize(warehouseData.sizeUsed, warehouseData.size)
         }
     }
 
-    function hireEmployees(division, city, office) {
+    function hireEmployees(employees, size, divisionName, city) {
 
-        // hires employees 
+        // hire employees
 
-        if (office.numEmployees < office.size) {
-            let amount = office.size - office.numEmployees
+        if (employees < size) {
+            let amount = size - employees
             for (var i = 0; i < amount; i++) {
-
-                API.hireEmployee(division, city)
+                API.hireEmployee(divisionName, city)
             }
         }
     }
 
-    function assignTask(division, city, employees) {
+    function assignJobs(employees, divisionName, city) {
 
         // assign tasks to all employees
 
@@ -259,187 +235,343 @@ export async function main(ns) {
 
         if (employees === 3) {
 
-            API.setAutoJobAssignment(division, city, "Operations", 1)
-            API.setAutoJobAssignment(division, city, "Engineer", 1)
-            API.setAutoJobAssignment(division, city, "Business", 1)
+            API.setAutoJobAssignment(divisionName, city, "Operations", 1)
+            API.setAutoJobAssignment(divisionName, city, "Engineer", 1)
+            API.setAutoJobAssignment(divisionName, city, "Business", 1)
 
         } else {
 
-            API.setAutoJobAssignment(division, city, "Operations", dist.o)
-            API.setAutoJobAssignment(division, city, "Engineer", dist.e)
-            API.setAutoJobAssignment(division, city, "Business", dist.b)
-            API.setAutoJobAssignment(division, city, "Management", dist.m)
+            API.setAutoJobAssignment(divisionName, city, "Operations", dist.o)
+            API.setAutoJobAssignment(divisionName, city, "Engineer", dist.e)
+            API.setAutoJobAssignment(divisionName, city, "Business", dist.b)
+            API.setAutoJobAssignment(divisionName, city, "Management", dist.m)
         }
     }
 
-    function upgradeOfficeSize(division, city) {
+    function boostEnergy(avgEnergy, divisionName, city) {
 
-        // upgrades office size
+        // boost energy with tea
 
-        if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(division, city, 3) &&
+        if (avgEnergy < AVG_EMPLOYEE_HEALTH &&
             API.getCorporation().funds > 1e9) {
-            API.upgradeOfficeSize(division, city, 3)
+            API.buyTea(divisionName, city)
         }
     }
 
-    function hireAdVert(division) {
+    function boostMoral(avgMorale, divisionName, city) {
 
-        // hires adverts
+        // boost morale with a party
 
-        if (API.getCorporation().funds > API.getHireAdVertCost(division) &&
+        if (avgMorale < AVG_EMPLOYEE_HEALTH &&
             API.getCorporation().funds > 1e9) {
-            API.hireAdVert(division)
+            API.throwParty(divisionName, city, 1e6)
         }
     }
 
-    function handleMorale(division, city, office) {
+    function upgradeOfficeSize(divisionName, city) {
 
-        // push employees moral up
+        // upgrade office size by 3
 
-        if (office.avgMorale < 80 && API.getCorporation().funds > 1e9) {
-            API.throwParty(division, city, 1e6)
+        if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(divisionName, city, 3) &&
+            API.getCorporation().funds > 1e9) {
+            API.upgradeOfficeSize(divisionName, city, 3)
         }
     }
 
-    function handleEnergy(division, city, office) {
+    function researchUpgrades() {
 
-        // push employees enegry up
-
-        if (office.avgEnergy < 80 && API.getCorporation().funds > 1e9) {
-            API.buyTea(division, city)
-        }
-    }
-
-    function buyUpgradeABCsalebot() {
-        if (API.getCorporation().funds > API.getUpgradeLevelCost("ABC SalesBots") + 3e9) {
-            API.levelUpgrade("ABC SalesBots")
-        }
+        // todo
     }
 
     function handleOffice(division) {
 
-        // handles all office stats
+        // done > hire employees
+        // done > set jobs for employees 
+        // done > boost energie
+        // done > boost moral
+        // done > upgrade office size
+        // todo > set up research & development if office size > 30
+
+        let totalEmployees = 0
 
         for (let city of division.cities) {
 
-            let office = API.getOffice(division.name, city)
-            // ns.print(office)
+            let officeData = API.getOffice(division.name, city)
+            totalEmployees += officeData.numEmployees
+            // {"city":"Sector-12","size":51,"maxEnergy":100,"maxMorale":100,"numEmployees":51,"avgEnergy":81.22141795099317,"avgMorale":87.02619053049231,"totalExperience":3904.062500000081,"employeeProductionByJob":{"total":10922.257060272725,"Operations":4505.8673751341075,"Engineer":3931.7701790583546,"Business":1235.2937690187878,"Management":1249.3257370614729,"Research & Development":0,"Intern":0,"Unassigned":0},"employeeJobs":{"Operations":19,"Engineer":15,"Business":12,"Management":5,"Research & Development":0,"Intern":0,"Unassigned":0}}
 
-            hireEmployees(division.name, city, office)
-            assignTask(division.name, city, office.numEmployees)
+            hireEmployees(officeData.numEmployees, officeData.size, division.name, city)
+            assignJobs(officeData.numEmployees, division.name, city)
+            boostEnergy(officeData.avgEnergy, division.name, city)
+            boostMoral(officeData.avgMorale, division.name, city)
             upgradeOfficeSize(division.name, city)
-            handleMorale(division.name, city, office)
-            handleEnergy(division.name, city, office)
-            hireAdVert(division.name)
-            buyUpgradeABCsalebot()
+            researchUpgrades()
+
+        }
+
+        ns.print("Employees\t" + totalEmployees)
+    }
+
+    function hireAdvert(divisionName) {
+
+        // hires adverts
+
+        if (API.getCorporation().funds > API.getHireAdVertCost(divisionName) + 1e9) {
+            API.hireAdVert(divisionName)
         }
     }
 
-    function runCorporation() {
+    function createNewProductName(existingProducts) {
 
-        // expands industies, cities, handle warehouse en office
+        const baseName = "Product-"
+        let numberOfProducts = 0
 
-        let divisions = API.getCorporation().divisions
+        existingProducts.forEach(prod => {
 
-        display()
-        expandIndustry()
+            let num = prod.split("-")[1]
 
-        for (let division of divisions) {
+            if (num > numberOfProducts) {
+                numberOfProducts = num
+            }
+        })
 
-            let divisionData = API.getDivision(division)
-            // ns.print(divisionData)
+        numberOfProducts++
+        return baseName + numberOfProducts
 
-            if (divisionData.cities.length < 6) {
+    }
 
-                expandIndustrieToCity(divisionData)
+    function handleProduct(makesProducts, products, maxProducts, divisionName) {
+
+        // create / discontinue products
+
+        if (makesProducts) {
+
+            if (products.length === 0) {
+
+                API.makeProduct(divisionName, "Sector-12", "Product-0", 1, 1)
+                API.makeProduct(divisionName, "Sector-12", "Product-1", 1, 1)
+                API.makeProduct(divisionName, "Sector-12", "Product-2", 1, 1)
+
+            } else if (products.length < maxProducts) {
+
+                // develop product
+                let numOfProductsToMake = maxProducts - products.length
+                for (var i = 0; i < numOfProductsToMake; i++) {
+
+                    let invest = API.getCorporation().funds / 2
+                    API.makeProduct(divisionName, "Sector-12", createNewProductName(products), invest, invest)
+                }
 
             } else {
 
-                handleOffice(divisionData)
+                // discontinue product
+                // todo 
 
-                if (divisionData.makesProducts) {
+                // {"name":"Product-0","rating":688.967014676165,"effectiveRating":52.49636233782928,
+                // "stats":{"quality":660.6280610076291,"performance":851.4283710501287,"durability":589.6590985569666,"reliability":575.2554979079844,"aesthetics":357.3792527778803,"features":767.8640448581159},
+                // "productionCost":19700.68608018942,"desiredSellPrice":"MP","desiredSellAmount":"MAX","stored":0,"productionAmount":15.697464199020732,"actualSellAmount":15.697464199020732,"developmentProgress":100,"advertisingInvestment":1,"designInvestment":1,"size":0.03}
 
-                    // product based
+                // products.forEach(product => {
+                //     ns.print(API.getProduct(divisionName, "Sector-12", product))
+                // })
 
-                } else {
-
-                    // material based
-                    handleMaterialWarehouse(divisionData)
-                }
             }
         }
     }
 
+    function handleProductionMult() {
+
+    }
+
+    function handleDivisions(divisions) {
+
+        // done > expand to all cities first
+        // done > get all cities a warehouse
+        // done > run the office
+        // done > run the warehouse
+        // done > hire advert
+        // todo > create / discontinue product 
+        // todo > fill warehouse with booster material en export
+        // todo > buy research upgrades 
+
+        for (let division of divisions) {
+
+            let divisionData = API.getDivision(division)
+            logDivision(divisionData)
+            // {"name":"Software","type":"Software","awareness":439.9579416928646,"popularity":148.41790015997182,"productionMult":7.94406563874802,"researchPoints":0,"lastCycleRevenue":11087995.928321738,"lastCycleExpenses":1478569.291055181,"thisCycleRevenue":0,"thisCycleExpenses":488420.944500005,"numAdVerts":59,"cities":["Sector-12","Aevum","Chongqing","New Tokyo","Ishima","Volhaven"],"products":["Product-0","Product-1","Product-2"],"makesProducts":true,"maxProducts":3}
+
+            if (expandDivision(divisionData)) {
+
+                handleWarehouse(divisionData)
+                handleOffice(divisionData)
+
+                hireAdvert(divisionData.name)
+                handleProduct(divisionData.makesProducts, divisionData.products, divisionData.maxProducts, divisionData.name)
+                handleProductionMult()
+
+            }
+        }
+    }
+
+    function createCorporation() {
+
+        // create corp if non existant 
+        const corporationName = "CapitalPrinter Inc"
+
+        if (!API.hasCorporation()) {
+            if (API.createCorporation(corporationName, false)) {
+                ns.tprint("Corporation \"" + corporationName + "\" created")
+                API.expandIndustry(DIVISIONS[0], DIVISIONS[0])
+                API.purchaseUnlock("Smart Supply")
+                API.purchaseUnlock("Export")
+            }
+        }
+    }
+
+    function expandIndustry(divisions) {
+
+        // expand industy only if prev has 6 cities
+
+        if (API.getDivision(divisions[divisions.length - 1]).cities.length === 6) {
+
+            let nextIndustryName = ALL_DIVISIONS[divisions.length]
+            let industyData = API.getIndustryData(nextIndustryName)
+
+            ns.print("\nNext industry \t" + nextIndustryName)
+            ns.print("Cost\t\t" + ns.formatNumber(industyData.startingCost))
+
+            if (API.getCorporation().funds > industyData.startingCost) {
+                API.expandIndustry(nextIndustryName, nextIndustryName)
+            }
+        }
+    }
+
+    function buyUpgrades() {
+
+        // todo
+
+        const wantedUpgrades = ["ABC SalesBots", "DreamSense", "Smart Factories"]
+
+        // if (API.getCorporation().funds > API.getUpgradeLevelCost("ABC SalesBots") + 3e9) {
+        //     API.levelUpgrade("ABC SalesBots")
+        // }
+    }
+
+    function buyUnlocks() {
+
+        // todo
+    }
+
+    function setDividents() {
+
+        // todo
+
+        // if public
+        // if programs.js is running set to x
+        // if install.js is running set to x
+    }
+
+    function bribeFactions() {
+
+        // put some factions under presure 
+    }
+
+    function goPublic() {
+
+        // todo
+
+        // if more than 2 divisions go public 
+    }
+
     //\\ LOGIC
-    createCorporation()
     while (true) {
+
+        // done > run divisions we have 
+        // done > try to buy next division 
+        // corporation > buy Upgrades "DreamSense", "ABC SalesBots", "Smart Factories"
+        // corporation > buy Unlocks ?
+        // corporation > set dividents based on timeline
+        // corporation > go public if divisions > 2 
+
         await API.nextUpdate()
         ns.clearLog()
-        runCorporation()
+
+        let corporationData = API.getCorporation()
+        // getCorporation {"name":"CapitalPrinter Inc","funds":20000000000,"revenue":0,"expenses":0,"public":false,"totalShares":1500000000,
+        // "numShares":1000000000,"shareSaleCooldown":0,"investorShares":500000000,"issuedShares":0,"issueNewSharesCooldown":0,
+        // "sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE",
+        // "divisions":["Agriculture"]}
+
+        logCorporation(corporationData)
+        handleDivisions(corporationData.divisions)
+        expandIndustry(corporationData.divisions)
+
+        buyUpgrades()
+        buyUnlocks()
+        setDividents()
+        bribeFactions()
+        goPublic()
+
     }
 }
 
-// CORPORATION
-// hasCorporation()	                            Returns whether the player has a corporation. Does not require API access.
-// createCorporation(corporationName, selfFund)	Create a Corporation
-// nextUpdate()	                                Sleep until the next Corporation update has happened.
 
-// getCorporation()	                            Get corporation data
-// getDivision(divisionName)	                Get division data
+// CORPORATION ================================================================================================================================================
+// hasCorporation()	                                                                            Returns whether the player has a corporation. Does not require API access.
+// createCorporation(corporationName, selfFund)	                                                Create a Corporation
+// nextUpdate()	                                                                                Sleep until the next Corporation update has happened.
 
-// expandCity(divisionName, city)	            Expand to a new city
-// expandIndustry(industryType, divisionName)	Expand to a new industry
-// hasUnlock(upgradeName)	                    Check if you have a one time unlockable upgrade
+// getCorporation()	                                                                            Get corporation data
+// getDivision(divisionName)	                                                                Get division data
 
-// getBonusTime()	                            Get bonus time. “Bonus time” is accumulated when the game is offline or if the game is inactive in the browser. “Bonus time” makes the game progress faster.
-// getConstants()	                            Get corporation related constants
-// getIndustryData(industryName)	            Get constant industry definition data for a specific industry
-// getMaterialData(materialName)	            Get constant data for a specific material
-// getUnlockCost(upgradeName)	                Gets the cost to unlock a one time unlockable upgrade
-// purchaseUnlock(upgradeName)	                Unlock an upgrade
-// getUpgradeLevel(upgradeName)	                Get the level of a levelable upgrade
-// getUpgradeLevelCost(upgradeName)	            Gets the cost to unlock the next level of a levelable upgrade
-// levelUpgrade(upgradeName)	                Level an upgrade.
+// getIndustryData(industryName)	                                                            Get constant industry definition data for a specific industry
+// expandCity(divisionName, city)	                                                            Expand to a new city
+// expandIndustry(industryType, divisionName)	                                                Expand to a new industry
+// hasUnlock(upgradeName)	                                                                    Check if you have a one time unlockable upgrade
 
-// getInvestmentOffer()	                        Get an offer for investment based on you companies current valuation
-// acceptInvestmentOffer()	                    Accept investment based on you companies current valuation
-// goPublic(numShares)	                        Go public
-// issueNewShares(amount)	                    Issue new shares
-// issueDividends(rate)	                        Issue dividends
-// buyBackShares(amount)	                    Buyback Shares. Spend money from the player's wallet to transfer shares from public traders to the CEO.
-// sellShares(amount)	                        Sell Shares. Transfer shares from the CEO to public traders to receive money in the player's wallet.
-// sellDivision(divisionName)	                Sell a division
+// getBonusTime()	                                                                            Get bonus time.
+// getConstants()	                                                                            Get corporation related constants
+// getMaterialData(materialName)	                                                            Get constant data for a specific material
+// getUnlockCost(upgradeName)	                                                                Gets the cost to unlock a one time unlockable upgrade
+// purchaseUnlock(upgradeName)	                                                                Unlock an upgrade
+// getUpgradeLevel(upgradeName)	                                                                Get the level of a levelable upgrade
+// getUpgradeLevelCost(upgradeName)	                                                            Gets the cost to unlock the next level of a levelable upgrade
+// levelUpgrade(upgradeName)	                                                                Level an upgrade.
 
-// bribe(factionName, amountCash)	            Bribe a faction
+// getInvestmentOffer()	                                                                        Get an offer for investment based on you companies current valuation
+// acceptInvestmentOffer()	                                                                    Accept investment based on you companies current valuation
+// goPublic(numShares)	                                                                        Go public
+// issueNewShares(amount)	                                                                    Issue new shares
+// issueDividends(rate)	                                                                        Issue dividends
+// buyBackShares(amount)	                                                                    Buyback Shares. Spend money from the player's wallet to transfer shares from public traders to the CEO.
+// sellShares(amount)	                                                                        Sell Shares. Transfer shares from the CEO to public traders to receive money in the player's wallet.
+// sellDivision(divisionName)	                                                                Sell a division
+// bribe(factionName, amountCash)	                                                            Bribe a faction
 
-//===========================================================================================================================================================
+// OFFICE =====================================================================================================================================================
+// getOffice(divisionName, city)	                                                            Get data about an office
+// hireEmployee(divisionName, city, employeePosition)	                                        Hire an employee.
+// setAutoJobAssignment(divisionName, city, job, amount)	                                    Set the auto job assignment for a job
+// getOfficeSizeUpgradeCost(divisionName, city, size)	                                        Cost to Upgrade office size.
+// upgradeOfficeSize(divisionName, city, size)                                                  Upgrade office size.
 
-// OFFICE
-// getOffice(divisionName, city)	                            Get data about an office
-// hireEmployee(divisionName, city, employeePosition)	        Hire an employee.
-// setAutoJobAssignment(divisionName, city, job, amount)	    Set the auto job assignment for a job
-// getOfficeSizeUpgradeCost(divisionName, city, size)	        Cost to Upgrade office size.
-// upgradeOfficeSize(divisionName, city, size)                  Upgrade office size.
+// getHireAdVertCount(divisionName)	                                                            Get the number of times you have hired AdVert.
+// getHireAdVertCost(divisionName)	                                                            Get the cost to hire AdVert.
+// hireAdVert(divisionName)	                                                                    Hire AdVert.
 
-// getHireAdVertCount(divisionName)	                            Get the number of times you have hired AdVert.
-// getHireAdVertCost(divisionName)	                            Get the cost to hire AdVert.
-// hireAdVert(divisionName)	                                    Hire AdVert.
+// hasResearched(divisionName, researchName)	                                                Gets if you have unlocked a research
+// getResearchCost(divisionName, researchName)	                                                Get the cost to unlock research
+// research(divisionName, researchName)	                                                        Purchase a research
 
-// hasResearched(divisionName, researchName)	                Gets if you have unlocked a research
-// getResearchCost(divisionName, researchName)	                Get the cost to unlock research
-// research(divisionName, researchName)	                        Purchase a research
+// throwParty(divisionName, city, costPerEmployee)	                                            Throw a party for your employees
+// buyTea(divisionName, city)	                                                                Buy tea for your employees
 
-// throwParty(divisionName, city, costPerEmployee)	            Throw a party for your employees
-// buyTea(divisionName, city)	                                Buy tea for your employees
-
-//===========================================================================================================================================================
-
-// WAREHOUSE
+// WAREHOUSE ==================================================================================================================================================
 // hasWarehouse(divisionName, city)	                                                            Check if you have a warehouse in city
-// getWarehouse(divisionName, city)	                                                            Get warehouse data
 // purchaseWarehouse(divisionName, city)	                                                    Purchase warehouse for a new city
-// upgradeWarehouse(divisionName, city, amt)	                                                Upgrade warehouse
+// getWarehouse(divisionName, city)	                                                            Get warehouse data
 // getUpgradeWarehouseCost(divisionName, city, amt)	                                            Gets the cost to upgrade a warehouse to the next level
+// upgradeWarehouse(divisionName, city, amt)	                                                Upgrade warehouse
 
 // setSmartSupply(divisionName, city, enabled)	                                                Set smart supply
 // setSmartSupplyOption(divisionName, city, materialName, option)	                            Set whether smart supply uses leftovers before buying
@@ -451,79 +583,16 @@ export async function main(ns) {
 // buyMaterial(divisionName, city, materialName, amt)	                                        Set material buy data
 // bulkPurchase(divisionName, city, materialName, amt)	                                        Set material to bulk buy
 // exportMaterial(sourceDivision, sourceCity, targetDivision, targetCity, materialName, amt)	Set material export data
-
 // cancelExportMaterial(sourceDivision, sourceCity, targetDivision, targetCity, materialName)	Cancel material export
-// discontinueProduct(divisionName, productName)	                                            Discontinue a product.
+
 // getProduct(divisionName, cityName, productName)	                                            Get product data
+// makeProduct(divisionName, city, productName, designInvest, marketingInvest)	                Create a new product
+// discontinueProduct(divisionName, productName)	                                            Discontinue a product.
+
 // limitMaterialProduction(divisionName, city, materialName, qty)	                            Limit Material Production.
 // limitProductProduction(divisionName, city, productName, qty)	                                Limit Product Production.
-// makeProduct(divisionName, city, productName, designInvest, marketingInvest)	                Create a new product
+
 // setMaterialMarketTA1(divisionName, city, materialName, on)	                                Set market TA 1 for a material.
 // setMaterialMarketTA2(divisionName, city, materialName, on)	                                Set market TA 2 for a material.
-// setProductMarketTA1(divisionName, productName, on)	                                        * Set market TA 1 for a product.
+// setProductMarketTA1(divisionName, productName, on)	                                        Set market TA 1 for a product.
 // setProductMarketTA2(divisionName, productName, on)	                                        Set market TA 2 for a product.
-
-
-
-/** The Complete Handbook for Creating a Successful Corporation
- * 
- * Getting Started with Corporations
- * To get started, visit the City Hall in Sector-12 in order to create a Corporation. 
- * This requires $150b of your own money, but this $150b will get put into your Corporation's funds. 
- * If you're in BitNode 3 you also have option to get seed money from the government in exchange for 500m shares. 
- * Your Corporation can have many different divisions, each in a different Industry. 
- * There are many different types of Industries, each with different properties. 
- * To create your first division, click the 'Expand' (into new Industry) button at the top of the management UI. 
- * The Agriculture industry is recommended for your first division.
- * 
- * The first thing you'll need to do is hire some employees. 
- * Employees can be assigned to five different positions. 
- * Each position has a different effect on various aspects of your Corporation. It is recommended to have at least one employee at each position.
- * 
- * Each industry uses some combination of Materials in order to produce other Materials and/or create Products. 
- * Specific information about this is displayed in each of your divisions' UI.
- * Products are special, industry-specific objects. 
- * They are different than Materials because you must manually choose to develop them, and you can choose to develop any number of Products. 
- * Developing a Product takes time, but a Product typically generates significantly more revenue than any Material. 
- * Not all industries allow you to create Products. 
- * To create a Product, look for a button in the top-left panel of the division UI (e.g. For the Software Industry, the button says 'Develop Software').
- * 
- * To get your supply chain system started, purchase the Materials that your industry needs to produce other Materials/Products. 
- * This can be done by clicking the 'Buy' button next to the corresponding Material(s). 
- * After you have the required Materials, you will immediately start production. 
- * The amount and quality/effective rating of Materials/Products you produce is based on a variety of factors, such as your employees and their productivity and the quality of materials used for production.
- * 
- * Once you start producing Materials/Products, you can sell them in order to start earning revenue. 
- * This can be done by clicking the 'Sell' button next to the corresponding Material or Product. 
- * The amount of Material/Product you sell is dependent on a wide variety of different factors. 
- * In order to produce and sell a Product you'll have to fully develop it first.
- * 
- * These are the basics of getting your Corporation up and running! Now, you can start purchasing upgrades to improve your bottom line. 
- * If you need money, consider looking for seed investors, who will give you money in exchange for stock shares. 
- * Otherwise, once you feel you are ready, take your Corporation public! 
- * Once your Corporation goes public, you can no longer find investors. 
- * Instead, your Corporation will be publicly traded and its stock price will change based on how well it's performing financially. 
- * In order to make money for yourself you can set dividends for a solid reliable income or you can sell your stock shares in order to make quick money.
- * 
- * Tips/Pointers
- * -Start with one division, such as Agriculture. Get it profitable on it's own, then expand to a division that consumes/produces a material that the division you selected produces/consumes.
- * -Materials are profitable, but Products are where the real money is, although if the product had a low development budget or is produced with low quality materials it won't sell well.
- * -The 'Smart Supply' upgrade is extremely useful. Consider purchasing it as soon as possible.
- * -Purchasing Hardware, Robots, AI Cores, and Real Estate can potentially increase your production. The effects of these depend on what industry you are in.
- * -In order to optimize your production, you will need a good balance of all employee positions, about 1/9 should be interning
- * -Quality of materials used for production affects the quality/effective rating of materials/products produced, so vertical integration is important for high profits.
- * -Materials purchased from the open market are always of quality 1.
- * -The price at which you can sell your Materials/Products is highly affected by the quality/effective rating
- * -When developing a product, different employee positions affect the development process differently, some improve the development speed, some improve the rating of the finished product.
- * -If your employees have low morale or energy, their production will greatly suffer. Having enough interns will make sure those stats get high and stay high.
- * -Don't forget to advertise your company. You won't have any business if nobody knows you.
- * -Having company awareness is great, but what's really important is your company's popularity. Try to keep your popularity as high as possible to see the biggest benefit for your sales
- * -Remember, you need to spend money to make money!
- * -Corporations do not reset when installing Augmentations, but they do reset when destroying a BitNode
- * 
- * NOTES: 
- * buy corporation 
- * start argiculture, get 6 divisions running, export real estate from cheap 
- * 
- * 
-*/
