@@ -46,6 +46,7 @@ export async function main(ns) {
     const SCRIPT = scriptPath(ns)
     const API = ns.corporation
     const AVG_EMPLOYEE_HEALTH = 90
+    const WAREHOUSE_USAGE_PROD_MULT = 0.5
 
     const ALL_CITIES = [
         ns.enums.CityName.Sector12,
@@ -93,7 +94,7 @@ export async function main(ns) {
         ns.print("Profit\t\t" + ns.formatNumber(division.lastCycleRevenue - division.lastCycleExpenses))
         ns.print("Awareness\t" + Math.round(division.awareness))
         ns.print("Popularity\t" + Math.round(division.popularity))
-        ns.print("Research\t" + division.researchPoints)
+        ns.print("Research\t" + Math.round(division.researchPoints))
         if (division.makesProducts) {
             ns.print("Products\t" + division.products.length + "/" + division.maxProducts)
         }
@@ -139,6 +140,27 @@ export async function main(ns) {
             case "Real Estate": return ["Real Estate"]
             case "Healthcare": return []
             case "Robotics": return ["Robots"]
+        }
+    }
+
+    function getProductionMultiplierMaterial(divisionName) {
+
+        switch (divisionName) {
+            case "Agriculture": return "Real Estate"
+            case "Spring Water": return "Real Estate"
+            case "Restaurant": return "AI Cores"
+            case "Tobacco": return "Robots"
+            case "Software": return "Real Estate"
+            case "Refinery": return "Hardware"
+            case "Chemical": return "Hardware"
+            case "Fishing": return "Hardware"
+            case "Water Utilities": return "Hardware"
+            case "Pharmaceutical": return "Hardware"
+            case "Mining": return "Hardware"
+            case "Computer Hardware": return "Hardware"
+            case "Real Estate": return "Hardware"
+            case "Healthcare": return "Hardware"
+            case "Robotics": return "Hardware"
         }
     }
 
@@ -215,23 +237,49 @@ export async function main(ns) {
         }
     }
 
+    function assignJobDistribution(employees, research) {
+
+        // @return distribution for employees 
+
+        let distribution = {}
+
+        if (research) {
+
+            distribution = {
+                o: Math.round(employees * 0.30),
+                e: Math.round(employees * 0.25),
+                b: Math.floor(employees * 0.20),
+                m: Math.floor(employees * 0.15),
+                r: Math.floor(employees * 0.10),
+                i: Math.floor(employees * 0.0),
+            }
+
+        } else {
+
+            distribution = {
+                o: Math.round(employees * 0.35),
+                e: Math.round(employees * 0.30),
+                b: Math.floor(employees * 0.25),
+                m: Math.floor(employees * 0.10),
+                r: Math.floor(employees * 0.0),
+                i: Math.floor(employees * 0.0),
+            }
+        }
+
+        let x = 0
+        for (let key in distribution) { x += distribution[key] }
+        let leftover = employees - x
+        if (leftover > 0) { distribution.o += leftover }
+
+        return distribution
+
+    }
+
     function assignJobs(employees, divisionName, city) {
 
         // assign tasks to all employees
 
-        let dist = {
-            o: Math.round(employees * 0.35),
-            e: Math.round(employees * 0.30),
-            b: Math.floor(employees * 0.25),
-            m: Math.floor(employees * 0.10),
-            r: Math.floor(employees * 0.0),
-            i: Math.floor(employees * 0.0),
-        }
-
-        let x = 0
-        for (let key in dist) { x += dist[key] }
-        let leftover = employees - x
-        if (leftover > 0) { dist.o += leftover }
+        let distribution
 
         if (employees === 3) {
 
@@ -239,12 +287,24 @@ export async function main(ns) {
             API.setAutoJobAssignment(divisionName, city, "Engineer", 1)
             API.setAutoJobAssignment(divisionName, city, "Business", 1)
 
+        } else if (employees > 30) {
+
+            distribution = assignJobDistribution(employees, true)
+
+            API.setAutoJobAssignment(divisionName, city, "Operations", distribution.o)
+            API.setAutoJobAssignment(divisionName, city, "Engineer", distribution.e)
+            API.setAutoJobAssignment(divisionName, city, "Business", distribution.b)
+            API.setAutoJobAssignment(divisionName, city, "Management", distribution.m)
+            API.setAutoJobAssignment(divisionName, city, "Research & Development", distribution.r)
+
         } else {
 
-            API.setAutoJobAssignment(divisionName, city, "Operations", dist.o)
-            API.setAutoJobAssignment(divisionName, city, "Engineer", dist.e)
-            API.setAutoJobAssignment(divisionName, city, "Business", dist.b)
-            API.setAutoJobAssignment(divisionName, city, "Management", dist.m)
+            distribution = assignJobDistribution(employees, false)
+
+            API.setAutoJobAssignment(divisionName, city, "Operations", distribution.o)
+            API.setAutoJobAssignment(divisionName, city, "Engineer", distribution.e)
+            API.setAutoJobAssignment(divisionName, city, "Business", distribution.b)
+            API.setAutoJobAssignment(divisionName, city, "Management", distribution.m)
         }
     }
 
@@ -278,9 +338,22 @@ export async function main(ns) {
         }
     }
 
-    function researchUpgrades() {
+    function researchUpgrades(divisionName, researchPoints) {
 
-        // todo
+        // get research upgrades 
+
+        const researchUpgrades = [
+            "Hi-Tech R&D Laboratory",
+            "AutoBrew",
+            "AutoPartyManager",
+        ]
+
+        researchUpgrades.forEach(upgrade => {
+            if (!API.hasResearched(divisionName, upgrade) &&
+                researchPoints > API.getResearchCost(divisionName, upgrade)) {
+                API.research(divisionName, upgrade)
+            }
+        })
     }
 
     function handleOffice(division) {
@@ -290,7 +363,7 @@ export async function main(ns) {
         // done > boost energie
         // done > boost moral
         // done > upgrade office size
-        // todo > set up research & development if office size > 30
+        // done > set up research & development if office size > 30
 
         let totalEmployees = 0
 
@@ -305,7 +378,7 @@ export async function main(ns) {
             boostEnergy(officeData.avgEnergy, division.name, city)
             boostMoral(officeData.avgMorale, division.name, city)
             upgradeOfficeSize(division.name, city)
-            researchUpgrades()
+            researchUpgrades(division.name, division.researchPoints)
 
         }
 
@@ -365,7 +438,7 @@ export async function main(ns) {
             } else {
 
                 // discontinue product
-                // todo 
+                // todo when to discontinue? 
 
                 // {"name":"Product-0","rating":688.967014676165,"effectiveRating":52.49636233782928,
                 // "stats":{"quality":660.6280610076291,"performance":851.4283710501287,"durability":589.6590985569666,"reliability":575.2554979079844,"aesthetics":357.3792527778803,"features":767.8640448581159},
@@ -379,8 +452,95 @@ export async function main(ns) {
         }
     }
 
-    function handleProductionMult() {
+    function handleProductionMult(divisionName, divisionCities) {
 
+        // buys productions multipliers in cheapest city en sells in all others 
+
+        let data = []
+        divisionCities.forEach(city => {
+
+            let prodMultMaterial = getProductionMultiplierMaterial(divisionName)
+            let material = API.getMaterial(divisionName, city, prodMultMaterial)
+            let materialData = API.getMaterialData(prodMultMaterial)
+            let warehouse = API.getWarehouse(divisionName, city)
+
+            data.push({
+                city: city,
+                exports: material.exports,
+                warehouseMaxFill: Math.round(warehouse.size * WAREHOUSE_USAGE_PROD_MULT) / materialData.size,
+
+                materialName: prodMultMaterial,
+                materialSize: materialData.size,
+                materialMarketPrice: Math.round(material.marketPrice),
+
+                materialStored: Math.floor(material.stored),
+                materialDemand: Math.round((warehouse.size * WAREHOUSE_USAGE_PROD_MULT) / materialData.size) - Math.floor(material.stored),
+                materialExportAmt: Math.ceil((warehouse.size * WAREHOUSE_USAGE_PROD_MULT / materialData.size - material.stored) * materialData.size + material.actualSellAmount),
+            })
+        })
+
+        data.sort((a, b) => a.materialMarketPrice - b.materialMarketPrice)
+        data.forEach(element => {
+
+            if (data[0].city === element.city) {
+
+                // dont sell in city where to buy
+                API.sellMaterial(divisionName, element.city, element.materialName, 0, "MP")
+
+                // only buy if there is demand 
+                if (element.materialDemand > 0 && element.materialStored < element.warehouseMaxFill) {
+
+                    let corporationFunds = API.getCorporation().funds
+                    let bulkPrice = element.materialDemand * element.materialMarketPrice
+
+                    // buy demand or funds based
+                    if (corporationFunds > bulkPrice) {
+
+                        API.bulkPurchase(divisionName, element.city, element.materialName, element.materialDemand)
+
+                    } else {
+
+                        let parcialBulkDemand = Math.floor(corporationFunds / bulkPrice)
+                        API.bulkPurchase(divisionName, element.city, element.materialName, parcialBulkDemand)
+                    }
+                }
+
+            } else {
+
+                // set all other city to sell
+                API.sellMaterial(divisionName, element.city, element.materialName, "MAX", "MP")
+
+                // remove expired exports from sellCity
+                for (let oldExport of element.exports) {
+                    API.cancelExportMaterial(divisionName, element.city, oldExport.division, oldExport.city, element.materialName)
+                }
+
+                if (API.getCorporation().nextState === "EXPORT") {
+
+                    // set up exports from buyCity
+                    if (element.materialDemand > 0) {
+
+                        // find if export exists 
+                        let exportExists = false
+                        for (let runningExports of data[0].exports) {
+                            if (runningExports.city === element.city) { exportExists = true }
+                        }
+
+                        // set up export
+                        if (!exportExists) {
+                            API.exportMaterial(divisionName, data[0].city, divisionName, element.city, element.materialName, element.materialExportAmt)
+                        }
+                    }
+
+                } else {
+
+                    // remove all exports from buyCity when done
+                    for (let oldExport of data[0].exports) {
+                        API.cancelExportMaterial(divisionName, data[0].city, divisionName, oldExport.city, element.materialName)
+                    }
+                }
+            }
+        })
     }
 
     function handleDivisions(divisions) {
@@ -391,14 +551,19 @@ export async function main(ns) {
         // done > run the warehouse
         // done > hire advert
         // todo > create / discontinue product 
-        // todo > fill warehouse with booster material en export
-        // todo > buy research upgrades 
+        // done > fill warehouse with booster material en export
+        // done > handle research upgrades 
 
         for (let division of divisions) {
 
             let divisionData = API.getDivision(division)
             logDivision(divisionData)
-            // {"name":"Software","type":"Software","awareness":439.9579416928646,"popularity":148.41790015997182,"productionMult":7.94406563874802,"researchPoints":0,"lastCycleRevenue":11087995.928321738,"lastCycleExpenses":1478569.291055181,"thisCycleRevenue":0,"thisCycleExpenses":488420.944500005,"numAdVerts":59,"cities":["Sector-12","Aevum","Chongqing","New Tokyo","Ishima","Volhaven"],"products":["Product-0","Product-1","Product-2"],"makesProducts":true,"maxProducts":3}
+
+            // {"name":"Software","type":"Software","awareness":439.9579416928646,"popularity":148.41790015997182,
+            //"productionMult":7.94406563874802,"researchPoints":0,"lastCycleRevenue":11087995.928321738,
+            //"lastCycleExpenses":1478569.291055181,"thisCycleRevenue":0,"thisCycleExpenses":488420.944500005,"numAdVerts":59,
+            // "cities":["Sector-12","Aevum","Chongqing","New Tokyo","Ishima","Volhaven"],
+            // "products":["Product-0","Product-1","Product-2"],"makesProducts":true,"maxProducts":3}
 
             if (expandDivision(divisionData)) {
 
@@ -407,7 +572,7 @@ export async function main(ns) {
 
                 hireAdvert(divisionData.name)
                 handleProduct(divisionData.makesProducts, divisionData.products, divisionData.maxProducts, divisionData.name)
-                handleProductionMult()
+                handleProductionMult(divisionData.name, divisionData.cities)
 
             }
         }
@@ -448,13 +613,14 @@ export async function main(ns) {
 
     function buyUpgrades() {
 
-        // todo
-
+        // auto buy upgrades
         const wantedUpgrades = ["ABC SalesBots", "DreamSense", "Smart Factories"]
 
-        // if (API.getCorporation().funds > API.getUpgradeLevelCost("ABC SalesBots") + 3e9) {
-        //     API.levelUpgrade("ABC SalesBots")
-        // }
+        wantedUpgrades.forEach(upgrade => {
+            if (API.getCorporation().funds > API.getUpgradeLevelCost(upgrade)) {
+                API.levelUpgrade(upgrade)
+            }
+        })
     }
 
     function buyUnlocks() {
@@ -462,13 +628,14 @@ export async function main(ns) {
         // todo
     }
 
-    function setDividents() {
+    function setDividents(publicCorp, numOfDivisions) {
 
-        // todo
+        // issue dividents base on running scripts
 
-        // if public
-        // if programs.js is running set to x
-        // if install.js is running set to x
+        if (publicCorp && numOfDivisions > 3) {
+            ns.scriptRunning(SCRIPT.programs, "home") ? API.issueDividends(0.10) : API.issueDividends(0)
+            ns.scriptRunning(SCRIPT.install, "home") ? API.issueDividends(0.10) : API.issueDividends(0)
+        }
     }
 
     function bribeFactions() {
@@ -476,11 +643,12 @@ export async function main(ns) {
         // put some factions under presure 
     }
 
-    function goPublic() {
+    function goPublic(publicCorp, numOfDivisions) {
 
-        // todo
-
-        // if more than 2 divisions go public 
+        // go public after 2 divisions
+        if (!publicCorp && numOfDivisions > 2) {
+            API.goPublic(1)
+        }
     }
 
     //\\ LOGIC
@@ -488,10 +656,10 @@ export async function main(ns) {
 
         // done > run divisions we have 
         // done > try to buy next division 
-        // corporation > buy Upgrades "DreamSense", "ABC SalesBots", "Smart Factories"
+        // done > buy Upgrades "DreamSense", "ABC SalesBots", "Smart Factories"
         // corporation > buy Unlocks ?
-        // corporation > set dividents based on timeline
-        // corporation > go public if divisions > 2 
+        // done > set dividents based on timeline
+        // done > go public if divisions > 2 
 
         await API.nextUpdate()
         ns.clearLog()
@@ -508,9 +676,9 @@ export async function main(ns) {
 
         buyUpgrades()
         buyUnlocks()
-        setDividents()
+        setDividents(corporationData.public)
+        goPublic(corporationData.public, corporationData.divisions.length)
         bribeFactions()
-        goPublic()
 
     }
 }
