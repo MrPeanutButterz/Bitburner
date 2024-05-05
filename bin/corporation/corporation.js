@@ -246,10 +246,10 @@ export async function main(ns) {
         if (research) {
 
             distribution = {
-                o: Math.round(employees * 0.30),
+                o: Math.round(employees * 0.35),
                 e: Math.round(employees * 0.25),
                 b: Math.floor(employees * 0.20),
-                m: Math.floor(employees * 0.15),
+                m: Math.floor(employees * 0.10),
                 r: Math.floor(employees * 0.10),
                 i: Math.floor(employees * 0.0),
             }
