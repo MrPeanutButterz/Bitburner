@@ -48,6 +48,7 @@ export async function main(ns) {
     const WAREHOUSE_USAGE_PROD_MULT = 0.5
 
     let SPENDMONEY = true
+    let CREDIT_BUFFER = 1e9
 
     const ALL_CITIES = [
         ns.enums.CityName.Sector12,
@@ -101,6 +102,8 @@ export async function main(ns) {
         ns.print("Expense\t\t" + ns.formatNumber(corp.expenses))
         ns.print("dividendRate\t" + ns.formatPercent(corp.dividendRate))
         ns.print("Divisions\t" + corp.divisions.length)
+        ns.print("Credit buffer\t" + ns.formatNumber(CREDIT_BUFFER))
+        ns.print("Spend\t\t" + SPENDMONEY)
     }
 
     function logDivision(division) {
@@ -176,8 +179,8 @@ export async function main(ns) {
             case "Mining": return "Robots"
             case "Computer Hardware": return "Robots"
             case "Real Estate": return "Robots"
-            case "Healthcare": return "Hardware"
-            case "Robotics": return "Hardware"
+            case "Healthcare": return "Real Estate"
+            case "Robotics": return "Real Estate"
         }
     }
 
@@ -219,12 +222,12 @@ export async function main(ns) {
 
             if (sizeUsed / size * 100 > 90) {
 
-                if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage")) {
+                if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage") + CREDIT_BUFFER) {
                     API.levelUpgrade("Smart Storage")
 
-                } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1)) {
+                } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1) + CREDIT_BUFFER) {
 
-                    // upgradeWarehouse(divisionName, city, amt)
+                    API.upgradeWarehouse(divisionName, city, 1)
                     // only if discontinue product is working
 
                 }
@@ -367,7 +370,7 @@ export async function main(ns) {
         if (SPENDMONEY) {
 
             if (avgEnergy < AVG_EMPLOYEE_HEALTH &&
-                API.getCorporation().funds > 1e9) {
+                API.getCorporation().funds > CREDIT_BUFFER) {
                 API.buyTea(divisionName, city)
             }
         }
@@ -379,7 +382,7 @@ export async function main(ns) {
         if (SPENDMONEY) {
 
             if (avgMorale < AVG_EMPLOYEE_HEALTH &&
-                API.getCorporation().funds > 1e9) {
+                API.getCorporation().funds > CREDIT_BUFFER) {
                 API.throwParty(divisionName, city, 1e6)
             }
         }
@@ -390,8 +393,7 @@ export async function main(ns) {
         // upgrade office size by 3
         if (SPENDMONEY) {
 
-            if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(divisionName, city, 3) &&
-                API.getCorporation().funds > 1e9) {
+            if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(divisionName, city, 3) + CREDIT_BUFFER) {
                 API.upgradeOfficeSize(divisionName, city, 3)
             }
         }
@@ -477,7 +479,7 @@ export async function main(ns) {
         // hires adverts
         if (SPENDMONEY) {
 
-            if (API.getCorporation().funds > API.getHireAdVertCost(divisionName) + 1e9) {
+            if (API.getCorporation().funds > API.getHireAdVertCost(divisionName) + CREDIT_BUFFER) {
                 API.hireAdVert(divisionName)
             }
         }
@@ -538,13 +540,14 @@ export async function main(ns) {
                 products.forEach(product => {
 
                     let data = API.getProduct(divisionName, "Sector-12", product)
-
                     // ns.print(data)
 
                     if (data.developmentProgress === 100) {
 
-                        if (data.productionAmount > 0 && data.actualSellAmount === 0 && data.stored != 0) {
-                            API.discontinueProduct(divisionName, product)
+                        if (data.productionAmount > 1 && data.actualSellAmount === 0) {
+
+                            ns.print("ERROR DISCONTINUE PROD " + product + "" + divisionName)
+                            // API.discontinueProduct(divisionName, product)
                         }
                     }
                 })
@@ -596,10 +599,12 @@ export async function main(ns) {
                     // buy demand or funds based
                     if (corporationFunds > bulkPrice) {
 
+                        ns.print("SUCCES BUYING BULK " + element.materialDemand + " in " + element.city)
                         API.bulkPurchase(divisionName, element.city, element.materialName, element.materialDemand)
 
                     } else {
 
+                        ns.print("SUCCES BUYING PART BULK " + element.materialDemand + " in " + element.city)
                         let parcialBulkDemand = Math.floor(corporationFunds / bulkPrice)
                         API.bulkPurchase(divisionName, element.city, element.materialName, parcialBulkDemand)
                     }
@@ -724,7 +729,7 @@ export async function main(ns) {
 
         if (SPENDMONEY) {
             wantedUpgrades.forEach(upgrade => {
-                if (API.getCorporation().funds > API.getUpgradeLevelCost(upgrade)) {
+                if (API.getCorporation().funds > API.getUpgradeLevelCost(upgrade) + CREDIT_BUFFER) {
                     API.levelUpgrade(upgrade)
                 }
             })
@@ -744,6 +749,10 @@ export async function main(ns) {
 
         // issue dividents base on running scripts
 
+        let rate = 0
+
+        if (numOfDivisions > 10) { rate = 0.01 }
+
         if (SPENDMONEY) {
 
             if (publicCorp && numOfDivisions > 3) {
@@ -756,7 +765,7 @@ export async function main(ns) {
 
                     API.issueDividends(0.90)
 
-                } else { API.issueDividends(0) }
+                } else { API.issueDividends(rate) }
             }
         }
     }
@@ -772,6 +781,28 @@ export async function main(ns) {
         if (!publicCorp && numOfDivisions > 2) {
             API.goPublic(1)
         }
+    }
+
+    function spendMoney() {
+
+        // spend of buy divisions
+        API.getBonusTime() > 2000 ? SPENDMONEY = false : SPENDMONEY = true
+    }
+
+    function setCreditBuffer(divisions) {
+
+        // set credit buffer
+
+
+        if (divisions > 2) {
+
+            if (CREDIT_BUFFER != 1e9 * divisions) {
+
+                CREDIT_BUFFER = 1e9 * divisions
+            }
+
+        }
+
     }
 
     //\\ LOGIC
@@ -800,16 +831,16 @@ export async function main(ns) {
         // "sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE",
         // "divisions":["Agriculture"]}
 
-        API.getBonusTime() > 2000 ? SPENDMONEY = false : SPENDMONEY = true
-
         logCorporation(corporationData)
         handleDivisions(corporationData.divisions)
         expandIndustry(corporationData.divisions)
 
+        goPublic(corporationData.public, corporationData.divisions.length)
+        setDividents(corporationData.public, corporationData.divisions.length)
+        spendMoney()
+        setCreditBuffer(corporationData.divisions.length)
         buyUpgrades()
         buyUnlocks()
-        setDividents(corporationData.public, corporationData.divisions.length)
-        goPublic(corporationData.public, corporationData.divisions.length)
         bribeFactions()
     }
 }
@@ -830,6 +861,7 @@ export async function main(ns) {
 
 // getBonusTime()	                                                                            Get bonus time.
 // getConstants()	                                                                            Get corporation related constants
+
 // getMaterialData(materialName)	                                                            Get constant data for a specific material
 // getUnlockCost(upgradeName)	                                                                Gets the cost to unlock a one time unlockable upgrade
 // purchaseUnlock(upgradeName)	                                                                Unlock an upgrade
@@ -837,14 +869,15 @@ export async function main(ns) {
 // getUpgradeLevelCost(upgradeName)	                                                            Gets the cost to unlock the next level of a levelable upgrade
 // levelUpgrade(upgradeName)	                                                                Level an upgrade.
 
+// goPublic(numShares)	                                                                        Go public
+// issueDividends(rate)	                                                                        Issue dividends
 // getInvestmentOffer()	                                                                        Get an offer for investment based on you companies current valuation
 // acceptInvestmentOffer()	                                                                    Accept investment based on you companies current valuation
-// goPublic(numShares)	                                                                        Go public
 // issueNewShares(amount)	                                                                    Issue new shares
-// issueDividends(rate)	                                                                        Issue dividends
 // buyBackShares(amount)	                                                                    Buyback Shares. Spend money from the player's wallet to transfer shares from public traders to the CEO.
 // sellShares(amount)	                                                                        Sell Shares. Transfer shares from the CEO to public traders to receive money in the player's wallet.
 // sellDivision(divisionName)	                                                                Sell a division
+
 // bribe(factionName, amountCash)	                                                            Bribe a faction
 
 // OFFICE =====================================================================================================================================================
