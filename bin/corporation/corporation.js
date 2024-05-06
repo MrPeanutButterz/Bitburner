@@ -75,6 +75,21 @@ export async function main(ns) {
         "Robotics", // 1t
     ]
 
+    const RESEARCHUPGRADESMT = [
+        "Hi-Tech R&D Laboratory", "AutoBrew",
+        "AutoPartyManager", "Drones",
+        "Drones - Assembly", "Drones - Transport",
+        "Automatic Drug Administration", "CPH4 Injections",
+        "Go-Juice", "Self-Correcting Assemblers",
+        "Market-TA.I", "Market-TA.II",
+        "Overclock", "Sti.mu",
+    ]
+
+    const RESEARCHUPGRADESMP = [
+        "uPgrade: Fulcrum", "uPgrade: Capacity.I",
+        "uPgrade: Dashboard", "uPgrade: Capacity.II",
+    ]
+
     function logCorporation(corp) {
 
         // log corp status
@@ -83,6 +98,7 @@ export async function main(ns) {
         ns.print("Funds\t\t" + ns.formatNumber(corp.funds))
         ns.print("Revenue\t\t" + ns.formatNumber(corp.revenue))
         ns.print("Expense\t\t" + ns.formatNumber(corp.expenses))
+        ns.print("dividendRate\t" + ns.formatPercent(corp.dividendRate))
         ns.print("Divisions\t" + corp.divisions.length)
     }
 
@@ -152,8 +168,8 @@ export async function main(ns) {
             case "Tobacco": return "Robots"
             case "Software": return "Real Estate"
             case "Refinery": return "Hardware"
-            case "Chemical": return "Hardware"
-            case "Fishing": return "Hardware"
+            case "Chemical": return "Real Estate"
+            case "Fishing": return "Robots"
             case "Water Utilities": return "Hardware"
             case "Pharmaceutical": return "Hardware"
             case "Mining": return "Hardware"
@@ -194,7 +210,7 @@ export async function main(ns) {
         }
     }
 
-    function expandWarehouseSize(sizeUsed, size) {
+    function expandWarehouseSize(sizeUsed, size, divisionName, city) {
 
         // upgrade warehouse size with level upgrade
 
@@ -202,11 +218,23 @@ export async function main(ns) {
 
             if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage")) {
                 API.levelUpgrade("Smart Storage")
+
+            } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1)) {
+
+                // upgradeWarehouse(divisionName, city, amt)
+                // only if discontinue product is working
+
             }
         }
     }
 
     function handleWarehouse(division) {
+
+        // __        __             _                          
+        // \ \      / /_ _ _ __ ___| |__   ___  _   _ ___  ___ 
+        //  \ \ /\ / / _` | '__/ _ \ '_ \ / _ \| | | / __|/ _ \
+        //   \ V  V / (_| | | |  __/ | | | (_) | |_| \__ \  __/
+        //    \_/\_/ \__,_|_|  \___|_| |_|\___/ \__,_|___/\___|
 
         // done > set Smart Supply
         // done > sell material
@@ -221,7 +249,7 @@ export async function main(ns) {
             setSmartSupply(warehouseData.smartSupplyEnabled, division.name, city)
             sellMaterial(division.name, city)
             sellProduct(division.makesProducts, division.products, division.name, city)
-            expandWarehouseSize(warehouseData.sizeUsed, warehouseData.size)
+            expandWarehouseSize(warehouseData.sizeUsed, warehouseData.size, division.name, city)
         }
     }
 
@@ -275,7 +303,26 @@ export async function main(ns) {
 
     }
 
-    function assignJobs(employees, divisionName, city) {
+    function researchCompleted(divisionName, makeProducts) {
+
+        // check is all research is complete 
+
+        let complete = true
+
+        for (let rs of RESEARCHUPGRADESMT) {
+            if (!API.hasResearched(divisionName, rs)) { return false }
+        }
+
+        if (makeProducts) {
+            for (let rs of RESEARCHUPGRADESMP) {
+                if (!API.hasResearched(divisionName, rs)) { return false }
+            }
+        }
+
+        return complete
+    }
+
+    function assignJobs(employees, divisionName, city, makeProducts) {
 
         // assign tasks to all employees
 
@@ -287,7 +334,7 @@ export async function main(ns) {
             API.setAutoJobAssignment(divisionName, city, "Engineer", 1)
             API.setAutoJobAssignment(divisionName, city, "Business", 1)
 
-        } else if (employees > 30) {
+        } else if (employees > 30 && !researchCompleted(divisionName, makeProducts)) {
 
             distribution = assignJobDistribution(employees, true)
 
@@ -296,15 +343,16 @@ export async function main(ns) {
             API.setAutoJobAssignment(divisionName, city, "Business", distribution.b)
             API.setAutoJobAssignment(divisionName, city, "Management", distribution.m)
             API.setAutoJobAssignment(divisionName, city, "Research & Development", distribution.r)
-
+            
         } else {
-
+            
             distribution = assignJobDistribution(employees, false)
-
+            
             API.setAutoJobAssignment(divisionName, city, "Operations", distribution.o)
             API.setAutoJobAssignment(divisionName, city, "Engineer", distribution.e)
             API.setAutoJobAssignment(divisionName, city, "Business", distribution.b)
             API.setAutoJobAssignment(divisionName, city, "Management", distribution.m)
+            API.setAutoJobAssignment(divisionName, city, "Research & Development", distribution.r)
         }
     }
 
@@ -338,25 +386,49 @@ export async function main(ns) {
         }
     }
 
-    function researchUpgrades(divisionName, researchPoints) {
+    function researchUpgrades(divisionName, researchPoints, makeProducts) {
+
 
         // get research upgrades 
 
-        const researchUpgrades = [
-            "Hi-Tech R&D Laboratory",
-            "AutoBrew",
-            "AutoPartyManager",
-        ]
+        for (var i = 0; i < RESEARCHUPGRADESMT.length; i++) {
 
-        researchUpgrades.forEach(upgrade => {
-            if (!API.hasResearched(divisionName, upgrade) &&
-                researchPoints > API.getResearchCost(divisionName, upgrade)) {
-                API.research(divisionName, upgrade)
+            if (!API.hasResearched(divisionName, RESEARCHUPGRADESMT[i])) {
+
+                if (researchPoints > API.getResearchCost(divisionName, RESEARCHUPGRADESMT[i])) {
+
+                    API.research(divisionName, RESEARCHUPGRADESMT[i])
+
+                } else { break }
+
+            } else { i++ }
+        }
+
+        if (makeProducts) {
+
+            for (var i = 0; i < RESEARCHUPGRADESMP.length; i++) {
+
+                if (!API.hasResearched(divisionName, RESEARCHUPGRADESMP[i])) {
+
+                    if (researchPoints > API.getResearchCost(divisionName, RESEARCHUPGRADESMP[i])) {
+
+                        API.research(divisionName, RESEARCHUPGRADESMP[i])
+
+                    } else { break }
+
+                } else { i++ }
             }
-        })
+
+        }
     }
 
     function handleOffice(division) {
+
+        //   ___   __  __ _          
+        //  / _ \ / _|/ _(_) ___ ___ 
+        // | | | | |_| |_| |/ __/ _ \
+        // | |_| |  _|  _| | (_|  __/
+        //  \___/|_| |_| |_|\___\___|
 
         // done > hire employees
         // done > set jobs for employees 
@@ -374,11 +446,11 @@ export async function main(ns) {
             // {"city":"Sector-12","size":51,"maxEnergy":100,"maxMorale":100,"numEmployees":51,"avgEnergy":81.22141795099317,"avgMorale":87.02619053049231,"totalExperience":3904.062500000081,"employeeProductionByJob":{"total":10922.257060272725,"Operations":4505.8673751341075,"Engineer":3931.7701790583546,"Business":1235.2937690187878,"Management":1249.3257370614729,"Research & Development":0,"Intern":0,"Unassigned":0},"employeeJobs":{"Operations":19,"Engineer":15,"Business":12,"Management":5,"Research & Development":0,"Intern":0,"Unassigned":0}}
 
             hireEmployees(officeData.numEmployees, officeData.size, division.name, city)
-            assignJobs(officeData.numEmployees, division.name, city)
+            assignJobs(officeData.numEmployees, division.name, city, division.makesProducts)
             boostEnergy(officeData.avgEnergy, division.name, city)
             boostMoral(officeData.avgMorale, division.name, city)
             upgradeOfficeSize(division.name, city)
-            researchUpgrades(division.name, division.researchPoints)
+            researchUpgrades(division.name, division.researchPoints, division.makesProducts)
 
         }
 
@@ -545,6 +617,12 @@ export async function main(ns) {
 
     function handleDivisions(divisions) {
 
+        //  ____  _       _     _
+        // |  _ \(_)_   _(_)___(_) ___  _ __  ___
+        // | | | | \ \ / / / __| |/ _ \| '_ \/ __|
+        // | |_| | |\ V /| \__ \ | (_) | | | \__ \
+        // |____/|_| \_/ |_|___/_|\___/|_| |_|___/
+
         // done > expand to all cities first
         // done > get all cities a warehouse
         // done > run the office
@@ -679,7 +757,6 @@ export async function main(ns) {
         setDividents(corporationData.public)
         goPublic(corporationData.public, corporationData.divisions.length)
         bribeFactions()
-
     }
 }
 
