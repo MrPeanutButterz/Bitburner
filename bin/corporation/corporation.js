@@ -3,7 +3,13 @@ import { scriptPath } from "./lib/scripting"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    /** Script logica...
+    /** _                _           
+     * | |    ___   __ _(_) ___ __ _ 
+     * | |   / _ \ / _` | |/ __/ _` |
+     * | |__| (_) | (_| | | (_| (_| |
+     * |_____\___/ \__, |_|\___\__,_|
+     *              |___/             
+     * 
      * start > corporation "CapitalPrinter Inc"
      * start > buy first division "Agriculture"
      * start > buy Unlocks "Export", "Smart Supply"
@@ -43,6 +49,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
+    const CORPORATION_NAME = "CapitalPrinter Inc"
     const API = ns.corporation
     const AVG_EMPLOYEE_HEALTH = 90
     const WAREHOUSE_USAGE_PROD_MULT = 0.5
@@ -59,37 +66,51 @@ export async function main(ns) {
         ns.enums.CityName.Volhaven,
     ]
 
-    const ALL_DIVISIONS = [
-        "Agriculture", // 40b
-        "Spring Water", // 10b
-        "Restaurant", // 10b
-        "Tobacco", // 20b
-        "Software", // 25b
-        "Refinery", // 50b
-        "Chemical", // 70b
-        "Fishing", // 80b
-        "Water Utilities", // 150b
-        "Pharmaceutical", // 200b
-        "Mining", // 300b
-        "Computer Hardware", // 500b 
-        "Real Estate", // 600b
-        "Healthcare", // 750b
-        "Robotics", // 1t
+    const NEW_DIVISIONS = [
+        { type: "Agriculture", name: "AGRCLT" },
+        { type: "Spring Water", name: "SPRNG" },
+        { type: "Restaurant", name: "RESTO" },
+        { type: "Tobacco", name: "TOBCO" },
+        { type: "Software", name: "SOFTW" },
+        { type: "Refinery", name: "REFIN" },
+        { type: "Chemical", name: "CHEM" },
+        { type: "Fishing", name: "FISHY" },
+        { type: "Water Utilities", name: "WATUT" },
+        { type: "Pharmaceutical", name: "PHRMA" },
+        { type: "Mining", name: "MINE" },
+        { type: "Computer Hardware", name: "CPHW" },
+        { type: "Real Estate", name: "RLST8" },
+        { type: "Healthcare", name: "HLTHC" },
+        { type: "Robotics", name: "ROBO" },
+        { type: "Agriculture", name: "FARMG" },
+        { type: "Software", name: "CODE" },
+        { type: "Real Estate", name: "ESTAT" },
+        { type: "Healthcare", name: "MEDIC" },
+        { type: "Robotics", name: "BOTIC" },
     ]
 
     const RESEARCHUPGRADESMT = [
-        "Hi-Tech R&D Laboratory", "AutoBrew",
-        "AutoPartyManager", "Drones",
-        "Drones - Assembly", "Drones - Transport",
-        "Automatic Drug Administration", "CPH4 Injections",
-        "Go-Juice", "Self-Correcting Assemblers",
-        "Market-TA.I", "Market-TA.II",
-        "Overclock", "Sti.mu",
+        "Hi-Tech R&D Laboratory",
+        "AutoBrew",
+        "AutoPartyManager",
+        "Drones",
+        "Drones - Assembly",
+        "Drones - Transport",
+        "Self-Correcting Assemblers",
+        "Automatic Drug Administration",
+        "CPH4 Injections",
+        "Go-Juice",
+        "Overclock",
+        "Sti.mu",
+        "Market-TA.I",
+        "Market-TA.II",
     ]
 
     const RESEARCHUPGRADESMP = [
-        "uPgrade: Fulcrum", "uPgrade: Capacity.I",
-        "uPgrade: Dashboard", "uPgrade: Capacity.II",
+        "uPgrade: Fulcrum",
+        "uPgrade: Dashboard",
+        "uPgrade: Capacity.I",
+        "uPgrade: Capacity.II",
     ]
 
     function logCorporation(corp) {
@@ -160,6 +181,13 @@ export async function main(ns) {
             case "Real Estate": return ["Real Estate"]
             case "Healthcare": return []
             case "Robotics": return ["Robots"]
+            case "xAGRI": return ["Plants", "Food"]
+            case "xSFTW": return ["AI Cores"]
+            case "xRSST": return ["Real Estate"]
+            case "xHLCR": return []
+            case "xRBTC": return ["Robots"]
+
+
         }
     }
 
@@ -181,6 +209,11 @@ export async function main(ns) {
             case "Real Estate": return "Robots"
             case "Healthcare": return "Real Estate"
             case "Robotics": return "Real Estate"
+            case "xAGRI": return "Real Estate"
+            case "xSFTW": return "Real Estate"
+            case "xRSST": return "Robots"
+            case "xHLCR": return "Real Estate"
+            case "xRBTC": return "Real Estate"
         }
     }
 
@@ -218,21 +251,21 @@ export async function main(ns) {
 
         // upgrade warehouse size with level upgrade
 
-        if (SPENDMONEY) {
+        // if (SPENDMONEY) {
 
-            if (sizeUsed / size * 100 > 90) {
+        if (sizeUsed / size * 100 > 90) {
 
-                if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage") + CREDIT_BUFFER) {
-                    API.levelUpgrade("Smart Storage")
+            if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage") + CREDIT_BUFFER) {
+                API.levelUpgrade("Smart Storage")
 
-                } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1) + CREDIT_BUFFER) {
+            } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1) + CREDIT_BUFFER) {
 
-                    API.upgradeWarehouse(divisionName, city, 1)
-                    // only if discontinue product is working
+                API.upgradeWarehouse(divisionName, city, 1)
+                // only if discontinue product is working
 
-                }
             }
         }
+        // }
     }
 
     function handleWarehouse(division) {
@@ -399,16 +432,16 @@ export async function main(ns) {
         }
     }
 
-    function researchUpgrades(divisionName, researchPoints, makeProducts) {
-
+    function researchUpgrades(divisionName, makeProducts) {
 
         // get research upgrades 
 
-        for (var i = 0; i < RESEARCHUPGRADESMT.length; i++) {
+        for (var i = 0; i < RESEARCHUPGRADESMT.length;) {
 
             if (!API.hasResearched(divisionName, RESEARCHUPGRADESMT[i])) {
 
-                if (researchPoints > API.getResearchCost(divisionName, RESEARCHUPGRADESMT[i])) {
+                if (API.getDivision(divisionName).researchPoints >
+                    API.getResearchCost(divisionName, RESEARCHUPGRADESMT[i])) {
 
                     API.research(divisionName, RESEARCHUPGRADESMT[i])
 
@@ -419,11 +452,12 @@ export async function main(ns) {
 
         if (makeProducts) {
 
-            for (var i = 0; i < RESEARCHUPGRADESMP.length; i++) {
+            for (var i = 0; i < RESEARCHUPGRADESMP.length;) {
 
                 if (!API.hasResearched(divisionName, RESEARCHUPGRADESMP[i])) {
 
-                    if (researchPoints > API.getResearchCost(divisionName, RESEARCHUPGRADESMP[i])) {
+                    if (API.getDivision(divisionName).researchPoints >
+                        API.getResearchCost(divisionName, RESEARCHUPGRADESMP[i])) {
 
                         API.research(divisionName, RESEARCHUPGRADESMP[i])
 
@@ -431,7 +465,6 @@ export async function main(ns) {
 
                 } else { i++ }
             }
-
         }
     }
 
@@ -465,12 +498,10 @@ export async function main(ns) {
             boostEnergy(officeData.avgEnergy, division.name, city)
             boostMoral(officeData.avgMorale, division.name, city)
             upgradeOfficeSize(division.name, city)
-            researchUpgrades(division.name, division.researchPoints, division.makesProducts)
+            researchUpgrades(division.name, division.makesProducts)
 
             totalEmployees += officeData.numEmployees
-
         }
-
         ns.print("Employees\t" + totalEmployees)
     }
 
@@ -546,7 +577,7 @@ export async function main(ns) {
 
                         if (data.productionAmount > 1 && data.actualSellAmount === 0) {
 
-                            ns.print("ERROR DISCONTINUE PROD " + product + "" + divisionName)
+                            ns.tprint("ERROR DISCONTINUE PROD " + product + "" + divisionName)
                             // API.discontinueProduct(divisionName, product)
                         }
                     }
@@ -599,12 +630,10 @@ export async function main(ns) {
                     // buy demand or funds based
                     if (corporationFunds > bulkPrice) {
 
-                        ns.print("SUCCES BUYING BULK " + element.materialDemand + " in " + element.city)
                         API.bulkPurchase(divisionName, element.city, element.materialName, element.materialDemand)
 
                     } else {
 
-                        ns.print("SUCCES BUYING PART BULK " + element.materialDemand + " in " + element.city)
                         let parcialBulkDemand = Math.floor(corporationFunds / bulkPrice)
                         API.bulkPurchase(divisionName, element.city, element.materialName, parcialBulkDemand)
                     }
@@ -692,12 +721,11 @@ export async function main(ns) {
     function createCorporation() {
 
         // create corp if non existant 
-        const corporationName = "CapitalPrinter Inc"
 
         if (!API.hasCorporation()) {
-            if (API.createCorporation(corporationName, false)) {
-                ns.tprint("Corporation \"" + corporationName + "\" created")
-                API.expandIndustry(DIVISIONS[0], DIVISIONS[0])
+            if (API.createCorporation(CORPORATION_NAME, false)) {
+                ns.tprint("Corporation created: " + CORPORATION_NAME)
+                API.expandIndustry(NEW_DIVISIONS[0].type, NEW_DIVISIONS[0].name)
                 API.purchaseUnlock("Smart Supply")
                 API.purchaseUnlock("Export")
             }
@@ -708,16 +736,20 @@ export async function main(ns) {
 
         // expand industy only if prev has 6 cities
 
-        if (API.getDivision(divisions[divisions.length - 1]).cities.length === 6) {
+        if (divisions.length < 20) {
 
-            let nextIndustryName = ALL_DIVISIONS[divisions.length]
-            let industyData = API.getIndustryData(nextIndustryName)
+            if (API.getDivision(divisions[divisions.length - 1]).cities.length === 6) {
 
-            ns.print("\nNext industry \t" + nextIndustryName)
-            ns.print("Cost\t\t" + ns.formatNumber(industyData.startingCost))
+                let nextIndustry = NEW_DIVISIONS[divisions.length]
+                let industyData = API.getIndustryData(nextIndustry.type)
 
-            if (API.getCorporation().funds > industyData.startingCost) {
-                API.expandIndustry(nextIndustryName, nextIndustryName)
+                ns.print("\nNext industry \t" + nextIndustry.type)
+                ns.print("Cost\t\t" + ns.formatNumber(industyData.startingCost))
+
+
+                if (API.getCorporation().funds > industyData.startingCost) {
+                    API.expandIndustry(nextIndustry.type, nextIndustry.name)
+                }
             }
         }
     }
@@ -770,9 +802,20 @@ export async function main(ns) {
         }
     }
 
-    function bribeFactions() {
+    function bribeFactions(funds) {
 
         // put some factions under presure 
+
+        if (ns.scriptRunning(SCRIPT.reputation, "home")) {
+
+            let runningScripts = ns.ps("home")
+            let reputationScript = runningScripts.find(o => o.filename === "bin/singularity/reputation.js")
+
+            if (funds > CREDIT_BUFFER) {
+
+                API.bribe(reputationScript.args[0], 2e9)
+            }
+        }
     }
 
     function goPublic(publicCorp, numOfDivisions) {
@@ -792,17 +835,11 @@ export async function main(ns) {
     function setCreditBuffer(divisions) {
 
         // set credit buffer
-
-
         if (divisions > 2) {
-
             if (CREDIT_BUFFER != 1e9 * divisions) {
-
                 CREDIT_BUFFER = 1e9 * divisions
             }
-
         }
-
     }
 
     //\\ LOGIC
@@ -841,7 +878,7 @@ export async function main(ns) {
         setCreditBuffer(corporationData.divisions.length)
         buyUpgrades()
         buyUnlocks()
-        bribeFactions()
+        bribeFactions(corporationData.funds)
     }
 }
 
