@@ -102,15 +102,15 @@ export async function main(ns) {
         "Go-Juice",
         "Overclock",
         "Sti.mu",
-        "Market-TA.I",
-        "Market-TA.II",
+        // "Market-TA.I",
+        // "Market-TA.II",
     ]
 
     const RESEARCHUPGRADESMP = [
         "uPgrade: Fulcrum",
         "uPgrade: Dashboard",
         "uPgrade: Capacity.I",
-        "uPgrade: Capacity.II",
+        // "uPgrade: Capacity.II",
     ]
 
     function logCorporation(corp) {
@@ -341,6 +341,7 @@ export async function main(ns) {
         for (let key in distribution) { x += distribution[key] }
         let leftover = employees - x
         if (leftover > 0) { distribution.o += leftover }
+        if (leftover < 0) { distribution.m += leftover }
 
         return distribution
 
@@ -535,7 +536,7 @@ export async function main(ns) {
 
     }
 
-    function handleProduct(makesProducts, products, maxProducts, divisionName) {
+    function handleProduct(makesProducts, products, maxProducts, divisionName, divisionCities) {
 
         // create / discontinue products
 
@@ -561,27 +562,35 @@ export async function main(ns) {
 
                 // discontinue product
 
-                // {"name":"Product-2","competition":31.884000000001933,"rating":1346.988933150767,"effectiveRating":73.40269567667845,
-                // "stats":{"quality":1297.5711274361586,"performance":1677.7338829975663,"durability":1146.9806748836593,
-                // "reliability":1114.6374796375785,"aesthetics":695.550619011038,"features":1498.021500798873},
-                // "productionCost":20752.028409328796,"desiredSellPrice":"MP","desiredSellAmount":"MAX",
-                // "stored":534.4294814967928,"productionAmount":53.44294814967928,"actualSellAmount":53.36904742445726,
-                // "developmentProgress":100,"advertisingInvestment":5501250812.584862,"designInvestment":5501250812.584862,"size":0.03}
+                // {"name":"Product-0","demand":0.001,"competition":83.23479999998693,"rating":688.967014676165,"effectiveRating":52.4963623378293,
+                // "stats":{"quality":660.6280610076291,"performance":851.4283710501287,"durability":589.6590985569666,"reliability":575.2554979079844,"aesthetics":357.3792527778803,"features":767.8640448581159},
+                // "productionCost":27251.021108706314,"desiredSellPrice":"MP","desiredSellAmount":"MAX",
+                // "stored":3741212.121545457,"productionAmount":148.52227879071572,"actualSellAmount":39.11689631476117,
+                // "developmentProgress":100,"advertisingInvestment":1,"designInvestment":1,"size":0.03}       
+
+                let discontinueProduct = { division: "none", productName: "none" }
 
                 products.forEach(product => {
 
-                    let data = API.getProduct(divisionName, "Sector-12", product)
-                    // ns.print(data)
+                    divisionCities.forEach(city => {
 
-                    if (data.developmentProgress === 100) {
+                        let data = API.getProduct(divisionName, city, product)
 
-                        if (data.productionAmount > 1 && data.actualSellAmount === 0) {
+                        if (data.developmentProgress === 100 &&
+                            API.getCorporation().prevState === "SALE" &&
+                            data.stored > 100) {
 
-                            ns.tprint("ERROR DISCONTINUE PROD " + product + "" + divisionName)
-                            // API.discontinueProduct(divisionName, product)
+                            ns.tprint("ERROR DISCONTINUE PROD " + product + " " + divisionName + " " + city)
+                            discontinueProduct.division = divisionName
+                            discontinueProduct.productName = product
+
                         }
-                    }
+                    })
                 })
+
+                if (discontinueProduct.division != "none" && discontinueProduct.productName != "none") {
+                    API.discontinueProduct(discontinueProduct.division, discontinueProduct.productName)
+                }
             }
         }
     }
@@ -711,7 +720,7 @@ export async function main(ns) {
                 handleOffice(divisionData)
 
                 hireAdvert(divisionData.name)
-                handleProduct(divisionData.makesProducts, divisionData.products, divisionData.maxProducts, divisionData.name)
+                handleProduct(divisionData.makesProducts, divisionData.products, divisionData.maxProducts, divisionData.name, divisionData.cities)
                 handleProductionMult(divisionData.name, divisionData.cities)
 
             }
@@ -802,7 +811,7 @@ export async function main(ns) {
         }
     }
 
-    function bribeFactions(funds) {
+    function bribeFactions(funds, revenue) {
 
         // put some factions under presure 
 
@@ -811,9 +820,11 @@ export async function main(ns) {
             let runningScripts = ns.ps("home")
             let reputationScript = runningScripts.find(o => o.filename === "bin/singularity/reputation.js")
 
+            let amt = revenue * 0.1
+
             if (funds > CREDIT_BUFFER) {
 
-                API.bribe(reputationScript.args[0], 2e9)
+                if (API.bribe(reputationScript.args[0], amt)) { ns.print("WARN\t\tBribe Money " + ns.formatNumber(amt)) }
             }
         }
     }
@@ -868,17 +879,18 @@ export async function main(ns) {
         // "sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE",
         // "divisions":["Agriculture"]}
 
+        goPublic(corporationData.public, corporationData.divisions.length)
+        setDividents(corporationData.public, corporationData.divisions.length)
+        setCreditBuffer(corporationData.divisions.length)
+
         logCorporation(corporationData)
+        bribeFactions(corporationData.funds, corporationData.revenue)
         handleDivisions(corporationData.divisions)
         expandIndustry(corporationData.divisions)
 
-        goPublic(corporationData.public, corporationData.divisions.length)
-        setDividents(corporationData.public, corporationData.divisions.length)
         spendMoney()
-        setCreditBuffer(corporationData.divisions.length)
         buyUpgrades()
         buyUnlocks()
-        bribeFactions(corporationData.funds)
     }
 }
 
@@ -963,5 +975,6 @@ export async function main(ns) {
 
 // setMaterialMarketTA1(divisionName, city, materialName, on)	                                Set market TA 1 for a material.
 // setMaterialMarketTA2(divisionName, city, materialName, on)	                                Set market TA 2 for a material.
+
 // setProductMarketTA1(divisionName, productName, on)	                                        Set market TA 1 for a product.
 // setProductMarketTA2(divisionName, productName, on)	                                        Set market TA 2 for a product.
