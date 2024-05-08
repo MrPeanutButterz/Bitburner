@@ -9,7 +9,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["story", false]])
+    const FLAGS = ns.flags([["story", true]])
     const SCRIPT = scriptPath(ns)
 
     let TOP_CANDIDATE

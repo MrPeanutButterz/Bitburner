@@ -16,8 +16,8 @@ export async function main(ns) {
      *
      * corporation > run divisions we have 
      * corporation > try to buy next division 
-     * corporation > buy Upgrades "Smart Storage", "ABC SalesBots", "Smart Factories"
-     * corporation > buy Unlocks ?
+     * corporation > buy Upgrades 
+     * corporation > buy Unlocks 
      * corporation > set dividents based on timeline
      * corporation > go public if divisions > 2 
      *
@@ -102,8 +102,8 @@ export async function main(ns) {
         "Go-Juice",
         "Overclock",
         "Sti.mu",
-        // "Market-TA.I",
-        // "Market-TA.II",
+        "Market-TA.I",
+        "Market-TA.II",
     ]
 
     const RESEARCHUPGRADESMP = [
@@ -121,7 +121,7 @@ export async function main(ns) {
         ns.print("Funds\t\t" + ns.formatNumber(corp.funds))
         ns.print("Revenue\t\t" + ns.formatNumber(corp.revenue))
         ns.print("Expense\t\t" + ns.formatNumber(corp.expenses))
-        ns.print("dividendRate\t" + ns.formatPercent(corp.dividendRate))
+        ns.print("DividendRate\t" + ns.formatPercent(corp.dividendRate))
         ns.print("Divisions\t" + corp.divisions.length)
         ns.print("Credit buffer\t" + ns.formatNumber(CREDIT_BUFFER))
         ns.print("Spend\t\t" + SPENDMONEY)
@@ -230,7 +230,28 @@ export async function main(ns) {
 
         let sellMaterial = getSellMaterials(divisionName)
         for (let material of sellMaterial) {
-            API.sellMaterial(divisionName, city, material, "MAX", "MP")
+
+            let stored = API.getMaterial(divisionName, city, material).stored
+
+            if (API.hasResearched(divisionName, "Market-TA.I")) {
+
+                API.setMaterialMarketTA1(divisionName, city, material, false)
+
+            } else if (API.hasResearched(divisionName, "Market-TA.II")) {
+
+                API.setMaterialMarketTA2(divisionName, city, material, false)
+            }
+
+
+            if (API.getCorporation().nextState === "START" && stored > 100) {
+
+                // ns.print("WARN OVERFLOW")
+                API.sellMaterial(divisionName, city, material, "MAX", 0)
+
+            } else if (API.getCorporation().prevState === "SALE") {
+
+                API.sellMaterial(divisionName, city, material, "MAX", "MP")
+            }
         }
     }
 
@@ -239,8 +260,19 @@ export async function main(ns) {
         // set sell to products 
 
         if (makeProducts) {
+
             for (let product of products) {
+
                 API.sellProduct(divisionName, city, product, "MAX", "MP")
+
+                if (API.hasResearched(divisionName, "Market-TA.I")) {
+
+                    API.setProductMarketTA1(divisionName, product, true)
+
+                } else if (API.hasResearched(divisionName, "Market-TA.II")) {
+
+                    API.setProductMarketTA2(divisionName, product, true)
+                }
             }
         }
     }
@@ -712,7 +744,8 @@ export async function main(ns) {
     function buyUpgrades() {
 
         // auto buy upgrades
-        const wantedUpgrades = ["ABC SalesBots", "DreamSense", "Smart Factories"]
+        const wantedUpgrades = ["ABC SalesBots", "DreamSense", "Smart Factories", "Nuoptimal Nootropic Injector Implants",
+            "Speech Processor Implants", "FocusWires", "Neural Accelerators", "Wilson Analytics"]
 
         if (SPENDMONEY) {
             wantedUpgrades.forEach(upgrade => {
