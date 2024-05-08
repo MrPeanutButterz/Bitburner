@@ -67,13 +67,13 @@ export async function main(ns) {
     ]
 
     const NEW_DIVISIONS = [
-        { type: "Agriculture", name: "AGRCLT" },
+        { type: "Agriculture", name: "AGRCL" },
         { type: "Spring Water", name: "SPRNG" },
         { type: "Restaurant", name: "RESTO" },
         { type: "Tobacco", name: "TOBCO" },
         { type: "Software", name: "SOFTW" },
         { type: "Refinery", name: "REFIN" },
-        { type: "Chemical", name: "CHEM" },
+        { type: "Chemical", name: "CHEMI" },
         { type: "Fishing", name: "FISHY" },
         { type: "Water Utilities", name: "WATUT" },
         { type: "Pharmaceutical", name: "PHRMA" },
@@ -110,7 +110,7 @@ export async function main(ns) {
         "uPgrade: Fulcrum",
         "uPgrade: Dashboard",
         "uPgrade: Capacity.I",
-        // "uPgrade: Capacity.II",
+        "uPgrade: Capacity.II",
     ]
 
     function logCorporation(corp) {
@@ -186,8 +186,6 @@ export async function main(ns) {
             case "xRSST": return ["Real Estate"]
             case "xHLCR": return []
             case "xRBTC": return ["Robots"]
-
-
         }
     }
 
@@ -251,8 +249,6 @@ export async function main(ns) {
 
         // upgrade warehouse size with level upgrade
 
-        // if (SPENDMONEY) {
-
         if (sizeUsed / size * 100 > 90) {
 
             if (API.getCorporation().funds > API.getUpgradeLevelCost("Smart Storage") + CREDIT_BUFFER) {
@@ -261,11 +257,8 @@ export async function main(ns) {
             } else if (API.getCorporation().funds > API.getUpgradeWarehouseCost(divisionName, city, 1) + CREDIT_BUFFER) {
 
                 API.upgradeWarehouse(divisionName, city, 1)
-                // only if discontinue product is working
-
             }
         }
-        // }
     }
 
     function handleWarehouse(division) {
@@ -276,16 +269,9 @@ export async function main(ns) {
         //   \ V  V / (_| | | |  __/ | | | (_) | |_| \__ \  __/
         //    \_/\_/ \__,_|_|  \___|_| |_|\___/ \__,_|___/\___|
 
-        // done > set Smart Supply
-        // done > sell material
-        // done > sell product
-        // done > expand warehouse size
-
         for (let city of division.cities) {
 
             let warehouseData = API.getWarehouse(division.name, city)
-            // {"level":2,"city":"Sector-12","size":940,"sizeUsed":469.64325151524343,"smartSupplyEnabled":true}
-
             setSmartSupply(warehouseData.smartSupplyEnabled, division.name, city)
             sellMaterial(division.name, city)
             sellProduct(division.makesProducts, division.products, division.name, city)
@@ -344,7 +330,6 @@ export async function main(ns) {
         if (leftover < 0) { distribution.m += leftover }
 
         return distribution
-
     }
 
     function researchCompleted(divisionName, makeProducts) {
@@ -362,7 +347,6 @@ export async function main(ns) {
                 if (!API.hasResearched(divisionName, rs)) { return false }
             }
         }
-
         return complete
     }
 
@@ -401,6 +385,7 @@ export async function main(ns) {
     function boostEnergy(avgEnergy, divisionName, city) {
 
         // boost energy with tea
+
         if (SPENDMONEY) {
 
             if (avgEnergy < AVG_EMPLOYEE_HEALTH &&
@@ -413,6 +398,7 @@ export async function main(ns) {
     function boostMoral(avgMorale, divisionName, city) {
 
         // boost morale with a party
+
         if (SPENDMONEY) {
 
             if (avgMorale < AVG_EMPLOYEE_HEALTH &&
@@ -425,6 +411,7 @@ export async function main(ns) {
     function upgradeOfficeSize(divisionName, city) {
 
         // upgrade office size by 3
+
         if (SPENDMONEY) {
 
             if (API.getCorporation().funds > API.getOfficeSizeUpgradeCost(divisionName, city, 3) + CREDIT_BUFFER) {
@@ -477,30 +464,17 @@ export async function main(ns) {
         // | |_| |  _|  _| | (_|  __/
         //  \___/|_| |_| |_|\___\___|
 
-        // done > hire employees
-        // done > set jobs for employees 
-        // done > boost energie
-        // done > boost moral
-        // done > upgrade office size
-        // done > set up research & development if office size > 30
-
         let totalEmployees = 0
 
         for (let city of division.cities) {
 
             let officeData = API.getOffice(division.name, city)
-            // {"city":"Sector-12","size":51,"maxEnergy":100,"maxMorale":100,"numEmployees":51,"avgEnergy":81.22141795099317,
-            // "avgMorale":87.02619053049231,"totalExperience":3904.062500000081,
-            // "employeeProductionByJob":{"total":10922.257060272725,"Operations":4505.8673751341075,"Engineer":3931.7701790583546,"Business":1235.2937690187878,"Management":1249.3257370614729,"Research & Development":0,"Intern":0,"Unassigned":0},
-            // "employeeJobs":{"Operations":19,"Engineer":15,"Business":12,"Management":5,"Research & Development":0,"Intern":0,"Unassigned":0}}
-
             hireEmployees(officeData.numEmployees, officeData.size, division.name, city)
             assignJobs(officeData.numEmployees, division.name, city, division.makesProducts)
             boostEnergy(officeData.avgEnergy, division.name, city)
             boostMoral(officeData.avgMorale, division.name, city)
             upgradeOfficeSize(division.name, city)
             researchUpgrades(division.name, division.makesProducts)
-
             totalEmployees += officeData.numEmployees
         }
         ns.print("Employees\t" + totalEmployees)
@@ -519,6 +493,8 @@ export async function main(ns) {
 
     function createNewProductName(existingProducts) {
 
+        // create product name base on existing product numbers
+
         const baseName = "Product-"
         let numberOfProducts = 0
 
@@ -530,10 +506,8 @@ export async function main(ns) {
                 numberOfProducts = num
             }
         })
-
         numberOfProducts++
         return baseName + numberOfProducts
-
     }
 
     function handleProduct(makesProducts, products, maxProducts, divisionName, divisionCities) {
@@ -561,21 +535,12 @@ export async function main(ns) {
             } else {
 
                 // discontinue product
-
-                // {"name":"Product-0","demand":0.001,"competition":83.23479999998693,"rating":688.967014676165,"effectiveRating":52.4963623378293,
-                // "stats":{"quality":660.6280610076291,"performance":851.4283710501287,"durability":589.6590985569666,"reliability":575.2554979079844,"aesthetics":357.3792527778803,"features":767.8640448581159},
-                // "productionCost":27251.021108706314,"desiredSellPrice":"MP","desiredSellAmount":"MAX",
-                // "stored":3741212.121545457,"productionAmount":148.52227879071572,"actualSellAmount":39.11689631476117,
-                // "developmentProgress":100,"advertisingInvestment":1,"designInvestment":1,"size":0.03}       
-
                 let discontinueProduct = { division: "none", productName: "none" }
 
                 products.forEach(product => {
-
                     divisionCities.forEach(city => {
 
                         let data = API.getProduct(divisionName, city, product)
-
                         if (data.developmentProgress === 100 &&
                             API.getCorporation().prevState === "SALE" &&
                             data.stored > 100) {
@@ -694,35 +659,17 @@ export async function main(ns) {
         // | |_| | |\ V /| \__ \ | (_) | | | \__ \
         // |____/|_| \_/ |_|___/_|\___/|_| |_|___/
 
-        // done > expand to all cities first
-        // done > get all cities a warehouse
-        // done > run the office
-        // done > run the warehouse
-        // done > hire advert
-        // todo > create / discontinue product 
-        // done > fill warehouse with booster material en export
-        // done > handle research upgrades 
-
         for (let division of divisions) {
 
             let divisionData = API.getDivision(division)
             logDivision(divisionData)
 
-            // {"name":"Software","type":"Software","awareness":439.9579416928646,"popularity":148.41790015997182,
-            //"productionMult":7.94406563874802,"researchPoints":0,"lastCycleRevenue":11087995.928321738,
-            //"lastCycleExpenses":1478569.291055181,"thisCycleRevenue":0,"thisCycleExpenses":488420.944500005,"numAdVerts":59,
-            // "cities":["Sector-12","Aevum","Chongqing","New Tokyo","Ishima","Volhaven"],
-            // "products":["Product-0","Product-1","Product-2"],"makesProducts":true,"maxProducts":3}
-
             if (expandDivision(divisionData)) {
-
                 handleWarehouse(divisionData)
                 handleOffice(divisionData)
-
                 hireAdvert(divisionData.name)
                 handleProduct(divisionData.makesProducts, divisionData.products, divisionData.maxProducts, divisionData.name, divisionData.cities)
                 handleProductionMult(divisionData.name, divisionData.cities)
-
             }
         }
     }
@@ -754,7 +701,6 @@ export async function main(ns) {
 
                 ns.print("\nNext industry \t" + nextIndustry.type)
                 ns.print("Cost\t\t" + ns.formatNumber(industyData.startingCost))
-
 
                 if (API.getCorporation().funds > industyData.startingCost) {
                     API.expandIndustry(nextIndustry.type, nextIndustry.name)
@@ -793,7 +739,6 @@ export async function main(ns) {
         let rate = 0
 
         if (numOfDivisions > 10) { rate = 0.01 }
-
         if (SPENDMONEY) {
 
             if (publicCorp && numOfDivisions > 3) {
@@ -863,31 +808,18 @@ export async function main(ns) {
         //  \____\___/|_|  | .__/ \___/|_|  \__,_|\__|_|\___/|_| |_|
         //                 |_|                                      
 
-        // done > run divisions we have 
-        // done > try to buy next division 
-        // done > buy Upgrades "DreamSense", "ABC SalesBots", "Smart Factories"
-        // corporation > buy Unlocks ?
-        // done > set dividents based on timeline
-        // done > go public if divisions > 2 
-
         await API.nextUpdate()
         ns.clearLog()
 
         let corporationData = API.getCorporation()
-        // getCorporation {"name":"CapitalPrinter Inc","funds":20000000000,"revenue":0,"expenses":0,"public":false,"totalShares":1500000000,
-        // "numShares":1000000000,"shareSaleCooldown":0,"investorShares":500000000,"issuedShares":0,"issueNewSharesCooldown":0,
-        // "sharePrice":0.016186328769970792,"dividendRate":0,"dividendTax":0.15,"dividendEarnings":0,"nextState":"START","prevState":"SALE",
-        // "divisions":["Agriculture"]}
 
         goPublic(corporationData.public, corporationData.divisions.length)
         setDividents(corporationData.public, corporationData.divisions.length)
         setCreditBuffer(corporationData.divisions.length)
-
         logCorporation(corporationData)
         bribeFactions(corporationData.funds, corporationData.revenue)
         handleDivisions(corporationData.divisions)
         expandIndustry(corporationData.divisions)
-
         spendMoney()
         buyUpgrades()
         buyUnlocks()
