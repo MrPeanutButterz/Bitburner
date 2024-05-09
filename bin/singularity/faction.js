@@ -124,5 +124,9 @@ export async function main(ns) {
         ns.tprint("Follow the white rabbit...")
         ns.tprint("Knock, knock, Neo.")
 
+        if (FLAGS.story) [
+            ns.spawn(SCRIPT.killBN, { threads: 1, spawnDelay: 5000 })
+        ]
+
     }
 }

@@ -14,6 +14,7 @@ export async function main(ns) {
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
     const COMPLETION_TRIGGER = 90 // 90%
+    const FAVOR_TARGET = 75
     const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false
@@ -70,7 +71,9 @@ export async function main(ns) {
     async function followUpScript() {
 
         while (true) {
+            if (ns.scriptRunning(SCRIPT.share, "home")) { ns.scriptKill(SCRIPT.share, "home") }
             if (canRunOnHome(ns, SCRIPT.faction)) {
+
 
                 ns.singularity.stopAction()
                 ns.closeTail()
@@ -86,17 +89,17 @@ export async function main(ns) {
     }
 
     function preInstall() {
-        if (calculateTotalFavor(FACTION) >= 150 &&
+        if (calculateTotalFavor(FACTION) >= FAVOR_TARGET &&
             ns.singularity.getAugmentationRepReq("NeuroFlux Governor") < ns.singularity.getFactionRep(FACTION) &&
             (ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 < COMPLETION_TRIGGER &&
-            ns.singularity.getFactionFavor(FACTION) < 150) {
+            ns.singularity.getFactionFavor(FACTION) < FAVOR_TARGET) {
 
             ns.spawn(SCRIPT.install, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
         }
     }
 
     function donate() {
-        if (ns.singularity.getFactionFavor(FACTION) >= 150 &&
+        if (ns.singularity.getFactionFavor(FACTION) >= FAVOR_TARGET &&
             ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
             ns.singularity.donateToFaction(FACTION, DONATION)
         }
