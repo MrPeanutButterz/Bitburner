@@ -55,7 +55,7 @@ export async function main(ns) {
     const WAREHOUSE_USAGE_PROD_MULT = 0.5
 
     let SPENDMONEY = true
-    let CREDIT_BUFFER = API.getCorporation().expenses // use to be 1e9 
+    let CREDIT_BUFFER = API.getCorporation().expenses
 
     const ALL_CITIES = [
         ns.enums.CityName.Sector12,
@@ -825,8 +825,8 @@ export async function main(ns) {
 
         // set credit buffer
         if (divisions > 2) {
-            if (CREDIT_BUFFER != 1e9 * divisions) {
-                CREDIT_BUFFER = 1e9 * divisions
+            if (CREDIT_BUFFER != API.getCorporation().expenses * divisions) {
+                CREDIT_BUFFER = API.getCorporation().expenses * divisions
             }
         }
     }

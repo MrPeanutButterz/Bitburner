@@ -260,6 +260,6 @@ export async function main(ns) {
     while (true) {
         await ns.sleep(1000)
         watchForNewServer(ns)
-        NmapTotalRam(ns) < 1e4 ? stage1() : stage2()
+        NmapTotalRam(ns) < 7500 ? stage1() : stage2()
     }
 }

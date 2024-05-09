@@ -9,7 +9,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["story", true]])
+    const FLAGS = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
 
     let TOP_CANDIDATE
@@ -93,7 +93,6 @@ export async function main(ns) {
 
     if (ownAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
 
-
     if (TOP_CANDIDATE.name !== "RedPillTime") {
 
         if (!accepted(TOP_CANDIDATE.name)) {
@@ -116,17 +115,11 @@ export async function main(ns) {
             ns.closeTail()
             ns.tprint("Installing augmentations from " + TOP_CANDIDATE.name)
             await followUpScript(SCRIPT.install, TOP_CANDIDATE.name)
-
         }
 
     } else {
 
         ns.tprint("Follow the white rabbit...")
         ns.tprint("Knock, knock, Neo.")
-
-        if (FLAGS.story) [
-            ns.spawn(SCRIPT.killBN, { threads: 1, spawnDelay: 5000 })
-        ]
-
     }
 }
