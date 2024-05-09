@@ -55,7 +55,7 @@ export async function main(ns) {
     const WAREHOUSE_USAGE_PROD_MULT = 0.5
 
     let SPENDMONEY = true
-    let CREDIT_BUFFER = 1e9
+    let CREDIT_BUFFER = API.getCorporation().expenses // use to be 1e9 
 
     const ALL_CITIES = [
         ns.enums.CityName.Sector12,
