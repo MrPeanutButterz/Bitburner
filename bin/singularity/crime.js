@@ -165,9 +165,9 @@ export async function main(ns) {
                     ns.print("Waiting for requirements...")
                 }
 
-            } else {
+            } else if (NmapTotalRam(ns) > 5000) {
 
-                ns.singularity.stopAction()
+                ns.atExit(() => { ns.singularity.stopAction() })
                 scriptExit(ns)
             }
 
