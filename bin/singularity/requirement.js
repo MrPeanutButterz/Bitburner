@@ -6,8 +6,11 @@ import { getFactionServer, getFactionStats } from "lib/factions"
 export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
-    const FLAGS = ns.flags([["story", false]])
     scriptStart(ns)
+    const FLAGS = ns.flags([
+        ["story", false],
+        ["gang", false]
+    ])
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
@@ -28,9 +31,20 @@ export async function main(ns) {
         if (ns.singularity.checkFactionInvitations().find(i => i === FACTION)) {
             if (canRunOnHome(ns, SCRIPT.faction)) {
                 if (ns.singularity.joinFaction(FACTION)) {
-                    FLAGS.story ?
-                        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story") :
+
+                    if (FLAGS.story) {
+
+                        ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 }, "--story")
+
+                    } else if (FLAGS.gang) {
+
+                        ns.spawn(SCRIPT.gangs, { threads: 1, spawnDelay: 500 })
+
+                    } else {
+
                         ns.closeTail(); ns.spawn(SCRIPT.faction, { threads: 1, spawnDelay: 500 })
+                    }
+
                 }
             }
         }

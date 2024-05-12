@@ -13,7 +13,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const HOME_RAM_RESERVED = 500
+    const HOME_RAM_RESERVED = 2000
 
     //\\ FUNCTIONS
     function shareHome() {

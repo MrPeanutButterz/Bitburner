@@ -3,6 +3,16 @@ import { scriptStart } from "/lib/scripting"
 /** @param {NS} ns */
 export async function main(ns) {
 
+    /** _                _           
+     * | |    ___   __ _(_) ___ __ _ 
+     * | |   / _ \ / _` | |/ __/ _` |
+     * | |__| (_) | (_| | | (_| (_| |
+     * |_____\___/ \__, |_|\___\__,_|
+     *              |___/             
+     * 
+     * create a gang
+    */
+
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 

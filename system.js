@@ -43,7 +43,10 @@ export async function main(ns) {
   await run(SCRIPT.servers)
   await run(SCRIPT.crime)
   await run(SCRIPT.faction)
-  // await run(SCRIPT.hackGang)
+  await run(SCRIPT.gangs)
+
+  waitForRam()
+
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
   await run(SCRIPT.corporation)
