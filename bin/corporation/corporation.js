@@ -1,5 +1,6 @@
 import { getNewDivisions } from "/lib/corporation"
 import { canRunOnHome } from "/lib/network"
+import { scriptPath } from "/lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -54,7 +55,7 @@ export async function main(ns) {
                 // run big 
                 if (canRunOnHome(ns, SCRIPT.bigCorp)) {
 
-                    ns.spawn(SCRIPT.bigCorp, { threads: 0, spawnDelay: 500 })
+                    ns.spawn(SCRIPT.bigCorp, { threads: 1, spawnDelay: 500 })
 
                 }
 
@@ -62,7 +63,7 @@ export async function main(ns) {
 
                 if (canRunOnHome(ns, SCRIPT.smallCorp)) {
 
-                    ns.spawn(SCRIPT.smallCorp, { threads: 0, spawnDelay: 500 })
+                    ns.spawn(SCRIPT.smallCorp, { threads: 1, spawnDelay: 500 })
 
                 }
             }
