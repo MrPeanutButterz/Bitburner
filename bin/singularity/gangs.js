@@ -29,7 +29,7 @@ export async function main(ns) {
 
     //\\ FUNCTIONS
     //\\ MAIN MAGIC
-    FLAGS.combat ? FACTION = "Slum Snakes" : FACTION = "NitSec"
+    FLAGS.combat ? FACTION = "Slum Snakes" : FACTION = "NiteSec"
 
     while (true) {
         await ns.sleep(1000)

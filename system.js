@@ -41,15 +41,15 @@ export async function main(ns) {
   await run(SCRIPT.programs)
   await run(SCRIPT.ram)
   await run(SCRIPT.servers)
-  await run(SCRIPT.crime)
-  await run(SCRIPT.faction)
   await run(SCRIPT.gangs)
+  await run(SCRIPT.crime)
 
-  waitForRam()
+  await waitForRam()
 
+  await run(SCRIPT.faction)
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
   await run(SCRIPT.corporation)
-  await run("utils/interface.js")
+  await run(SCRIPT.interface)
 
 }

@@ -184,6 +184,12 @@ export async function main(ns) {
     }
 
     //\\ LOGIC
+    if (API.inGang()) {
+        if (API.createGang("NiteSec")) {
+            ns.tprint("Hackgang created")
+        }
+    }
+
     while (true) {
 
         ns.clearLog()
