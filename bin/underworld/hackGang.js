@@ -213,7 +213,7 @@ export async function main(ns) {
         display()
         await API.nextUpdate()
 
-        if (API.getBonusTime() > 5000) {
+        if (API.getBonusTime() > 5000 && API.getMemberNames().length < 11) {
 
             recruitMembers()
             memberTaskBonus()
