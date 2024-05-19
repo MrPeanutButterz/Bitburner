@@ -1,4 +1,4 @@
-import { scriptPath } from "./lib/scripting"
+import { scriptPath, scriptStart } from "./lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -43,8 +43,7 @@ export async function main(ns) {
     */
 
     //\\ SCRIPT SETTINGS
-    ns.disableLog("ALL")
-    ns.clearLog()
+    scriptStart(ns)
     ns.tail()
 
     //\\ GENERAL DATA
@@ -165,52 +164,52 @@ export async function main(ns) {
         // @return the industie required material for production
 
         switch (divisionName) {
-            case "Agriculture": return ["Plants", "Food"]
-            case "Spring Water": return ["Water"]
-            case "Restaurant": return ["Food", "Water"]
-            case "Tobacco": return ["Plants"]
-            case "Software": return ["AI Cores"]
-            case "Refinery": return ["Metal"]
-            case "Chemical": return ["Chemicals"]
-            case "Fishing": return ["Food"]
-            case "Water Utilities": return ["Water"]
-            case "Pharmaceutical": return ["Drugs"]
-            case "Mining": return ["Ore", "Minerals"]
-            case "Computer Hardware": return ["Hardware"]
-            case "Real Estate": return ["Real Estate"]
-            case "Healthcare": return []
-            case "Robotics": return ["Robots"]
-            case "xAGRI": return ["Plants", "Food"]
-            case "xSFTW": return ["AI Cores"]
-            case "xRSST": return ["Real Estate"]
-            case "xHLCR": return []
-            case "xRBTC": return ["Robots"]
+            case "AGRCL": return ["Plants", "Food"]
+            case "SPRNG": return ["Water"]
+            case "RESTO": return ["Food", "Water"]
+            case "TOBCO": return ["Plants"]
+            case "SOFTW": return ["AI Cores"]
+            case "REFIN": return ["Metal"]
+            case "CHEMI": return ["Chemicals"]
+            case "FISHY": return ["Food"]
+            case "WATUT": return ["Water"]
+            case "PHRMA": return ["Drugs"]
+            case "MINE": return ["Ore", "Minerals"]
+            case "CPHW": return ["Hardware"]
+            case "RLST8": return ["Real Estate"]
+            case "HLTHC": return []
+            case "ROBO": return ["Robots"]
+            case "FARMG": return ["Plants", "Food"]
+            case "CODE": return ["AI Cores"]
+            case "ESTAT": return ["Real Estate"]
+            case "MEDIC": return []
+            case "BOTIC": return ["Robots"]
         }
     }
 
     function getProductionMultiplierMaterial(divisionName) {
 
         switch (divisionName) {
-            case "Agriculture": return "Real Estate"
-            case "Spring Water": return "Real Estate"
-            case "Restaurant": return "AI Cores"
-            case "Tobacco": return "Robots"
-            case "Software": return "Real Estate"
-            case "Refinery": return "Hardware"
-            case "Chemical": return "Real Estate"
-            case "Fishing": return "Robots"
-            case "Water Utilities": return "Real Estate"
-            case "Pharmaceutical": return "Robots"
-            case "Mining": return "Robots"
-            case "Computer Hardware": return "Robots"
-            case "Real Estate": return "Robots"
-            case "Healthcare": return "Real Estate"
-            case "Robotics": return "Real Estate"
-            case "xAGRI": return "Real Estate"
-            case "xSFTW": return "Real Estate"
-            case "xRSST": return "Robots"
-            case "xHLCR": return "Real Estate"
-            case "xRBTC": return "Real Estate"
+            case "AGRCL": return "Real Estate"
+            case "SPRNG": return "Real Estate"
+            case "RESTO": return "AI Cores"
+            case "TOBCO": return "Robots"
+            case "SOFTW": return "Real Estate"
+            case "REFIN": return "Hardware"
+            case "CHEMI": return "Real Estate"
+            case "FISHY": return "Robots"
+            case "WATUT": return "Real Estate"
+            case "PHRMA": return "Robots"
+            case "MINE": return "Robots"
+            case "CPHW": return "Robots"
+            case "RLST8": return "Robots"
+            case "HLTHC": return "Real Estate"
+            case "ROBO": return "Real Estate"
+            case "FARMG": return "Real Estate"
+            case "CODE": return "Real Estate"
+            case "ESTAT": return "Robots"
+            case "MEDIC": return "Real Estate"
+            case "BOTIC": return "Real Estate"
         }
     }
 
@@ -576,7 +575,7 @@ export async function main(ns) {
                             API.getCorporation().prevState === "SALE" &&
                             data.stored > 100) {
 
-                            ns.tprint("ERROR DISCONTINUE PROD " + product + " " + divisionName + " " + city)
+                            ns.tprint("WARN DISCONTINUE PROD " + product + " " + divisionName + " " + city)
                             discontinueProduct.division = divisionName
                             discontinueProduct.productName = product
 
@@ -593,8 +592,6 @@ export async function main(ns) {
 
     function handleProductionMult(divisionName, divisionCities) {
 
-        // buys productions multipliers in cheapest city en sells in all others 
-
         let data = []
         divisionCities.forEach(city => {
 
@@ -605,69 +602,74 @@ export async function main(ns) {
 
             data.push({
                 city: city,
-                exports: material.exports,
-                warehouseMaxFill: Math.round(warehouse.size * WAREHOUSE_USAGE_PROD_MULT) / materialData.size,
-
-                materialName: prodMultMaterial,
+                prodMult: prodMultMaterial,
+                marketPrice: material.marketPrice,
                 materialSize: materialData.size,
-                materialMarketPrice: Math.round(material.marketPrice),
-
-                materialStored: Math.floor(material.stored),
-                materialDemand: Math.round((warehouse.size * WAREHOUSE_USAGE_PROD_MULT) / materialData.size) - Math.floor(material.stored),
-                materialExportAmt: Math.ceil((warehouse.size * WAREHOUSE_USAGE_PROD_MULT / materialData.size - material.stored) * materialData.size + material.actualSellAmount),
+                stored: material.stored,
+                storedInSize: material.stored * materialData.size,
+                warehouseMaxStored: warehouse.size / materialData.size,
+                exports: material.exports,
             })
         })
 
-        data.sort((a, b) => a.materialMarketPrice - b.materialMarketPrice)
-        data.forEach(element => {
+        data.sort((a, b) => a.marketPrice - b.marketPrice)
 
-            if (data[0].city === element.city) {
+        for (let get of data) {
 
-                // dont sell in city where to buy
-                API.sellMaterial(divisionName, element.city, element.materialName, 0, "MP")
+            let demand
 
-                // only buy if there is demand 
-                if (element.materialDemand > 0 && element.materialStored < element.warehouseMaxFill) {
+            if (get.city === data[0].city) {
 
-                    let corporationFunds = API.getCorporation().funds
-                    let bulkPrice = element.materialDemand * element.materialMarketPrice
+                ns.print("Export \t\t" + get.city)
 
-                    // buy demand or funds based
-                    if (corporationFunds > bulkPrice) {
+                // buy here
+                API.sellMaterial(divisionName, get.city, get.prodMult, 0, "MP")
 
-                        API.bulkPurchase(divisionName, element.city, element.materialName, element.materialDemand)
+                // bulk purchase max amount
+                demand = (get.warehouseMaxStored / 2) - get.stored
+                let price = demand * get.marketPrice
+
+                if (demand > 0 && API.getCorporation().funds > CREDIT_BUFFER) {
+
+                    if (API.getCorporation().funds > price) {
+
+                        API.bulkPurchase(divisionName, get.city, get.prodMult, demand)
 
                     } else {
 
-                        let parcialBulkDemand = Math.floor(corporationFunds / bulkPrice)
-                        API.bulkPurchase(divisionName, element.city, element.materialName, parcialBulkDemand)
+                        let parcialDemand = API.getCorporation().funds / get.marketPrice
+                        API.bulkPurchase(divisionName, get.city, get.prodMult, parcialDemand)
                     }
                 }
 
             } else {
 
-                // set all other city to sell
-                API.sellMaterial(divisionName, element.city, element.materialName, "MAX", "MP")
+                // sell in city
+                API.sellMaterial(divisionName, get.city, get.prodMult, "MAX", "MP")
 
-                // remove expired exports from sellCity
-                for (let oldExport of element.exports) {
-                    API.cancelExportMaterial(divisionName, element.city, oldExport.division, oldExport.city, element.materialName)
+                // remove old exports of city when buy city changes
+                for (let oldExport of get.exports) {
+                    API.cancelExportMaterial(divisionName, get.city, oldExport.division, oldExport.city, get.prodMult)
                 }
 
                 if (API.getCorporation().nextState === "EXPORT") {
 
                     // set up exports from buyCity
-                    if (element.materialDemand > 0) {
+                    if ((get.warehouseMaxStored / 2) - get.stored > 0) {
 
                         // find if export exists 
                         let exportExists = false
                         for (let runningExports of data[0].exports) {
-                            if (runningExports.city === element.city) { exportExists = true }
+                            if (runningExports.city === get.city) { exportExists = true }
                         }
 
                         // set up export
                         if (!exportExists) {
-                            API.exportMaterial(divisionName, data[0].city, divisionName, element.city, element.materialName, element.materialExportAmt)
+
+                            demand = (get.warehouseMaxStored / 2) - get.stored
+                            if (demand > 0) {
+                                API.exportMaterial(divisionName, data[0].city, divisionName, get.city, get.prodMult, demand * get.materialSize)
+                            }
                         }
                     }
 
@@ -675,11 +677,11 @@ export async function main(ns) {
 
                     // remove all exports from buyCity when done
                     for (let oldExport of data[0].exports) {
-                        API.cancelExportMaterial(divisionName, data[0].city, divisionName, oldExport.city, element.materialName)
+                        API.cancelExportMaterial(divisionName, data[0].city, divisionName, oldExport.city, get.prodMult)
                     }
                 }
             }
-        })
+        }
     }
 
     function handleDivisions(divisions) {
@@ -785,7 +787,7 @@ export async function main(ns) {
 
             let amt = revenue * 0.2
 
-            if (funds > CREDIT_BUFFER) {
+            if (funds > 1e9) {
 
                 if (API.bribe(reputationScript.args[0], amt)) { ns.print("WARN\t\tBribe Money " + ns.formatNumber(amt)) }
             }

@@ -1,4 +1,5 @@
 import { getNewDivisions } from "/lib/corporation"
+import { canRunOnHome } from "/lib/network"
 import { scriptPath, scriptStart } from "/lib/scripting"
 
 /** @param {NS} ns */
@@ -77,8 +78,6 @@ export async function main(ns) {
         ns.print("Name\t\t" + corp.name)
         ns.print("Funds\t\t" + ns.formatNumber(corp.funds))
         ns.print("Revenue\t\t" + ns.formatNumber(corp.revenue))
-        ns.print("Expense\t\t" + ns.formatNumber(corp.expenses))
-        ns.print("DividendRate\t" + ns.formatPercent(corp.dividendRate))
         ns.print("Divisions\t" + corp.divisions.length)
     }
 
@@ -113,24 +112,14 @@ export async function main(ns) {
     function handleProductionMult(divisionName, divisionCities) {
 
         let data = []
-
         divisionCities.forEach(city => {
 
             let prodMultMaterial = getProductionMultiplierMaterial(divisionName)
-
             let material = API.getMaterial(divisionName, city, prodMultMaterial)
-            // {"marketPrice":77630.75482894522,"desiredSellPrice":"","desiredSellAmount":0,"name":"Real Estate","stored":0,"quality":1,
-            // "productionAmount":0,"actualSellAmount":0,"exports":[]}
-
             let materialData = API.getMaterialData(prodMultMaterial)
-            // {"name":"Real Estate","size":0.005,"demandBase":50,"demandRange":[5,99],"competitionBase":50,"competitionRange":[25,75],
-            // "baseCost":80000,"maxVolatility":1.5,"baseMarkup":1.5}
-
             let warehouse = API.getWarehouse(divisionName, city)
-            // {"level":1,"city":"Sector-12","size":100,"sizeUsed":0,"smartSupplyEnabled":false}
 
             data.push({
-
                 city: city,
                 prodMult: prodMultMaterial,
                 marketPrice: material.marketPrice,
@@ -139,48 +128,45 @@ export async function main(ns) {
                 storedInSize: material.stored * materialData.size,
                 warehouseMaxStored: warehouse.size / materialData.size,
                 exports: material.exports,
-
             })
         })
 
         data.sort((a, b) => a.marketPrice - b.marketPrice)
-        // data.forEach(d => {
-        //     ns.print(" ")
-        //     ns.print(d.city)
-        //     ns.print("MarktP " + ns.formatNumber(d.marketPrice))
-        //     ns.print("Stored " + d.stored)
-        //     ns.print("StoreM " + d.warehouseMaxStored)
-        // })
 
         for (let get of data) {
 
+            let demand
+
             if (get.city === data[0].city) {
+
+                ns.print("Export \t\t" + get.city)
 
                 // buy here
                 API.sellMaterial(divisionName, get.city, get.prodMult, 0, "MP")
 
                 // bulk purchase max amount
-                let demand = get.warehouseMaxStored - get.stored
+                demand = (get.warehouseMaxStored / 2) - get.stored
                 let price = demand * get.marketPrice
 
-                if (API.getCorporation().funds > price) {
+                if (demand > 0) {
 
-                    // ns.print("BUY FULL amt " + demand + " price " + ns.formatNumber(demand * get.marketPrice) + " at " + data[0].city)
-                    API.bulkPurchase(divisionName, get.city, get.prodMult, demand - 1)
+                    if (API.getCorporation().funds > price) {
 
-                } else {
+                        API.bulkPurchase(divisionName, get.city, get.prodMult, demand)
 
-                    let parcialDemand = API.getCorporation().funds / get.marketPrice
-                    // ns.print("BUY PART amt " + parcialDemand + " price " + ns.formatNumber(parcialDemand * get.marketPrice) + " at " + data[0].city)
-                    API.bulkPurchase(divisionName, get.city, get.prodMult, parcialDemand)
+                    } else {
+
+                        let parcialDemand = API.getCorporation().funds / get.marketPrice
+                        API.bulkPurchase(divisionName, get.city, get.prodMult, parcialDemand)
+                    }
                 }
 
             } else {
 
-                // sell here
+                // sell in city
                 API.sellMaterial(divisionName, get.city, get.prodMult, "MAX", "MP")
 
-                // remove old exports 
+                // remove old exports of city when buy city changes
                 for (let oldExport of get.exports) {
                     API.cancelExportMaterial(divisionName, get.city, oldExport.division, oldExport.city, get.prodMult)
                 }
@@ -188,7 +174,7 @@ export async function main(ns) {
                 if (API.getCorporation().nextState === "EXPORT") {
 
                     // set up exports from buyCity
-                    if (get.warehouseMaxStored - get.stored > 0) {
+                    if ((get.warehouseMaxStored / 2) - get.stored > 0) {
 
                         // find if export exists 
                         let exportExists = false
@@ -198,7 +184,11 @@ export async function main(ns) {
 
                         // set up export
                         if (!exportExists) {
-                            API.exportMaterial(divisionName, data[0].city, divisionName, get.city, get.prodMult, "MAX")
+
+                            demand = (get.warehouseMaxStored / 2) - get.stored
+                            if (demand > 0) {
+                                API.exportMaterial(divisionName, data[0].city, divisionName, get.city, get.prodMult, demand * get.materialSize)
+                            }
                         }
                     }
 
@@ -225,7 +215,6 @@ export async function main(ns) {
 
             let divisionData = API.getDivision(division)
             logDivision(divisionData)
-
             expandDivision(divisionData)
             handleProductionMult(divisionData.name, divisionData.cities)
         }
@@ -267,6 +256,15 @@ export async function main(ns) {
         }
     }
 
+    function switchScript() {
+
+        // switch to bigger script
+
+        if (canRunOnHome(ns, SCRIPT.bigCorp)) {
+            ns.spawn(SCRIPT.corporation, { threads: 1, spawnDelay: 500 })
+        }
+    }
+
     //\\ MAIN LOGIC
     while (true) {
 
@@ -286,8 +284,8 @@ export async function main(ns) {
         handleDivisions(corporationData.divisions)
         expandIndustry(corporationData.divisions)
         buyUpgrades(corporationData.divisions)
+        switchScript()
     }
-
 }
 
 // CORPORATION ================================================================================================================================================
