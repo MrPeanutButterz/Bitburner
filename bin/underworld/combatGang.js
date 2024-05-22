@@ -1,4 +1,5 @@
-import { scriptStart } from "/lib/scripting"
+import { scriptPath, scriptStart } from "/lib/scripting"
+import { NmapTotalRam } from "/lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -13,7 +14,6 @@ export async function main(ns) {
      * 
      * 
      * ✅ create gang
-     * ✅ create gang > display current gang
      * 
      * ✅ management > recruite gang members
      * management > set task
@@ -21,7 +21,7 @@ export async function main(ns) {
      * 
      * equipment > buy augmentations 
      * 
-     * territory > set clash
+     * ✅ territory > set clash
     */
 
     //\\ SCRIPT SETTINGS
@@ -29,34 +29,55 @@ export async function main(ns) {
     ns.tail()
 
     //\\ GENERAL DATA
+    const SCRIPT = scriptPath(ns)
     const API = ns.gang
-    const TASK_MAIN = "Mug People"
-    const ASCEND_THRESHOLD = 1.0250
 
+    const ASCEND_THRESHOLD = 3.4
     const WANTED_LOWERBAND = 1
     const WANTED_UPPERBAND = 10
+
+    let LOWER_WANTED_LEVEL = false
 
     const AUGMENTATIONS = []
 
     let memberNum = 0
 
     //\\ FUNCTIONS 
-    function createGang() {
+    async function createGang() {
 
-        // create gang if not in one, or log gang
-        if (!API.inGang()) {
+        // create gang
 
+        while (!API.inGang()) {
+
+            await ns.sleep(1000)
             API.createGang("Slum Snakes")
-
-        } else {
-
-            let info = API.getGangInformation()
-            ns.print("Faction \t" + info.faction)
-            ns.print("Money gain \t" + ns.formatNumber(info.moneyGainRate * API.getMemberNames().length))
-            ns.print("Respect \t" + Math.round(info.respect))
-            ns.print("Wanted lvl \t" + info.wantedLevel.toFixed(3))
-            displayAscendMembers()
         }
+    }
+
+    function displayInfo() {
+        let info = API.getGangInformation()
+        ns.print("Faction \t" + info.faction)
+        ns.print("Money gain \t" + ns.formatNumber(info.moneyGainRate * API.getMemberNames().length))
+        ns.print("Respect \t" + Math.round(info.respect))
+        ns.print("Wanted lvl \t" + info.wantedLevel.toFixed(3))
+        ns.print("Warefare \t" + info.territoryWarfareEngaged)
+        ns.print("Territory \t" + ns.formatPercent(info.territory))
+        displayClash()
+        // displayAscendMembers()
+    }
+
+    function displayClash() {
+
+        let data = []
+        const gangs = ["Tetrads", "The Syndicate", "The Dark Army", "Speakers for the Dead", "NiteSec", "The Black Hand"]
+
+        gangs.forEach(gang => {
+            data.push({ chance: API.getChanceToWinClash(gang), gangName: gang })
+        })
+
+        data.sort((a, b) => a.chance - b.chance).reverse()
+        ns.print("\nClash Chance")
+        data.forEach(e => { ns.print(ns.formatPercent(e.chance) + "\t\t" + e.gangName) })
     }
 
     function displayAscendMembers() {
@@ -66,7 +87,13 @@ export async function main(ns) {
         let list = []
         for (let member of API.getMemberNames()) {
             if (API.getInstallResult(member)) {
-                list.push({ name: member, ascend: (API.getAscensionResult(member).hack * API.getInstallResult(member).hack).toFixed(4) })
+
+                let ascentRes = API.getAscensionResult(member).str +
+                    API.getAscensionResult(member).def +
+                    API.getAscensionResult(member).dex +
+                    API.getAscensionResult(member).agi / 4
+
+                list.push({ name: member, ascend: ascentRes.toFixed(4) })
             }
         }
         list.sort((a, b) => a.ascend - b.ascend).reverse()
@@ -99,28 +126,62 @@ export async function main(ns) {
             for (var i = 0; i < API.getRecruitsAvailable(); i++) {
                 let name = createMemberName()
                 API.recruitMember(name)
-                API.setMemberTask(name, "Vigilante Justice")
+                API.setMemberTask(name, "Train Combat")
             }
         }
     }
 
-    function getTask(member) {
+    function calculateMemberLevel(member) {
 
         let str = API.getMemberInformation(member).str
         let def = API.getMemberInformation(member).def
         let dex = API.getMemberInformation(member).dex
         let agi = API.getMemberInformation(member).agi
 
-        let level = str + def + dex + agi
+        return str + def + dex + agi
+    }
 
-        switch (true) {
-            case level > 8000: return "Territory Warfare"
-            case level > 6000: return "Terrorism"
-            case level > 4000: return "Human Trafficking"
-            case level > 2000: return "Traffick Illegal Arms"
-            case level > 1000: return "Strongarn Civilians"
-            case level > 500: return "Deal Drugs"
-            default: return "Mug People"
+    function allMembersInWarfare() {
+
+        let allInWarefare = true
+        let members = API.getMemberNames()
+
+        members.forEach(member => {
+            if (calculateMemberLevel(member) < 10000) {
+                allInWarefare = false
+            }
+        })
+        return allInWarefare
+    }
+
+    function getTask(member) {
+
+        let level
+        if (NmapTotalRam(ns) < 7500 || ns.getRunningScript(SCRIPT.install)) {
+
+            API.setTerritoryWarfare(false)
+            level = calculateMemberLevel(member)
+
+            switch (true) {
+                case level > 5000: return "Human Trafficking"
+                case level > 4000: return "Threaten & Blackmail"
+                case level > 3000: return "Traffic Illegal Arms"
+                case level > 2000: return "Armed Robbery"
+                case level > 1500: return "Run a Con"
+                case level > 1000: return "Strongarm Civilians"
+                default: return "Train Combat"
+            }
+
+        } else {
+
+            if (allMembersInWarfare()) {
+                API.setTerritoryWarfare(true)
+                return "Territory Warfare"
+
+            } else {
+                API.setTerritoryWarfare(false)
+                return "Train Combat"
+            }
         }
     }
 
@@ -130,11 +191,21 @@ export async function main(ns) {
 
         if (API.getGangInformation().wantedLevel === WANTED_LOWERBAND) {
 
+            LOWER_WANTED_LEVEL = false
+
+        } else if (API.getGangInformation().wantedLevel > WANTED_UPPERBAND) {
+
+            LOWER_WANTED_LEVEL = true
+        }
+
+
+        if (!LOWER_WANTED_LEVEL) {
+
             API.getMemberNames().forEach(member => {
                 API.setMemberTask(member, getTask(member))
             })
 
-        } else if (API.getGangInformation().wantedLevel > WANTED_UPPERBAND) {
+        } else {
 
             API.getMemberNames().forEach(member => {
                 API.setMemberTask(member, "Vigilante Justice")
@@ -162,7 +233,19 @@ export async function main(ns) {
 
         for (let member of API.getMemberNames()) {
             if (API.getInstallResult(member)) {
-                if (API.getAscensionResult(member).hack * API.getInstallResult(member).hack >= ASCEND_THRESHOLD) {
+
+                let instRes = API.getInstallResult(member).str +
+                    API.getInstallResult(member).def +
+                    API.getInstallResult(member).dex +
+                    API.getInstallResult(member).agi
+
+                let ascentRes = API.getAscensionResult(member).str +
+                    API.getAscensionResult(member).def +
+                    API.getAscensionResult(member).dex +
+                    API.getAscensionResult(member).agi / 4
+
+
+                if (ascentRes >= ASCEND_THRESHOLD) {
                     API.ascendMember(member)
                     getAugmentation(member)
                 }
@@ -170,23 +253,27 @@ export async function main(ns) {
         }
     }
 
-    function management() {
 
-        // manage gang
-
-        recruitMembers()
-        memberTask()
-        // ascendMembers()
-    }
+    await createGang()
 
     //\\ LOGIC
     while (true) {
 
         await API.nextUpdate()
         ns.clearLog()
+        displayInfo()
 
-        createGang()
-        management()
+        if (API.getBonusTime() > 5000 && API.getMemberNames().length < 12) {
+
+            recruitMembers()
+            memberTask()
+
+        } else {
+
+            recruitMembers()
+            memberTask()
+            ascendMembers()
+        }
     }
 }
 

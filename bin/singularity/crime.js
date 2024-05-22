@@ -153,7 +153,7 @@ export async function main(ns) {
 
         if (KARMA_REQUIRED === undefined && KILLS_REQUIRED === undefined) {
 
-            if (NmapTotalRam(ns) < 5000) {
+            if (NmapTotalRam(ns) < 7500) {
 
                 if (!pauseForRequirements()) {
 

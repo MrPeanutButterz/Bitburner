@@ -14,7 +14,7 @@ export async function main(ns) {
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
     const COMPLETION_TRIGGER = 90 // 90%
-    const FAVOR_TARGET = 75
+    const FAVOR_TARGET = 150
     const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false
@@ -120,6 +120,10 @@ export async function main(ns) {
         preInstall()
         donate()
 
+        if ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 > 90 &&
+            ns.getRunningScript(SCRIPT.servers)) {
+            ns.scriptKill(SCRIPT.servers, "home")
+        }
     }
 
     //\\ MAIN LOGIC

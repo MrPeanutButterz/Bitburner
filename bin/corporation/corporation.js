@@ -34,13 +34,13 @@ export async function main(ns) {
     //\\ MAIN LOGIC
     while (true) {
 
-        await ns.sleep(1000)
+        await ns.sleep(5000)
 
         if (!API.hasCorporation()) {
 
             // buy corporation with smart supply en export unlocks 
 
-            if (API.createCorporation(CORPORATION_NAME, false)) {
+            if (API.createCorporation(CORPORATION_NAME, true)) {
                 ns.tprint("Corporation created: " + CORPORATION_NAME)
                 API.expandIndustry(NEW_DIVISIONS[0].type, NEW_DIVISIONS[0].name)
                 API.purchaseUnlock("Smart Supply")

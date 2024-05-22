@@ -120,15 +120,10 @@ export async function main(ns) {
 
     if (!FLAGS.neuroflux) {
 
-        ns.print("\n\nShopping list")
+        let shoppingList = []
 
-        let shoppingList = createSortedShoppingList(FACTION)
-        shoppingList.forEach(item => {
-            ns.print(item)
-        })
-
-        ns.print("\n\nBuying")
-
+        ns.print("\n\nAugmentations from faction")
+        shoppingList = createSortedShoppingList(FACTION)
         for (let i = 0; i < shoppingList.length;) {
 
             let augmentation = shoppingList[i]
@@ -138,7 +133,7 @@ export async function main(ns) {
 
                 if (ns.singularity.purchaseAugmentation(FACTION, augmentation)) {
 
-                    await ns.sleep(1000)
+                    await ns.sleep(2000)
                     ns.print(augmentation)
                     i++
                 }
@@ -148,16 +143,36 @@ export async function main(ns) {
                 await ns.sleep(1000)
             }
         }
+
+        if (ns.gang.inGang()) {
+
+            let gang = ns.gang.getGangInformation().faction
+            shoppingList = createSortedShoppingList(gang)
+
+            ns.print("\n\nAugmentations from gang")
+            for (let item of shoppingList) {
+
+                if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(item) &&
+                    ns.singularity.getFactionRep(gang) > ns.singularity.getAugmentationRepReq(item)) {
+
+                    if (ns.singularity.purchaseAugmentation(gang, item)) {
+
+                        await ns.sleep(2000)
+                        ns.print(item)
+                    }
+                }
+            }
+        }
     }
 
-    ns.print("\n\nSpending on NeuroFlux")
+    ns.print("\n\nSpending remaining money on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 
         if (ns.singularity.purchaseAugmentation(FACTION, "NeuroFlux Governor")) {
 
             ns.print("NeuroFlux++")
-            await ns.sleep(1000)
+            await ns.sleep(2000)
         }
     }
 

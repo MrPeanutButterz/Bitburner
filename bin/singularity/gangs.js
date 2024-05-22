@@ -22,7 +22,7 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["combat", false]])
+    const FLAGS = ns.flags([["combat", true]])
     const SCRIPT = scriptPath(ns)
 
     let FACTION = ""
