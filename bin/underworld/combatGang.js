@@ -63,7 +63,7 @@ export async function main(ns) {
         ns.print("Warefare \t" + info.territoryWarfareEngaged)
         ns.print("Territory \t" + ns.formatPercent(info.territory))
         displayClash()
-        // displayAscendMembers()
+        displayAscendMembers()
     }
 
     function displayClash() {
@@ -254,9 +254,8 @@ export async function main(ns) {
     }
 
 
-    await createGang()
-
     //\\ LOGIC
+    await createGang()
     while (true) {
 
         await API.nextUpdate()

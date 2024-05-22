@@ -120,7 +120,7 @@ export async function main(ns) {
         preInstall()
         donate()
 
-        if ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 > 90 &&
+        if ((ns.singularity.getFactionRep(FACTION) / REPUTATION_GOAL) * 100 > 85 &&
             ns.getRunningScript(SCRIPT.servers)) {
             ns.scriptKill(SCRIPT.servers, "home")
         }

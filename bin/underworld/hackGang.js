@@ -40,6 +40,19 @@ export async function main(ns) {
     let memberNum = 0
 
     //\\ FUNCTIONS 
+    async function createGang() {
+
+        // create gang
+
+        while (!API.inGang()) {
+
+            await ns.sleep(1000)
+            if (API.createGang("NiteSec")) {
+                ns.tprint("Hackgang created at NiteSec")
+            }
+        }
+    }
+
     function display() {
 
         let info = API.getGangInformation()
@@ -199,14 +212,7 @@ export async function main(ns) {
     }
 
     //\\ LOGIC
-    while (!API.inGang()) {
-
-        await ns.sleep(1000)
-        if (API.createGang("NiteSec")) {
-            ns.tprint("Hackgang created at NiteSec")
-        }
-    }
-
+    await createGang()
     while (true) {
 
         ns.clearLog()
