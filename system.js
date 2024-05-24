@@ -17,15 +17,17 @@ export async function main(ns) {
     await ns.sleep(5000)
   }
 
-  async function waitForRam() {
-    while (ns.getServerMaxRam("home") < 128) {
-      ns.print("Awaiting more ram on home")
+  async function waitForRam(ram) {
+    while (ns.getServerMaxRam("home") < ram) {
+      ns.clearLog()
+      ns.print("Awaiting more ram on home " + ram)
       await ns.sleep(1000)
     }
   }
 
   async function run(script) {
     while (!canRunOnHome(ns, script)) {
+      ns.clearLog()
       ns.print("Next is " + script)
       await ns.sleep(1000)
     }
@@ -41,15 +43,18 @@ export async function main(ns) {
   await run(SCRIPT.programs)
   await run(SCRIPT.ram)
   await run(SCRIPT.servers)
-  await run(SCRIPT.gangs)
   await run(SCRIPT.crime)
+  await run(SCRIPT.gangs)
 
-  await waitForRam()
-
+  await waitForRam(128)
   await run(SCRIPT.faction)
+  
+  await waitForRam(256)
+  await run(SCRIPT.interface)
+  
+  await waitForRam(2048)
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
   await run(SCRIPT.corporation)
-  await run(SCRIPT.interface)
 
 }

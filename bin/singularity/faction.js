@@ -49,6 +49,23 @@ export async function main(ns) {
         return augmentationLeft
     }
 
+    function excludeGang(factions) {
+
+        // exclude the gang from faction list
+
+        if (ns.gang.inGang()) {
+
+            let gang = ns.gang.getGangInformation().faction
+            let newList = factions
+            newList = newList.filter(e => e !== gang);
+            return newList
+
+        } else {
+
+            return factions
+        }
+    }
+
     function getTopCandidate(factions) {
 
         let candidates = []
@@ -88,8 +105,8 @@ export async function main(ns) {
 
     //\\ MAIN LOGIC
     FLAGS.story ?
-        TOP_CANDIDATE = getTopCandidate(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"]) :
-        TOP_CANDIDATE = getTopCandidate(getFactionNames(ns))
+        TOP_CANDIDATE = getTopCandidate(excludeGang(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"])) :
+        TOP_CANDIDATE = getTopCandidate(excludeGang(getFactionNames(ns)))
 
     if (ownAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
 
@@ -121,5 +138,7 @@ export async function main(ns) {
 
         ns.tprint("Follow the white rabbit...")
         ns.tprint("Knock, knock, Neo.")
+
+        // find faction with most favor en keep installing neuroflux over en over 
     }
 }

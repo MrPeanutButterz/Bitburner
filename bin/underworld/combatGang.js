@@ -11,22 +11,19 @@ export async function main(ns) {
      * |_____\___/ \__, |_|\___\__,_|
      *              |___/             
      * 
-     * 
-     * 
      * ✅ create gang
      * 
      * ✅ management > recruite gang members
-     * management > set task
-     * management > ascend members
+     * ✅ management > set task
+     * ✅ management > ascend members
      * 
-     * equipment > buy augmentations 
+     * equipment > buy augmentations
      * 
      * ✅ territory > set clash
     */
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
-    ns.tail()
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
@@ -62,6 +59,7 @@ export async function main(ns) {
         ns.print("Wanted lvl \t" + info.wantedLevel.toFixed(3))
         ns.print("Warefare \t" + info.territoryWarfareEngaged)
         ns.print("Territory \t" + ns.formatPercent(info.territory))
+        ns.print("Territory \t" + info.territory)
         displayClash()
         displayAscendMembers()
     }
@@ -174,11 +172,24 @@ export async function main(ns) {
 
         } else {
 
-            if (allMembersInWarfare()) {
+            if (allMembersInWarfare() && API.getGangInformation().territory < 1) {
+
                 API.setTerritoryWarfare(true)
                 return "Territory Warfare"
 
+            } else if (API.getGangInformation().territory === 1) {
+
+                API.setTerritoryWarfare(false)
+                level = calculateMemberLevel(member)
+
+                switch (true) {
+                    case level > 10000: return "Human Trafficking"
+                    case level <= 10000: return "Train Combat"
+                    default: return "Train Combat"
+                }
+
             } else {
+
                 API.setTerritoryWarfare(false)
                 return "Train Combat"
             }

@@ -44,6 +44,7 @@ export async function main(ns) {
                 ns.tprint("Corporation created: " + CORPORATION_NAME)
                 API.expandIndustry(NEW_DIVISIONS[0].type, NEW_DIVISIONS[0].name)
                 API.purchaseUnlock("Smart Supply")
+                API.purchaseUnlock("Warehouse API")
                 API.purchaseUnlock("Export")
             }
 

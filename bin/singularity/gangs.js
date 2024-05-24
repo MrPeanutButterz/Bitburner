@@ -22,7 +22,7 @@ export async function main(ns) {
     ns.clearLog()
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["combat", true]])
+    const FLAGS = ns.flags([["combat", false]])
     const SCRIPT = scriptPath(ns)
 
     let FACTION = ""
@@ -32,7 +32,10 @@ export async function main(ns) {
     FLAGS.combat ? FACTION = "Slum Snakes" : FACTION = "NiteSec"
 
     while (true) {
+
+        ns.print("awaiting invite from " + FACTION)
         await ns.sleep(1000)
+        ns.clearLog()
 
         if (!ns.getPlayer().factions.includes(FACTION)) {
 

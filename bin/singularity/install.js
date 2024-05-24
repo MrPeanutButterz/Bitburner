@@ -122,7 +122,7 @@ export async function main(ns) {
 
         let shoppingList = []
 
-        ns.print("\n\nAugmentations from faction")
+        ns.print("\nAugmentations from faction")
         shoppingList = createSortedShoppingList(FACTION)
         for (let i = 0; i < shoppingList.length;) {
 
@@ -149,7 +149,7 @@ export async function main(ns) {
             let gang = ns.gang.getGangInformation().faction
             shoppingList = createSortedShoppingList(gang)
 
-            ns.print("\n\nAugmentations from gang")
+            ns.print("\nAugmentations from gang")
             for (let item of shoppingList) {
 
                 if (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice(item) &&
@@ -160,6 +160,10 @@ export async function main(ns) {
                         await ns.sleep(2000)
                         ns.print(item)
                     }
+
+                } else {
+                    
+                    await ns.sleep(500)
                 }
             }
         }
