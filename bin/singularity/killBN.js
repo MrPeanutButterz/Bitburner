@@ -11,8 +11,10 @@ export async function main(ns) {
     let SERVER = "w0r1d_d43m0n"
 
     //\\ MAIN LOGICA
+    ns.tprint("Final server required hacking skill: " + ns.getServer(SERVER).requiredHackingSkill)
+
     while (true) {
         await ns.sleep(1000)
-        await installBackdoor(ns, SERVER)
+        // await installBackdoor(ns, SERVER)
     }
 }

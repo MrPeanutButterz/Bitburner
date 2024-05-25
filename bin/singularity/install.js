@@ -169,7 +169,7 @@ export async function main(ns) {
         }
     }
 
-    ns.print("\n\nSpending remaining money on NeuroFlux")
+    ns.print("\nSpending remaining money on NeuroFlux")
     while (ns.getServerMoneyAvailable("home") > ns.singularity.getAugmentationPrice("NeuroFlux Governor") &&
         ns.singularity.getFactionRep(FACTION) > ns.singularity.getAugmentationRepReq("NeuroFlux Governor")) {
 

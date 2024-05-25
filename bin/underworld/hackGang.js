@@ -4,23 +4,24 @@ import { scriptPath, scriptStart } from "/lib/scripting"
 /** @param {NS} ns */
 export async function main(ns) {
 
-    /** _                _           
-     * | |    ___   __ _(_) ___ __ _ 
-     * | |   / _ \ / _` | |/ __/ _` |
-     * | |__| (_) | (_| | | (_| (_| |
-     * |_____\___/ \__, |_|\___\__,_|
-     *              |___/             
-     * 
-     * ✅ create a gang
-     * 
-     * ✅ management > reqruite new members
-     * ✅ management > set task main | bonus time | based on script running
-     * ✅ management > ascend members if not in bonus time
-     * 
-     * ✅ equipment > buy augmentations for hacking
-     * ✅ equipment > buy rootkits for hacking
-     * 
-     * ✅ territory > disengage territory clash
+    /**
+    *   ____                       
+    *  / ___| __ _ _ __   __ _ ___ 
+    * | |  _ / _` | '_ \ / _` / __|
+    * | |_| | (_| | | | | (_| \__ \
+    *  \____|\__,_|_| |_|\__, |___/
+    *                    |___/    
+    *  
+    * ✅ create a gang
+    * 
+    * ✅ management > reqruite new members
+    * ✅ management > set task main | bonus time | based on script running
+    * ✅ management > ascend members if not in bonus time
+    * 
+    * ✅ equipment > buy augmentations for hacking
+    * ✅ equipment > buy rootkits for hacking
+    * 
+    * ✅ territory > disengage territory clash
     */
 
     //\\ SCRIPT SETTINGS
@@ -170,16 +171,20 @@ export async function main(ns) {
         // set members to work
         if (!DEESCALATE_WANTED_LEVEL) {
 
-            if (!isBonusTime()) {
+            // pump money for purchase servers
+            // pump money for augmentations
+            // train some more
+            // deescalate wanted level
 
-                // pump money for purchase servers
-                // pump money for augmentations
-                // train some more
+            if (!isBonusTime()) {
 
                 if (NmapTotalRam(ns) < 7500) {
                     setMainTask()
 
                 } else if (!ns.getRunningScript(SCRIPT.servers)) {
+                    setMainTask()
+
+                } else if (ns.getRunningScript(SCRIPT.neuroflux)) {
                     setMainTask()
 
                 } else {
@@ -188,12 +193,7 @@ export async function main(ns) {
 
             } else {
 
-                if (API.canRecruitMember()) {
-                    setBonusTask()
-
-                } else {
-                    setTrainTask()
-                }
+                API.canRecruitMember() ? setBonusTask() : setMainTask()
             }
 
         } else {
@@ -203,25 +203,31 @@ export async function main(ns) {
         }
     }
 
+    function ascend() {
+        for (let member of API.getMemberNames()) {
+
+            // check if can ascend 
+            if (API.getInstallResult(member)) {
+
+                // log data 
+                let ascendResult = API.getAscensionResult(member).hack * API.getInstallResult(member).hack
+                // ns.print(member + "\t" + ascendResult.toFixed(5))
+
+                // ascend member
+                if (ascendResult >= THRESHOLD_ASCEND_MEMBER) { API.ascendMember(member) }
+            }
+        }
+    }
+
     function ascendMembers() {
 
         // ascend members out of bonus time 
         if (API.getBonusTime() === 0) {
+            ascend()
+        }
 
-            // ns.print("\nAscend\t\t" + THRESHOLD_ASCEND_MEMBER)
-            for (let member of API.getMemberNames()) {
-
-                // check if can ascend 
-                if (API.getInstallResult(member)) {
-
-                    // log data 
-                    let ascendResult = API.getAscensionResult(member).hack * API.getInstallResult(member).hack
-                    // ns.print(member + "\t" + ascendResult.toFixed(5))
-
-                    // ascend member
-                    if (ascendResult >= THRESHOLD_ASCEND_MEMBER) { API.ascendMember(member) }
-                }
-            }
+        if (ns.getRunningScript(SCRIPT.install)) {
+            ascend()
         }
     }
 

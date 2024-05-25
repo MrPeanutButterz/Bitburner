@@ -140,5 +140,6 @@ export async function main(ns) {
         ns.tprint("Knock, knock, Neo.")
 
         // find faction with most favor en keep installing neuroflux over en over 
+        ns.spawn(SCRIPT.neuroflux, { threads: 1, spawnDelay: 500 })
     }
 }

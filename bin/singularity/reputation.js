@@ -5,6 +5,21 @@ import { focusType, focusPrio } from "/lib/focus"
 /** @param {NS} ns */
 export async function main(ns) {
 
+    /**
+    *  ____                  _        _   _             
+    * |  _ \ ___ _ __  _   _| |_ __ _| |_(_) ___  _ __  
+    * | |_) / _ \ '_ \| | | | __/ _` | __| |/ _ \| '_ \ 
+    * |  _ <  __/ |_) | |_| | || (_| | |_| | (_) | | | |
+    * |_| \_\___| .__/ \__,_|\__\__,_|\__|_|\___/|_| |_|
+    *           |_|
+    * 
+    * ✅ find augmentation with highest reputation as the goal
+    * ✅ start working on reputation
+    * ☑ run preInstall script for gangs?
+    * ✅ if favor is reached run install.js
+    * ✅ if donations buy reputation 
+    */
+
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
 
@@ -12,7 +27,7 @@ export async function main(ns) {
     const FLAGS = ns.flags([["story", false]])
     const SCRIPT = scriptPath(ns)
     const DONATION = 1e9 // 1b
-    const BALANCE_TRIGGER_THRESHOLD = 1e11 // 100b
+    const BALANCE_TRIGGER_THRESHOLD = 2e11 // 100b
     const COMPLETION_TRIGGER = 90 // 90%
     const FAVOR_TARGET = 150
     const FOCUSTYPE = focusType(ns)

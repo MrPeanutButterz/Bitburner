@@ -9,7 +9,8 @@ export async function main(ns) {
     scriptStart(ns)
     const FLAGS = ns.flags([
         ["story", false],
-        ["gang", false]
+        ["gang", false],
+        ["neuroflux", false]
     ])
 
     //\\ GENERAL DATA
@@ -39,6 +40,10 @@ export async function main(ns) {
                     } else if (FLAGS.gang) {
 
                         ns.spawn(SCRIPT.gangs, { threads: 1, spawnDelay: 500 })
+                        
+                    } else if (FLAGS.neuroflux) { 
+                        
+                        ns.spawn(SCRIPT.neuroflux, { threads: 1, spawnDelay: 500 })
 
                     } else {
 
