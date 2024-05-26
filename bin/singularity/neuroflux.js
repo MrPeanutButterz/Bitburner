@@ -20,7 +20,6 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
-    ns.tail()
 
     //\\ GENERAL DATA
     const API = ns.singularity
@@ -28,14 +27,10 @@ export async function main(ns) {
     const SCRIPT = scriptPath(ns)
 
     const NEUROFLUX = "NeuroFlux Governor"
-    const AMOUNT = 8
-    const FAVOR_TARGET = 150
-    const BALANCE_TRIGGER_THRESHOLD = 2e13
-    const DONATION = 5e10
     const FOCUS = false
 
+    let AMOUNT = 7
     let FACTION = "Sector-12"
-
     let TASK = FACTION === "Slum Snakes" || FACTION === "Tetrads" ? TASK = ns.enums.FactionWorkType.field : ns.enums.FactionWorkType.hacking
 
     //\\ FUNCTIONS 
@@ -67,8 +62,8 @@ export async function main(ns) {
 
         while (!ns.getPlayer().factions.includes(FACTION)) {
 
-            await ns.sleep(1000)
-            if (ns.getRunningScript(SCRIPT.requirement, "home", FACTION, "--neuroflux")) {
+            await ns.sleep(1001)
+            if (!ns.getRunningScript(SCRIPT.requirement, "home", FACTION, "--neuroflux")) {
 
                 ns.spawn(SCRIPT.requirement, { threads: 1, spawnDelay: 500 }, FACTION, "--neuroflux")
             }
@@ -79,22 +74,37 @@ export async function main(ns) {
         if (ns.getServerMaxRam("home") > 2000) { ns.exec(SCRIPT.sharePower, "home", 1, "--home") }
     }
 
-    function donate() {
-        if (API.getFactionFavor(FACTION) >= FAVOR_TARGET &&
-            ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD) {
-            API.donateToFaction(FACTION, DONATION)
+    function killScript(script) {
+        if (ns.scriptRunning(script, "home")) {
+            ns.print("Script kill: " + script)
+            ns.scriptKill(script, "home")
         }
     }
 
     function info() {
         ns.print("Buying Neuroflux Only")
-        ns.print("Faction\t" + FACTION)
+        ns.print("Faction\t\t" + FACTION)
         ns.print("Left to buy\t" + AMOUNT)
     }
 
     async function buildReputation() {
 
         // build reputation
+
+        ns.tail()
+
+        killScript(SCRIPT.stockmarket)
+        ns.run(SCRIPT.stockmarket, { threads: 1, spawnDelay: 500 }, "--sell")
+        await ns.sleep(1000)
+
+        killScript(SCRIPT.hacknet)
+        await ns.sleep(1000)
+
+        killScript(SCRIPT.ram)
+        await ns.sleep(1000)
+
+        killScript(SCRIPT.core)
+        await ns.sleep(1000)
 
         runSharepower()
         while (AMOUNT != 0) {
@@ -107,15 +117,14 @@ export async function main(ns) {
 
                 API.workForFaction(FACTION, TASK, FOCUS)
 
-                if (ns.getServerMoneyAvailable("home") > API.getAugmentationPrice(NEUROFLUX) &&
-                    API.getFactionRep(FACTION) > API.getAugmentationRepReq(NEUROFLUX)) {
+                if (API.getFactionRep(FACTION) < API.getAugmentationRepReq(NEUROFLUX)) {
+
+                    API.donateToFaction(FACTION, ns.getServerMoneyAvailable("home"))
+
+                } else if (ns.getServerMoneyAvailable("home") > API.getAugmentationPrice(NEUROFLUX)) {
 
                     if (API.purchaseAugmentation(FACTION, NEUROFLUX)) { AMOUNT-- }
 
-                } else if (ns.getServerMoneyAvailable("home") > BALANCE_TRIGGER_THRESHOLD &&
-                    API.getFactionRep(FACTION) < API.getAugmentationRepReq(NEUROFLUX)) {
-
-                    donate()
                 }
 
             } else {
@@ -132,5 +141,4 @@ export async function main(ns) {
     factionWithMostFavor()
     await getRequirements()
     await buildReputation()
-
 }

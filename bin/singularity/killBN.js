@@ -15,6 +15,6 @@ export async function main(ns) {
 
     while (true) {
         await ns.sleep(1000)
-        // await installBackdoor(ns, SERVER)
+        await installBackdoor(ns, SERVER)
     }
 }

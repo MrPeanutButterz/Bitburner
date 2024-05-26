@@ -26,7 +26,6 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
-    ns.tail()
 
     //\\ GENERAL DATA
     const API = ns.gang
@@ -278,7 +277,10 @@ export async function main(ns) {
 
         // rootkits en augmentations only
         getAugmentation()
-        // getRootKits()
+
+        if (ns.scriptRunning(SCRIPT.neuroflux, "home")) {
+            getRootKits()
+        }
     }
 
     function territory() {

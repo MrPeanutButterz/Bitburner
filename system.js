@@ -55,6 +55,6 @@ export async function main(ns) {
   await waitForRam(2048)
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
-  await run(SCRIPT.corporation)
+  // await run(SCRIPT.corporation)
 
 }
