@@ -1,6 +1,6 @@
+import { scriptPath } from "/lib/settings"
 import { getNewDivisions } from "/lib/corporation"
 import { canRunOnHome } from "/lib/network"
-import { scriptPath } from "/lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {
