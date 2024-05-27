@@ -1,5 +1,5 @@
+import { scriptPath, scriptStart } from "/lib/settings"
 import { getFactionNames } from "/lib/factions"
-import { scriptPath, scriptStart } from "/lib/scripting"
 
 /** @param {NS} ns */
 export async function main(ns) {

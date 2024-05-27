@@ -1,4 +1,4 @@
-import { scriptPath, scriptStart } from "/lib/scripting"
+import { scriptPath, scriptStart } from "/lib/settings"
 import { NmapTotalRam } from "/lib/network"
 
 /** @param {NS} ns */

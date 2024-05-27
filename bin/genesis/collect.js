@@ -1,5 +1,5 @@
 import { NmapClear, NmapRamServers, NmapMoneyServers, NmapTotalRam, NmapFreeRam, watchForNewServer } from "lib/network"
-import { scriptPath, scriptStart, colorPrint } from "lib/scripting"
+import { scriptPath, scriptStart, colorPrint } from "lib/settings"
 
 /** @param {NS} ns */
 export async function main(ns) {

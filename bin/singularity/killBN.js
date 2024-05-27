@@ -1,5 +1,5 @@
+import { scriptStart } from "/lib/settings.js"
 import { installBackdoor } from "lib/network"
-import { scriptStart } from "/lib/scripting.js"
 
 /** @param {NS} ns */
 export async function main(ns) {

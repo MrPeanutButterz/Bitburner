@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { scriptStart, scriptExit, scriptPath } from "lib/settings"
 import { NmapTotalRam } from "/lib/network"
 import { focusType, focusPrio } from "/lib/focus"
 
@@ -121,7 +121,7 @@ export async function main(ns) {
             let bestPick = list.reduce(function (max, obj) {
                 return list.karma > max.num ? max : obj;
             })
-            return bestPick
+            return bestPick.type
         }
     }
 

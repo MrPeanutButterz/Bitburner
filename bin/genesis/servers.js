@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "lib/scripting"
+import { scriptStart, scriptExit } from "lib/settings"
 import { NmapTotalRam, NmapFreeRam } from "lib/network"
 
 /** @param {NS} ns */

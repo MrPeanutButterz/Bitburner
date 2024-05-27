@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { scriptStart, scriptExit, scriptPath } from "lib/settings"
 import { NmapClear, NmapRamServers } from "lib/network"
 
 /** @param {NS} ns */

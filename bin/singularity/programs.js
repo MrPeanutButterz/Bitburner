@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "lib/scripting"
+import { scriptStart, scriptExit } from "lib/settings"
 
 /** @param {NS} ns */
 export async function main(ns) {

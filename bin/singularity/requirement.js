@@ -1,4 +1,4 @@
-import { scriptStart, scriptPath } from "lib/scripting"
+import { scriptStart, scriptPath } from "lib/settings"
 import { installBackdoor, canRunOnHome } from "lib/network"
 import { getFactionServer, getFactionStats } from "lib/factions"
 

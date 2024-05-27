@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit, scriptPath } from "lib/scripting"
+import { scriptStart, scriptExit, scriptPath } from "lib/settings"
 import { canRunOnHome, installBackdoor } from "lib/network"
 import { getFactionServer } from "lib/factions"
 import { focusType, focusPrio } from "/lib/focus"

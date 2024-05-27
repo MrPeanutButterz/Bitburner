@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit } from "lib/scripting"
+import { scriptStart, scriptExit } from "lib/settings"
 import { installBackdoor } from "lib/network"
 import { focusType, focusPrio } from "/lib/focus"
 

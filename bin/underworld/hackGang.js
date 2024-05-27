@@ -1,5 +1,5 @@
-import { NmapTotalRam } from "/lib/network"
-import { scriptPath, scriptStart } from "/lib/scripting"
+import { scriptPath, scriptStart } from "/lib/settings"
+import { NmapTotalRam, canRunOnHome } from "/lib/network"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -56,8 +56,21 @@ export async function main(ns) {
         while (!API.inGang()) {
 
             await ns.sleep(1000)
-            if (API.createGang("NiteSec")) {
-                ns.tprint("Hackgang created at NiteSec")
+            ns.clearLog()
+
+            if (ns.getPlayer().karma > -54000) {
+
+                ns.print("Karma is to high, commiting some crime")
+
+                if (canRunOnHome(ns, SCRIPT.crime)) {
+                    ns.run(SCRIPT.crime, {threads: 1}, 0, -54000)
+                }
+
+            } else {
+
+                if (API.createGang("NiteSec")) {
+                    ns.tprint("Hackgang created at NiteSec")
+                }
             }
         }
     }

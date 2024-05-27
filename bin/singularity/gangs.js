@@ -1,4 +1,4 @@
-import { scriptPath, scriptStart } from "lib/scripting"
+import { scriptPath, scriptStart } from "lib/settings"
 import { canRunOnHome } from "lib/network"
 
 /** @param {NS} ns */

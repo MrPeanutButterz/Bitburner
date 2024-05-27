@@ -1,4 +1,4 @@
-import { scriptPath } from "lib/scripting"
+import { scriptPath } from "lib/settings"
 import { canRunOnHome } from "lib/network"
 
 /** @param {NS} ns */
@@ -44,14 +44,12 @@ export async function main(ns) {
   await run(SCRIPT.ram)
   await run(SCRIPT.servers)
   await run(SCRIPT.crime)
-  await run(SCRIPT.gangs)
+  // await run(SCRIPT.gangs)
 
-  await waitForRam(128)
-  await run(SCRIPT.faction)
-  
   await waitForRam(256)
+  await run(SCRIPT.faction)
   await run(SCRIPT.interface)
-  
+
   await waitForRam(2048)
   await run(SCRIPT.core)
   await run(SCRIPT.stockmarket)
