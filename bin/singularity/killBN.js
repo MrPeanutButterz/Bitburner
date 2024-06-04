@@ -1,3 +1,4 @@
+import { settings } from "../../lib/settings"
 import { scriptStart } from "/lib/settings.js"
 import { installBackdoor } from "lib/network"
 
@@ -8,6 +9,7 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
+    const SETTINGS = settings(ns)
     let SERVER = "w0r1d_d43m0n"
 
     //\\ MAIN LOGICA
@@ -15,6 +17,11 @@ export async function main(ns) {
 
     while (true) {
         await ns.sleep(1000)
-        await installBackdoor(ns, SERVER)
+        if (SETTINGS.killBitnode) {
+            await installBackdoor(ns, SERVER)
+
+        } else {
+            ns.exit()
+        }
     }
 }

@@ -1,5 +1,5 @@
 import { NmapMoneyServers, NmapFreeRam, NmapTotalRam } from "lib/network"
-import { colorPrint } from "lib/scripting";
+import { colorPrint } from "lib/settings";
 
 /** @param {NS} ns */
 export async function main(ns) {

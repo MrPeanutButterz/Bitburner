@@ -1,4 +1,4 @@
-import { scriptStart, scriptPath } from "lib/settings"
+import { scriptStart, scriptPath, settings } from "lib/settings"
 import { getFactionNames } from "lib/factions"
 import { canRunOnHome } from "/lib/network"
 
@@ -9,8 +9,9 @@ export async function main(ns) {
     scriptStart(ns)
 
     //\\ GENERAL DATA
-    const FLAGS = ns.flags([["story", false]])
+    const SETTINGS = settings(ns)
     const SCRIPT = scriptPath(ns)
+    const FLAGS = ns.flags([["story", SETTINGS.factionStoryMode]])
 
     let TOP_CANDIDATE
 

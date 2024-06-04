@@ -1,4 +1,4 @@
-import { scriptStart, scriptExit, scriptPath } from "lib/settings"
+import { scriptStart, scriptExit, scriptPath, getHomeReservedRam } from "lib/settings"
 import { NmapClear, NmapRamServers } from "lib/network"
 
 /** @param {NS} ns */
@@ -13,7 +13,7 @@ export async function main(ns) {
 
     //\\ GENERAL DATA
     const SCRIPT = scriptPath(ns)
-    const HOME_RAM_RESERVED = 2000
+    const HOME_RAM_RESERVED = getHomeReservedRam(ns)
 
     //\\ FUNCTIONS
     function shareHome() {
