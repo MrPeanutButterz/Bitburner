@@ -1,5 +1,4 @@
-import { settings } from "../../lib/settings"
-import { scriptStart } from "/lib/settings.js"
+import { scriptStart, settings } from "/lib/settings.js"
 import { installBackdoor } from "lib/network"
 
 /** @param {NS} ns */

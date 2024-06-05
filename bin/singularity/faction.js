@@ -109,7 +109,7 @@ export async function main(ns) {
         TOP_CANDIDATE = getTopCandidate(excludeGang(["Sector-12", "CyberSec", "Tian Di Hui", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"])) :
         TOP_CANDIDATE = getTopCandidate(excludeGang(getFactionNames(ns)))
 
-    if (ownAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, 1) }
+    if (ownAugmentation("The Red Pill") && canRunOnHome(ns, SCRIPT.killBN)) { ns.run(SCRIPT.killBN, { threads: 1, spawnDelay: 500 }) }
 
     if (TOP_CANDIDATE.name !== "RedPillTime") {
 
@@ -137,6 +137,7 @@ export async function main(ns) {
 
     } else {
 
+        await ns.sleep(5000)
         ns.tprint("Follow the white rabbit...")
         ns.tprint("Knock, knock, Neo.")
 
