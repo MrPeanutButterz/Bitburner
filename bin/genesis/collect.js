@@ -1,4 +1,4 @@
-import { NmapClear, NmapRamServers, NmapMoneyServers, NmapTotalRam, NmapFreeRam, watchForNewServer } from "lib/network"
+import { NmapRamServers, NmapMoneyServers, NmapTotalRam, NmapFreeRam, watchForNewServer } from "lib/network"
 import { scriptPath, scriptStart, colorPrint } from "lib/settings"
 
 /** @param {NS} ns */
@@ -52,8 +52,18 @@ export async function main(ns) {
         // caculates number of threads for grow
         let serverMoneyAvailable = ns.getServerMoneyAvailable(server) > 0 ? ns.getServerMoneyAvailable(server) : 1
         let serverMoneyMax = ns.getServerMaxMoney(server)
-        let mulitplier = (serverMoneyAvailable / serverMoneyMax) * 100
-        return Math.ceil(ns.growthAnalyze(server, Math.ceil(100 - mulitplier)))
+        let multiplier = (serverMoneyAvailable / serverMoneyMax) * 100
+
+        if (multiplier === 100) {
+
+            return Math.ceil(ns.growthAnalyze(server, Math.ceil(70)))
+
+        } else {
+
+            return Math.ceil(ns.growthAnalyze(server, Math.ceil(100 - multiplier)))
+
+        }
+
     }
 
     function calculateHackThreads(server) {
@@ -86,6 +96,7 @@ export async function main(ns) {
 
         if (list.length === 0) {
 
+            ns.print("Init Run")
             return [{ hostname: "n00dles", action: "grow", threads: calculateGrowThreads("n00dles") }]
 
         } else {
