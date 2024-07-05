@@ -29,7 +29,7 @@ export async function main(ns) {
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 2e11 // 100b
     const COMPLETION_TRIGGER = 90 // 90%
-    const FAVOR_TARGET = 150
+    const FAVOR_TARGET = 75
     const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false

@@ -13,14 +13,11 @@ export async function main(ns) {
     *                    |___/    
     *  
     * ✅ create a gang
-    * 
     * ✅ management > reqruite new members
     * ✅ management > set task main | bonus time | based on script running
     * ✅ management > ascend members if not in bonus time
-    * 
     * ✅ equipment > buy augmentations for hacking
     * ✅ equipment > buy rootkits for hacking
-    * 
     * ✅ territory > disengage territory clash
     */
 

@@ -44,7 +44,7 @@ export async function main(ns) {
   await run(SCRIPT.ram)
   await run(SCRIPT.servers)
   await run(SCRIPT.crime)
-  // await run(SCRIPT.gangs)
+  await run(SCRIPT.gangs)
 
   await waitForRam(256)
   await run(SCRIPT.faction)

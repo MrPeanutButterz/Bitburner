@@ -218,7 +218,6 @@ export async function main(ns) {
 
     if (FLAGS.sell) {
 
-
         while (true) {
 
             await ns.stock.nextUpdate()
@@ -238,12 +237,20 @@ export async function main(ns) {
             await ns.stock.nextUpdate()
             ns.clearLog()
 
-            ns.print("Managing stocks\n\n")
-            updatePortfolio()
-            sellShares()
-            updatePortfolio()
-            buyShares()
-            displayLog()
+            if (!ns.scriptRunning(SCRIPT.requirement, "home")) {
+
+                
+                ns.print("Managing stocks\n\n")
+                updatePortfolio()
+                sellShares()
+                updatePortfolio()
+                buyShares()
+                displayLog()
+
+            } else { 
+
+                ns.print("Waiting for faction requirements...")
+            }
         }
     }
 }
