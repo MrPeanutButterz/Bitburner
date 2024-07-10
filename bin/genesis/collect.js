@@ -136,12 +136,12 @@ export async function main(ns) {
 
                     if (threadsAvailable > threads) {
 
-                        ns.exec(script, server, threads, target, 0)
+                        ns.exec(script, server, Math.ceil(threads), target, 0)
                         threads -= threads
 
                     } else {
 
-                        ns.exec(script, server, threadsAvailable, target, 0)
+                        ns.exec(script, server, Math.ceil(threadsAvailable), target, 0)
                         threads -= threadsAvailable
                     }
                 }
