@@ -1,6 +1,7 @@
 import { scriptStart, scriptPath } from "lib/settings"
 import { canRunOnHome } from "lib/network"
 import { focusType, focusPrio } from "/lib/focus"
+import { settings } from "../../lib/settings"
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -22,6 +23,7 @@ export async function main(ns) {
 
     //\\ SCRIPT SETTINGS
     scriptStart(ns)
+    const setting = settings(ns)
 
     //\\ GENERAL DATA
     const FLAGS = ns.flags([["story", false]])
@@ -29,7 +31,7 @@ export async function main(ns) {
     const DONATION = 1e9 // 1b
     const BALANCE_TRIGGER_THRESHOLD = 2e11 // 100b
     const COMPLETION_TRIGGER = 90 // 90%
-    const FAVOR_TARGET = 75
+    const FAVOR_TARGET = setting.favorTarget
     const FOCUSTYPE = focusType(ns)
 
     let FOCUS = false
